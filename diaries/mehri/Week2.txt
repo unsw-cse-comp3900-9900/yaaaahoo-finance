@@ -1,0 +1,19 @@
+Week 2 Summary
+
+Friday - 28/02:
+Locked down group, decided on choosing the stock portfolio 
+management system as our project. Our product's target persona 
+is someone who is not novice, nor an expert in finance. 
+Set up a call for Sunday to start planning our project.
+
+Sunday - 1/03:
+Had a 1 hour group call to discuss what should be in our proposal,
+technology stack, how we would test and peer review each others 
+code, set action items til our Friday lab and defining
+what our sprint cycle would look like. My task is to look at APIs
+we could use for our project and wireframing. 
+
+
+
+
+
