@@ -1,2 +1,7 @@
-# capstone-project-yaaaahoo-finance
-capstone-project-yaaaahoo-finance created by GitHub Classroom
+# Yaaaahoo! Finance
+Group Members:
+- Anna Zhang
+- Anupam Chakraborty 
+- Mehri Amin
+- Oscar Fan
+- Rachael Carson-Graham
