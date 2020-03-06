@@ -1,0 +1,8 @@
+Week 1
+
+Group formed in lab.  I volunteered to be scrummaster given my existing experience with JIRA.  I created the first task on our scrum board based on discussions in class - we need to agree on our user persona, and what our problem statement is at a high level.  This will enable us to make sure our solution design can be refined to something achievable in the set time period.
+As a group we discussed a number of ideas for features we can build and APIs we can use.  I documented these in the JIRA task to ensure we remember our ideas.
+
+Week 2
+
+Started work on the problem statement based on my knowledge of existing products in the market. Carried out further research on other products in the market. Researched APIs available in Australia that we may be able to use.  In the lab, finalised our group of 5 and agreed on the problem statement and idea I proposed.  As a group, discussed and agreed on the epics (including which would be harder/easier), high-level infrastructure/technologies.
