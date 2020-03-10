@@ -72,7 +72,7 @@ const Hero = () => {
         alignItems="flex-start"
       >
         <Grid item className={classes.gridItem}>
-          <Typography variant="h2" className={classes.title}>
+          <Typography variant="h1" className={classes.title}>
             AAAA
           </Typography>
         </Grid>
