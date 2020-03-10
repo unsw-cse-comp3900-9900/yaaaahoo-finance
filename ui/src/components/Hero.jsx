@@ -11,6 +11,7 @@ const useStyles = makeStyles(theme => ({
     backgroundAttachment: "fixed",
     backgroundPosition: "right bottom",
     backgroundSize: "auto 100%",
+    backgroundColor: "#fff",
 
     height: "100vh",
     width: "100vw",
@@ -30,11 +31,19 @@ const useStyles = makeStyles(theme => ({
     width: "100%"
   },
   button: {
+    border: "1px solid rgba(255,255,255,0.20)",
+    outline: "none",
+    transition: "box-shadow 399ms ease-in-out",
+    borderRadius: "12px",
     width: "15em",
     height: "3em",
-    borderColor: "#2643e9",
-    color: "#2643e9",
-    backgroundColor: "white"
+    boxShadow: "5px 5px 8px #e3e3e3,-5px -5px 8px #ffffff",
+    backgroundColor: "#fff",
+    "&:hover": {
+      boxShadow: "inset 5px 5px 8px #e3e3e3, inset -5px -5px 8px #ffffff",
+      color: "#2643e9",
+      backgroundColor: "#fff"
+    }
   },
   title: {
     color: "#2643e9",
@@ -64,11 +73,7 @@ const Hero = () => {
       alignItems="flex-start"
       className={classes.root}
     >
-      <Grid
-        container
-        item
-        justify="center"
-      >
+      <Grid container item justify="center">
         <Grid item className={classes.gridItem}>
           <Typography variant="h1" className={classes.title}>
             AAAA
@@ -83,14 +88,10 @@ const Hero = () => {
           </Typography>
         </Grid>
         <Grid item className={classes.gridItem}>
-          <Button variant="outlined" color="primary" className={classes.button}>
-            Sign Up
-          </Button>
+          <Button className={classes.button}>Sign Up</Button>
         </Grid>
         <Grid item className={classes.gridItem}>
-          <Button variant="outlined" color="primary" className={classes.button}>
-            Log In
-          </Button>
+          <Button className={classes.button}>Log In</Button>
         </Grid>
       </Grid>
 
