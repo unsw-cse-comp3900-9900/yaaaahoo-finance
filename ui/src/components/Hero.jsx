@@ -10,7 +10,8 @@ const useStyles = makeStyles(theme => ({
     backgroundRepeat: "no-repeat",
     backgroundAttachment: "fixed",
     backgroundPosition: "right bottom",
-    backgroundSize: "100%",
+    backgroundSize: "auto 100%",
+
     height: "100vh",
     width: "100vw",
     paddingLeft: "10em",
@@ -23,6 +24,9 @@ const useStyles = makeStyles(theme => ({
   },
   gridItem: {
     marginBottom: "2em",
+    width: "100%"
+  },
+  lastGridItem: {
     width: "100%"
   },
   button: {
@@ -46,8 +50,7 @@ const useStyles = makeStyles(theme => ({
     }
   },
   divider: {
-    border: "1px solid #2643e9",
-    marginTop: "5em"
+    border: "0.5px solid #2643e9"
   }
 }));
 
@@ -57,34 +60,43 @@ const Hero = () => {
     <Grid
       container
       direction="column"
-      justify="center"
+      justify="space-around"
       alignItems="flex-start"
       className={classes.root}
     >
-      <Grid item className={classes.gridItem}>
-        <Typography variant="h2" className={classes.title}>
-          AAAA
-        </Typography>
+      <Grid
+        container
+        item
+        justify="center"
+        direction="column"
+        alignItems="flex-start"
+      >
+        <Grid item className={classes.gridItem}>
+          <Typography variant="h2" className={classes.title}>
+            AAAA
+          </Typography>
+        </Grid>
+        <Grid item className={classes.gridItem}>
+          <Typography variant="subtitle1" className={classes.subtitle}>
+            Our application aims to provide mid-level investors a simple,
+            user-friendly system to manage their investment portfolios without
+            having to sacrifice control. Built with AI technology, our system
+            empowers users to make better investing decisions.
+          </Typography>
+        </Grid>
+        <Grid item className={classes.gridItem}>
+          <Button variant="outlined" color="primary" className={classes.button}>
+            Sign Up
+          </Button>
+        </Grid>
+        <Grid item className={classes.gridItem}>
+          <Button variant="outlined" color="primary" className={classes.button}>
+            Log In
+          </Button>
+        </Grid>
       </Grid>
-      <Grid item className={classes.gridItem}>
-        <Typography variant="subtitle1" className={classes.subtitle}>
-          AAAA aims to provide mid-level investors a simple, user-friendly
-          system to manage their investment portfolios without having to
-          sacrifice control. Built with AI technology, our system empowers users
-          to make better investing decisions.
-        </Typography>
-      </Grid>
-      <Grid item className={classes.gridItem}>
-        <Button variant="outlined" color="primary" className={classes.button}>
-          Sign Up
-        </Button>
-      </Grid>
-      <Grid item className={classes.gridItem}>
-        <Button variant="outlined" color="primary" className={classes.button}>
-          Log In
-        </Button>
-      </Grid>
-      <Grid item className={classes.gridItem}>
+
+      <Grid item className={classes.lastGridItem}>
         <Divider className={classes.divider} />
       </Grid>
     </Grid>
