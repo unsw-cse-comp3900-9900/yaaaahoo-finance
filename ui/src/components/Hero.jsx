@@ -68,8 +68,6 @@ const Hero = () => {
         container
         item
         justify="center"
-        direction="column"
-        alignItems="flex-start"
       >
         <Grid item className={classes.gridItem}>
           <Typography variant="h1" className={classes.title}>
