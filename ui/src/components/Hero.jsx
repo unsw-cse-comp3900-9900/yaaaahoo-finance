@@ -1,28 +1,9 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Background from "../assets/background.svg";
 import { Typography, Divider, Button, Grid } from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-    backgroundImage: `url(${Background})`,
-    backgroundRepeat: "no-repeat",
-    backgroundAttachment: "fixed",
-    backgroundPosition: "right bottom",
-    backgroundSize: "auto 100%",
-    backgroundColor: "#fff",
-
-    height: "100vh",
-    width: "100vw",
-    paddingLeft: "10em",
-    paddingRight: "10em",
-    overFlow: "hidden",
-    [theme.breakpoints.down("sm")]: {
-      paddingLeft: "2em",
-      paddingRight: "2em"
-    }
-  },
   gridItem: {
     marginBottom: "2em",
     width: "100%"
@@ -47,7 +28,7 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     color: "#2643e9",
-    fontWeight: 400
+    fontWeighst: 400
   },
   subtitle: {
     maxWidth: "65%",
@@ -66,13 +47,7 @@ const useStyles = makeStyles(theme => ({
 const Hero = () => {
   const classes = useStyles();
   return (
-    <Grid
-      container
-      direction="column"
-      justify="space-around"
-      alignItems="flex-start"
-      className={classes.root}
-    >
+    <Fragment>
       <Grid container item justify="center">
         <Grid item className={classes.gridItem}>
           <Typography variant="h1" className={classes.title}>
@@ -88,17 +63,21 @@ const Hero = () => {
           </Typography>
         </Grid>
         <Grid item className={classes.gridItem}>
-          <Button className={classes.button}>Sign Up</Button>
+          <Button component={Link} to={"/signup"} className={classes.button}>
+            Sign Up
+          </Button>
         </Grid>
         <Grid item className={classes.gridItem}>
-          <Button className={classes.button}>Log In</Button>
+          <Button component={Link} to={"/login"} className={classes.button}>
+            Log In
+          </Button>
         </Grid>
       </Grid>
 
       <Grid item className={classes.lastGridItem}>
         <Divider className={classes.divider} />
       </Grid>
-    </Grid>
+    </Fragment>
   );
 };
 
