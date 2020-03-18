@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
+import axios from 'axios';
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Button, Grid } from "@material-ui/core";
 import { AuthUserContext, withAuthorization } from "./Session";
+import { config } from '../config';
+
 const useStyles = makeStyles(theme => ({
   container: {
     height: "10em",
@@ -23,12 +26,25 @@ const useStyles = makeStyles(theme => ({
     }
   }
 }));
-const Home = ({ firebase, history }) => {
+const Home = ({ firebase }) => {
   const classes = useStyles();
 
   const onLogout = event => {
     firebase.doSignOut()
   }
+
+  useEffect(() => {
+    // NEWS API CALL
+    // const url = `http://newsapi.org/v2/top-headlines?category=business&country=au&apiKey=${config.newsApiToken}`
+    // console.log(config.newsApiToken)
+    // axios.get(url)
+    // .then(response => {
+    //   console.log(response)
+    // })
+    // .catch(error => {
+    //   console.log(error)
+    // });
+  });
 
   return (
     <AuthUserContext.Consumer>
