@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import axios from 'axios';
+// import axios from 'axios';
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Button, Grid } from "@material-ui/core";
 import { AuthUserContext, withAuthorization } from "./Session";
-import { config } from '../config';
+// import { config } from '../config';
 
 const useStyles = makeStyles(theme => ({
   container: {
