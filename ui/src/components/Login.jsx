@@ -51,10 +51,6 @@ const Login = ({ firebase, history }) => {
     firebase
       .doSignInWithEmailAndPassword(email, password)
       .then(authUser => {
-        setForm({
-          email: "",
-          password: ""
-        });
         history.push("/home");
       })
       .catch(error => {
