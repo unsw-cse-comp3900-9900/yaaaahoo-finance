@@ -3,6 +3,8 @@ import { CssBaseline } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 import Background from "./assets/background.svg";
+import { withAuthentication } from "./components/Session";
+import { BrowserRouter } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -29,18 +31,21 @@ const App = ({ children }) => {
   const classes = useStyles();
   return (
     <Fragment>
-      <CssBaseline />
-      <Grid
-        container
-        direction="column"
-        justify="space-around"
-        alignItems="flex-start"
-        className={classes.root}
-      >
-        {children}
-      </Grid>
+      <BrowserRouter>
+        <CssBaseline />
+        <Grid
+          container
+          direction="column"
+          justify="space-around"
+          alignItems="flex-start"
+          className={classes.root}
+        >
+          {children}
+        </Grid>
+        </BrowserRouter>
+
     </Fragment>
   );
 };
 
-export default App;
+export default withAuthentication(App);
