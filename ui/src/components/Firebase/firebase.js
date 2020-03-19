@@ -25,10 +25,10 @@ class Firebase {
     this.auth
       .createUserWithEmailAndPassword(email, password)
       .then(({ user }) => {
-        console.log("User " + user.uid + " created successfully!");
-        return this.auth.currentUser.updateProfile({
+        this.auth.currentUser.updateProfile({
           displayName: username
-        });
+        })
+        .then(() => user)
       })
       .catch(error => console.log(error));
 

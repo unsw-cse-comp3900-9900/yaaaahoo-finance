@@ -68,6 +68,7 @@ const Signup = ({ firebase, history }) => {
           console.log("Error");
         });
     }
+    event.preventDefault();
   };
 
   const onChange = event => {
