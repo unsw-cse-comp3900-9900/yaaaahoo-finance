@@ -20,9 +20,9 @@ const useStyles = makeStyles(theme => ({
     height: "3em",
     boxShadow: "5px 5px 8px #e3e3e3,-5px -5px 8px #ffffff",
     backgroundColor: "#fff",
+    color: "#2643e9",
     "&:hover": {
       boxShadow: "inset 5px 5px 8px #e3e3e3, inset -5px -5px 8px #ffffff",
-      color: "#2643e9",
       backgroundColor: "#fff"
     }
   },
@@ -77,6 +77,7 @@ const Hero = () => {
       <Grid item className={classes.lastGridItem}>
         <Divider className={classes.divider} />
       </Grid>
+
     </Fragment>
   );
 };
