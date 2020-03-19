@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { withRouter, Switch, Route } from "react-router";
 import { compose } from 'recompose';
-import Login from "./Login";
-import Hero from "./Hero";
-import Signup from "./Signup";
-import Home from "./Home";
-import { withFirebase } from './Firebase';
+import Login from "../Login/Login";
+import Hero from "../Hero/Hero";
+import Signup from "../Signup/Signup";
+import Home from "../Home/Home";
+import { withFirebase } from '../Firebase';
 
 class Routes extends Component {
   render() {
