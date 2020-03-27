@@ -2,6 +2,8 @@ import React, { Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Divider, Button, Grid } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import AboutUs from "./AboutUs"
+import TopNews from "./TopNews";
 
 const useStyles = makeStyles(theme => ({
   gridItem: {
@@ -77,7 +79,8 @@ const Hero = () => {
       <Grid item className={classes.lastGridItem}>
         <Divider className={classes.divider} />
       </Grid>
-
+    <AboutUs/>
+    <TopNews/>
     </Fragment>
   );
 };
