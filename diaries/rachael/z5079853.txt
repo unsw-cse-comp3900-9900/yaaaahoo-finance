@@ -6,3 +6,11 @@ As a group we discussed a number of ideas for features we can build and APIs we 
 Week 2
 
 Started work on the problem statement based on my knowledge of existing products in the market. Carried out further research on other products in the market. Researched APIs available in Australia that we may be able to use.  In the lab, finalised our group of 5 and agreed on the problem statement and idea I proposed.  As a group, discussed and agreed on the epics (including which would be harder/easier), high-level infrastructure/technologies.
+
+Week 3
+
+Completed problem statement and project management sections of the proposal.  Peer reviewed all other sections of the proposal then combined them into a final document for submission.
+
+Week 4
+
+Started work on a story to allow users to view their existing portfolio.  Wrote a Python script that will pull the data from a user's portfolio in Python, call the Alpha Vantage API to get the current share prices, and then return the total value of the portfolio to the user.
