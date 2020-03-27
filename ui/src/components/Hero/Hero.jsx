@@ -4,6 +4,8 @@ import { Typography, Divider, Button, Grid } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import AboutUs from "./AboutUs"
 import TopNews from "./TopNews";
+import * as tf from '@tensorflow/tfjs';
+import modelData from './model.json';
 
 const useStyles = makeStyles(theme => ({
   gridItem: {
@@ -48,6 +50,14 @@ const useStyles = makeStyles(theme => ({
 
 const Hero = () => {
   const classes = useStyles();
+  const getPredictions = async () => {
+    // TO-DO:
+    // const model = await tf.loadLayersModel(modelData);
+    // const vals = model.predict(tf.randomNormal([1, 63,1]));
+    // const prediction = await vals.data();
+    // console.log(prediction)
+  }
+
   return (
     <Fragment>
       <Grid container item justify="center">
@@ -74,6 +84,12 @@ const Hero = () => {
             Log In
           </Button>
         </Grid>
+        <Grid item className={classes.gridItem}>
+          <Button onClick={() => getPredictions()} className={classes.button}>
+            Predictions
+          </Button>
+        </Grid>
+
       </Grid>
 
       <Grid item className={classes.lastGridItem}>
