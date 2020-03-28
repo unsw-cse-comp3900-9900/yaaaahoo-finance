@@ -30,8 +30,6 @@ const LandingPage = () => {
       <Hero />
       <Divider className={classes.divider} />
       <AboutUs />
-      <Hero />
-
     </div>
   );
 };

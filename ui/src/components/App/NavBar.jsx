@@ -4,24 +4,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, Button, Typography } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import Logo from "../../assets/logo192.png";
-import useScrollTrigger from "@material-ui/core/useScrollTrigger";
-import Slide from "@material-ui/core/Slide";
-
-function HideOnScroll(props) {
-  const { children, window } = props;
-  const trigger = useScrollTrigger({ target: window ? window() : undefined });
-
-  return (
-    <Slide appear={false} direction="down" in={!trigger}>
-      {children}
-    </Slide>
-  );
-}
-
-HideOnScroll.propTypes = {
-  children: PropTypes.element.isRequired,
-  window: PropTypes.func
-};
 
 const useStyles = makeStyles(theme => ({
   logo: {
@@ -50,19 +32,17 @@ const useStyles = makeStyles(theme => ({
 const NavBar = ({ authUser }) => {
   const classes = useStyles();
   return (
-    <HideOnScroll>
-      <AppBar className={classes.bar}>
-        <Toolbar>
-          <Link to={"/"} className={classes.logoWrapper}>
-            <img className={classes.logo} src={Logo} />
-            <Typography className={classes.title}>Finance</Typography>
-          </Link>
-          <Button component={Link} to={"/login"} style={{ color: "#2643e9" }}>
-            {authUser ? "Log Out" : "Log In"}
-          </Button>
-        </Toolbar>
-      </AppBar>
-    </HideOnScroll>
+    <AppBar className={classes.bar}>
+      <Toolbar>
+        <Link to={"/"} className={classes.logoWrapper}>
+          <img className={classes.logo} src={Logo} />
+          <Typography className={classes.title}>Finance</Typography>
+        </Link>
+        <Button component={Link} to={"/login"} style={{ color: "#2643e9" }}>
+          {authUser ? "Log Out" : "Log In"}
+        </Button>
+      </Toolbar>
+    </AppBar>
   );
 };
 
