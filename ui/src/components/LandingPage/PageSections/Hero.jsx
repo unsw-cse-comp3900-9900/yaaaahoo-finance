@@ -2,7 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Button, Grid } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import Background from "../../assets/background.svg";
+import Background from "../../../assets/background.svg";
 
 const useStyles = makeStyles(theme => ({
   page: {

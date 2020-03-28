@@ -1,8 +1,8 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Divider } from "@material-ui/core";
-import Hero from "./Hero";
-import AboutUs from "./AboutUs";
+import Hero from "./PageSections/Hero";
+import AboutUs from "./PageSections/AboutUs";
 
 const useStyles = makeStyles(theme => ({
   page: {
@@ -29,7 +29,9 @@ const LandingPage = () => {
     <div className={classes.page}>
       <Hero />
       <Divider className={classes.divider} />
+      <AboutUs />
       <Hero />
+
     </div>
   );
 };
