@@ -1,6 +1,9 @@
-import React, { Fragment } from "react";
+import React, {Fragment, useEffect, useState} from "react";
+import { Link } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Divider, Grid } from "@material-ui/core";
+import { config } from '../../config';
+import axios from 'axios'
 
 const useStyles = makeStyles(theme => ({
   gridItem: {
@@ -28,21 +31,25 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-var url = 'http://newsapi.org/v2/everything?' +
-          'q=Apple&' +
-          'from=2020-03-26&' +
-          'sortBy=popularity&' +
-          'apiKey=7f414417b66e4e96a7e7cec32dd96562';
-
-var req = new Request(url);
-
-fetch(req)
-    .then(function(response) {
-        console.log(response.json());
-    })
-
 const TopNews = () => {
   const classes = useStyles();
+  const [article1, setArticle1] = useState({article1: {}})
+  const [article2, setArticle2] = useState({article3: {}})
+  const [article3, setArticle3] = useState({article3: {}})
+  useEffect(() => {
+    // NEWS API CALL
+    const url = `http://newsapi.org/v2/top-headlines?category=business&country=au&apiKey=${config.newsApiToken}`
+    axios.get(url)
+      .then(res => {
+        setArticle1(res.data.articles[0]);
+        setArticle2(res.data.articles[1]);
+        setArticle3(res.data.articles[2]);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }, []);
+
   return (
     <Fragment>
       <Grid container item justify="center">
@@ -51,8 +58,41 @@ const TopNews = () => {
             Top News
           </Typography>
           <Typography variant="subtitle1" className={classes.subtitle}>
-          Your daily edit of the finance news relevant to you, powered by NewsApi
-        </Typography>
+            Your daily edit of the finance news relevant to you, powered by NewsApi
+          </Typography>
+          <Typography variant="h6" className={classes.title}>
+            <a href = {article1.url} style={{ textDecoration: 'none' }}>
+              {article1.title}
+            </a>
+          </Typography>
+          <Typography variant="caption">
+            {article1.author}
+          </Typography>
+          <Typography variant="subtitle1" className={classes.subtitle}>
+            {article1.description}
+          </Typography>
+          <Typography variant="h6" className={classes.title}>
+            <a href = {article2.url} style={{ textDecoration: 'none' }}>
+              {article2.title}
+            </a>
+          </Typography>
+          <Typography variant="caption">
+            {article2.author}
+          </Typography>
+          <Typography variant="subtitle1" className={classes.subtitle}>
+            {article2.description}
+          </Typography>
+          <Typography variant="h6" className={classes.title}>
+            <a href = {article3.url} style={{ textDecoration: 'none' }}>
+              {article3.title}
+            </a>
+          </Typography>
+          <Typography variant="caption">
+            {article3.author}
+          </Typography>
+          <Typography variant="subtitle1" className={classes.subtitle}>
+            {article3.description}
+          </Typography>
         </Grid>
       </Grid>
       <Grid item className={classes.lastGridItem}>
