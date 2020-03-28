@@ -1,21 +1,24 @@
-import React from 'react';
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Hero from './Hero';
-import AboutUs from './AboutUs';
-import { Grid } from '@material-ui/core';
+import Hero from "./Hero";
+import AboutUs from "./AboutUs";
 
 const useStyles = makeStyles(theme => ({
-    page: {
-  
-    }
-}))
+  page: {
+    display: "flex",
+    flexDirection: "column",
+    flexGrow: 1,
+    overflowY: "auto",
+    marginTop: "64px"
+  }
+}));
 
 const LandingPage = () => {
-    const classes = useStyles();
-    return (
-        <div className={classes.page}>
-     
-        </div>
-    )
-}
+  const classes = useStyles();
+  return (
+    <div className={classes.page}>
+      <Hero />
+    </div>
+  );
+};
 export default LandingPage;

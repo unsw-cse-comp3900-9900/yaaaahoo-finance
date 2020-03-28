@@ -6,12 +6,13 @@ import Hero from "../Hero/Hero";
 import Signup from "../Signup/Signup";
 import Home from "../Home/Home";
 import { withFirebase } from '../Firebase';
+import LandingPage from "../LandingPage/LandingPage";
 
 class Routes extends Component {
   render() {
     return (
       <Switch>
-        <Route exact path="/" component={withRouter(Hero)} />
+        <Route exact path="/" component={withRouter(LandingPage)} />
         <Route path="/login" exact component={compose(withRouter, withFirebase)(Login)} />
         <Route path="/signup" exact component={compose(withRouter, withFirebase)(Signup)} />
         <Route path="/home" exact component={compose(withRouter, withFirebase)(Home)} />
