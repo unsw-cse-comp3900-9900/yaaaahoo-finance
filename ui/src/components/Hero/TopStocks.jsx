@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
 const TopNews = () => {
   const classes = useStyles();
   const [article1, setArticle1] = useState({article1: {}})
-  const [article2, setArticle2] = useState({article2: {}})
+  const [article2, setArticle2] = useState({article3: {}})
   const [article3, setArticle3] = useState({article3: {}})
   useEffect(() => {
     // NEWS API CALL
