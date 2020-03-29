@@ -7,20 +7,19 @@ import SchoolIcon from "@material-ui/icons/School";
 import PersonOutlineIcon from "@material-ui/icons/PersonOutline";
 import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
 const useStyles = makeStyles(theme => ({
-  page: {
+  Page: {
     display: "flex",
     flexDirection: "column",
     minHeight: "90%",
     paddingTop: "2em",
     width: "100%"
   },
-  title: {
+  Title: {
     fontSize: "2em",
     fontWeight: 500,
-    marginBottom: "1em",
     color: "#2643e9"
   },
-  CardRoot: {
+  Card: {
     width: "85%",
     alignItems: "center",
     justifyContent: "center",
@@ -34,14 +33,15 @@ const useStyles = makeStyles(theme => ({
   CardBody: {
     fontSize: "1em"
   },
-  cardContainer: {
+  CardContainer: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     flexGrow: 1,
-    width: "100%"
+    width: "100%",
+    justifyContent: "space-evenly"
   },
-  cardItem: {
+  CardItem: {
     display: "flex",
     flexWrap: "wrap",
     flexDirection: "row",
@@ -55,16 +55,16 @@ const useStyles = makeStyles(theme => ({
 const AboutUs = () => {
   const classes = useStyles();
   return (
-    <div className={classes.page}>
-      <Typography className={classes.title} gutterBottom>
+    <div className={classes.Page}>
+      <Typography className={classes.Title} gutterBottom>
         What we do
       </Typography>
-      <div className={classes.cardContainer}>
-        <div className={classes.cardItem}>
+      <div className={classes.CardContainer}>
+        <div className={classes.CardItem}>
           <SchoolIcon
             style={{ fontSize: "5em", color: "#6b7aea", marginBottom: "0.2em" }}
           />
-          <Card className={classes.CardRoot}>
+          <Card className={classes.Card}>
             <CardContent>
               <Typography gutterBottom className={classes.CardTitle}>
                 Intelligent recommendations
@@ -79,11 +79,11 @@ const AboutUs = () => {
             </CardContent>
           </Card>
         </div>
-        <div className={classes.cardItem}>
+        <div className={classes.CardItem}>
           <PersonOutlineIcon
             style={{ fontSize: "5em", color: "#6b7aea", marginBottom: "0.2em" }}
           />
-          <Card className={classes.CardRoot}>
+          <Card className={classes.Card}>
             <CardContent>
               <Typography gutterBottom className={classes.CardTitle}>
                 Your portfolio, your way
@@ -97,11 +97,11 @@ const AboutUs = () => {
             </CardContent>
           </Card>
         </div>
-        <div className={classes.cardItem}>
+        <div className={classes.CardItem}>
           <MonetizationOnIcon
             style={{ fontSize: "5em", color: "#6b7aea", marginBottom: "0.2em" }}
           />
-          <Card className={classes.CardRoot}>
+          <Card className={classes.Card}>
             <CardContent>
               <Typography gutterBottom className={classes.CardTitle}>
                 Simple to use
