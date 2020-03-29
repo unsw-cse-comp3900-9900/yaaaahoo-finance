@@ -2,12 +2,7 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import { Link } from "react-router-dom";
-import {
-  CardContent,
-  Typography,
-  TextField,
-  Button
-} from "@material-ui/core";
+import { CardContent, Typography, TextField, Button } from "@material-ui/core";
 import Background from "../../assets/background.svg";
 
 const useStyles = makeStyles(theme => ({
@@ -54,12 +49,14 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: "#2643e9"
   },
   ForgotPassword: {
-    fontSize: "1em",
     textDecoration: "underline",
-    color: "#2643e9"
+    color: "#2643e9",
+    cursor: "pointer",
+    fontSize: "0.8em",
+    textAlign: "right"
   },
   SignUp: {
-    fontSize: "1em",
+    fontSize: "1.2em",
     color: "#2643e9",
     textAlign: "center"
   }
@@ -101,6 +98,7 @@ const Login = ({ firebase, history }) => {
             label="Email"
             name="email"
             onChange={onChange}
+            helperText="E.g. john.citizen@email.com"
           />
           <TextField
             id="password"
@@ -108,10 +106,10 @@ const Login = ({ firebase, history }) => {
             type="password"
             name="password"
             onChange={onChange}
+            FormHelperTextProps={{ classes: { root: classes.ForgotPassword } }}
+            helperText={<span>Forgot Password?</span>}
           />
-          <Typography component={Link} className={classes.ForgotPassword}>
-            Forgot Password?
-          </Typography>
+
           <Button
             variant="contained"
             onClick={onSubmit}
