@@ -48,7 +48,6 @@ const useStyles = makeStyles(theme => ({
     width: "100%",
     justifyContent: "space-evenly",
     alignItems: "center",
-    marginBottom: "1.5em"
   }
 }));
 

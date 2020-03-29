@@ -1,44 +1,69 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
+import { Link } from "react-router-dom";
 import {
   CardContent,
   Typography,
-  Grid,
   TextField,
   Button
 } from "@material-ui/core";
+import Background from "../../assets/background.svg";
 
-const useStyles = makeStyles({
-  card: {
-    minWidth: 300,
+const useStyles = makeStyles(theme => ({
+  Card: {
+    width: "300px",
+    height: "70%",
     padding: "2em"
   },
-  content: {
+  CardTitle: {
+    fontSize: "1.5em",
+    fontWeight: "500"
+  },
+  CardContent: {
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
+    height: "100%",
+    justifyContent: "space-evenly"
   },
-  contentItem: {
-    marginTop: "1em",
-    marginBottom: "1em",
-    textAlign: "center"
+  Page: {
+    display: "flex",
+    flexDirection: "column",
+    flexGrow: 1,
+    overflowY: "auto",
+    marginTop: "64px",
+    paddingLeft: "10em",
+    paddingRight: "10em",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundImage: `url(${Background})`,
+    backgroundRepeat: "no-repeat",
+    backgroundAttachment: "fixed",
+    backgroundPosition: "right bottom",
+    backgroundSize: "auto 100%",
+    [theme.breakpoints.down("sm")]: {
+      paddingLeft: "2em",
+      paddingRight: "2em"
+    }
   },
-  button: {
-    border: "1px solid rgba(255,255,255,0.20)",
-    outline: "none",
-    transition: "box-shadow 399ms ease-in-out",
-    borderRadius: "12px",
+  Button: {
     width: "100%",
     height: "3em",
-    boxShadow: "5px 5px 8px #e3e3e3,-5px -5px 8px #ffffff",
-    backgroundColor: "#fff",
-    "&:hover": {
-      boxShadow: "inset 5px 5px 8px #e3e3e3, inset -5px -5px 8px #ffffff",
-      color: "#2643e9",
-      backgroundColor: "#fff"
-    }
+    color: "#fff",
+    borderColor: "#2643e9",
+    backgroundColor: "#2643e9"
+  },
+  ForgotPassword: {
+    fontSize: "1em",
+    textDecoration: "underline",
+    color: "#2643e9"
+  },
+  SignUp: {
+    fontSize: "1em",
+    color: "#2643e9",
+    textAlign: "center"
   }
-});
+}));
 
 const Login = ({ firebase, history }) => {
   const classes = useStyles();
@@ -67,33 +92,45 @@ const Login = ({ firebase, history }) => {
   };
 
   return (
-    <Grid container justify="center">
-      <Card className={classes.card}>
-        <CardContent className={classes.content}>
-          <Typography>Login</Typography>
+    <div className={classes.Page}>
+      <Card className={classes.Card}>
+        <CardContent className={classes.CardContent}>
+          <Typography className={classes.CardTitle}>Log In</Typography>
           <TextField
-            className={classes.contentItem}
             id="email"
             label="Email"
             name="email"
             onChange={onChange}
           />
           <TextField
-            className={classes.contentItem}
             id="password"
             label="Password"
             type="password"
             name="password"
             onChange={onChange}
           />
-          <Grid item className={classes.contentItem}>
-            <Button onClick={onSubmit} className={classes.button}>
-              Login
-            </Button>
-          </Grid>
+          <Typography component={Link} className={classes.ForgotPassword}>
+            Forgot Password?
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={onSubmit}
+            className={classes.Button}
+          >
+            Log In
+          </Button>
+          <Typography className={classes.SignUp}>
+            Don't have an account? <br></br>
+            <Link
+              to="/signup"
+              style={{ textDecoration: "underline", color: "#2643e9" }}
+            >
+              Sign up here
+            </Link>
+          </Typography>
         </CardContent>
       </Card>
-    </Grid>
+    </div>
   );
 };
 
