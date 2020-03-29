@@ -48,7 +48,7 @@ const Hero = () => {
       <Grid item className={classes.subtitle}>
         <span style={{ fontStyle: "italic" }}>AAAA Finance</span> is a web
         application aimed to provide mid-level investors a simple, user-friendly
-        system to manage their investment portfiols without having to sacrifice
+        system to manage their investment portfolios without having to sacrifice
         control. With our machine learning technology users can invest smarter
         and simpler.
       </Grid>
