@@ -18,7 +18,8 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "center"
   },
   title: {
-    fontSize: "1.2em"
+    fontSize: "1.2em",
+    fontWeight: 500
   },
   logoWrapper: {
     display: "flex",

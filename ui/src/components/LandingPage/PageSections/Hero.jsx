@@ -2,7 +2,6 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Button, Grid } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import Background from "../../../assets/background.svg";
 
 const useStyles = makeStyles(theme => ({
   page: {
@@ -11,15 +10,11 @@ const useStyles = makeStyles(theme => ({
     flexWrap: "wrap",
     minHeight: "90%",
     overflowY: "auto",
-    backgroundImage: `url(${Background})`,
-    backgroundRepeat: "no-repeat",
-    backgroundAttachment: "fixed",
-    backgroundPosition: "right bottom",
-    backgroundSize: "auto 100%"
   },
   title: {
     fontSize: "3em",
-    marginBottom: "0.2em"
+    marginBottom: "0.2em",
+    fontWeight: '500'
   },
   subtitle: {
     fontSize: "1.3em",

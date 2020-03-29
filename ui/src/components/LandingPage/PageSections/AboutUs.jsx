@@ -1,72 +1,138 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Typography, Divider, Grid } from "@material-ui/core";
-
+import { Typography } from "@material-ui/core";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import SchoolIcon from "@material-ui/icons/School";
+import PersonOutlineIcon from "@material-ui/icons/PersonOutline";
+import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
 const useStyles = makeStyles(theme => ({
-  gridItem: {
-    marginBottom: "2em",
-    width: "100%"
-  },
-  lastGridItem: {
-    width: "100%"
+  page: {
+    display: "flex",
+    flexDirection: "column",
+    minHeight: "90%",
+    paddingTop: "2em"
   },
   title: {
-    color: "#2643e9",
-    fontWeighst: 400
+    fontSize: "2em",
+    fontWeight: 500,
+    marginBottom: '1em',
+    color: "#2643e9"
   },
-  subtitle: {
-    maxWidth: "65%",
-    [theme.breakpoints.down("xs")]: {
-      maxWidth: "none"
-    },
-    [theme.breakpoints.up("lg")]: {
-      maxWidth: "50%"
-    }
+  CardRoot: {
+    maxWidth: "85%",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#cbd2f6",
+    color: "#2643e9"
   },
-  divider: {
-    border: "0.5px solid #2643e9"
+  CardTitle: {
+    fontSize: "1.5em",
+    fontWeight: "400"
+  },
+  CardBody: {
+    fontSize: "1em"
+  },
+  cardContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center"
+  },
+  cardItem: {
+    display: "flex",
+    flexWrap: "wrap",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    marginBottom: "1.5em"
   }
 }));
 
 const AboutUs = () => {
   const classes = useStyles();
   return (
-    <Fragment>
-      <Grid container item justify="center">
-        <Grid item className={classes.gridItem}>
-          <Typography variant="h2" className={classes.title}>
-            What we do
-          </Typography>
-        </Grid>
-      </Grid>
-      <Grid>
-        <Typography variant="h4" className={classes.title}>
-          Intelligent recommendations
-        </Typography>
-        <Typography variant="subtitle1" className={classes.subtitle}>
-          Our recommendations and insights are powered by "always-on" artificial intelligence and machine learning
-          algorithms. For any stock in your portfolio, receive daily recommendations on whether to buy, sell, or hold;
-          future price predictions; and the latest sentiment analysis.
-        </Typography>
-        <Typography variant="h4" className={classes.title}>
-          Your portfolio, your way
-        </Typography>
-        <Typography variant="subtitle1" className={classes.subtitle}>
-          You're not a beginner investor.  We know you want to invest in more than just ETFs, so we give you the option
-          to add any kind of investment to your portfolio.  Shares, bonds, cryptocurrencies - your porfolio, your way.
-        </Typography>
-        <Typography variant="h4" className={classes.title}>
-          Simple to use
-        </Typography>
-        <Typography variant="subtitle1" className={classes.subtitle}>
-          We only provide the features you need to manage your investments.  No overly complicated details
-          that you need a degree in finance to understand!
-        </Typography>
-      </Grid>
-      <Grid item className={classes.lastGridItem}>
-        <Divider className={classes.divider} />
-      </Grid>
-    </Fragment>
+    <div className={classes.page}>
+      <Typography className={classes.title} gutterBottom>
+        What we do
+      </Typography>
+      <div className={classes.cardContainer}>
+        <div className={classes.cardItem}>
+          <SchoolIcon style={{ fontSize: "5em", color: "#6b7aea"  }} />
+          <Card className={classes.CardRoot}>
+            <CardContent>
+              <Typography
+                variant="h5"
+                component="h2"
+                gutterBottom
+                className={classes.CardTitle}
+              >
+                Intelligent recommendations
+              </Typography>
+              <Typography
+                variant="body2"
+                component="p"
+                className={classes.CardBody}
+              >
+                Our recommendations and insights are powered by "always-on"
+                artificial intelligence and machine learning algorithms. For any
+                stock in your portfolio, receive daily recommendations on
+                whether to buy, sell, or hold; future price predictions; and the
+                latest sentiment analysis.
+              </Typography>
+            </CardContent>
+          </Card>
+        </div>
+        <div className={classes.cardItem}>
+          <PersonOutlineIcon style={{ fontSize: "5em", color: "#6b7aea"  }} />
+          <Card className={classes.CardRoot}>
+            <CardContent>
+              <Typography
+                variant="h5"
+                component="h2"
+                gutterBottom
+                className={classes.CardTitle}
+              >
+                Your portfolio, your way
+              </Typography>
+              <Typography
+                variant="body2"
+                component="p"
+                className={classes.CardBody}
+              >
+                You're not a beginner investor. We know you want to invest in
+                more than just ETFs, so we give you the option to add any kind
+                of investment to your portfolio. Shares, bonds, cryptocurrencies
+                - your porfolio, your way.
+              </Typography>
+            </CardContent>
+          </Card>
+        </div>
+        <div className={classes.cardItem}>
+          <MonetizationOnIcon style={{ fontSize: "5em", color: "#6b7aea" }} />
+          <Card className={classes.CardRoot}>
+            <CardContent>
+              <Typography
+                variant="h5"
+                component="h2"
+                gutterBottom
+                className={classes.CardTitle}
+              >
+                Simple to use
+              </Typography>
+              <Typography
+                variant="body2"
+                component="p"
+                className={classes.CardBody}
+              >
+                We only provide the features you need to manage your
+                investments. No overly complicated details that you need a
+                degree in finance to understand!
+              </Typography>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
   );
 };
 
