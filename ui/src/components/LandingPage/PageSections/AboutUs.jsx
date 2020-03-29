@@ -11,16 +11,17 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "column",
     minHeight: "90%",
-    paddingTop: "2em"
+    paddingTop: "2em",
+    width: "100%"
   },
   title: {
     fontSize: "2em",
     fontWeight: 500,
-    marginBottom: '1em',
+    marginBottom: "1em",
     color: "#2643e9"
   },
   CardRoot: {
-    maxWidth: "85%",
+    width: "85%",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#cbd2f6",
@@ -36,12 +37,15 @@ const useStyles = makeStyles(theme => ({
   cardContainer: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
+    flexGrow: 1,
+    width: "100%"
   },
   cardItem: {
     display: "flex",
     flexWrap: "wrap",
     flexDirection: "row",
+    width: "100%",
     justifyContent: "space-evenly",
     alignItems: "center",
     marginBottom: "1.5em"
@@ -57,22 +61,15 @@ const AboutUs = () => {
       </Typography>
       <div className={classes.cardContainer}>
         <div className={classes.cardItem}>
-          <SchoolIcon style={{ fontSize: "5em", color: "#6b7aea"  }} />
+          <SchoolIcon
+            style={{ fontSize: "5em", color: "#6b7aea", marginBottom: "0.2em" }}
+          />
           <Card className={classes.CardRoot}>
             <CardContent>
-              <Typography
-                variant="h5"
-                component="h2"
-                gutterBottom
-                className={classes.CardTitle}
-              >
+              <Typography gutterBottom className={classes.CardTitle}>
                 Intelligent recommendations
               </Typography>
-              <Typography
-                variant="body2"
-                component="p"
-                className={classes.CardBody}
-              >
+              <Typography className={classes.CardBody}>
                 Our recommendations and insights are powered by "always-on"
                 artificial intelligence and machine learning algorithms. For any
                 stock in your portfolio, receive daily recommendations on
@@ -83,22 +80,15 @@ const AboutUs = () => {
           </Card>
         </div>
         <div className={classes.cardItem}>
-          <PersonOutlineIcon style={{ fontSize: "5em", color: "#6b7aea"  }} />
+          <PersonOutlineIcon
+            style={{ fontSize: "5em", color: "#6b7aea", marginBottom: "0.2em" }}
+          />
           <Card className={classes.CardRoot}>
             <CardContent>
-              <Typography
-                variant="h5"
-                component="h2"
-                gutterBottom
-                className={classes.CardTitle}
-              >
+              <Typography gutterBottom className={classes.CardTitle}>
                 Your portfolio, your way
               </Typography>
-              <Typography
-                variant="body2"
-                component="p"
-                className={classes.CardBody}
-              >
+              <Typography className={classes.CardBody}>
                 You're not a beginner investor. We know you want to invest in
                 more than just ETFs, so we give you the option to add any kind
                 of investment to your portfolio. Shares, bonds, cryptocurrencies
@@ -108,22 +98,15 @@ const AboutUs = () => {
           </Card>
         </div>
         <div className={classes.cardItem}>
-          <MonetizationOnIcon style={{ fontSize: "5em", color: "#6b7aea" }} />
+          <MonetizationOnIcon
+            style={{ fontSize: "5em", color: "#6b7aea", marginBottom: "0.2em" }}
+          />
           <Card className={classes.CardRoot}>
             <CardContent>
-              <Typography
-                variant="h5"
-                component="h2"
-                gutterBottom
-                className={classes.CardTitle}
-              >
+              <Typography gutterBottom className={classes.CardTitle}>
                 Simple to use
               </Typography>
-              <Typography
-                variant="body2"
-                component="p"
-                className={classes.CardBody}
-              >
+              <Typography className={classes.CardBody}>
                 We only provide the features you need to manage your
                 investments. No overly complicated details that you need a
                 degree in finance to understand!
