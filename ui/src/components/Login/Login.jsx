@@ -64,6 +64,10 @@ const useStyles = makeStyles(theme => ({
 
 const Login = ({ firebase, history }) => {
   const classes = useStyles();
+  const [error, setError] = useState({
+    email: false,
+    password: false
+  });
   const [form, setForm] = useState({
     email: "",
     password: ""
@@ -75,8 +79,12 @@ const Login = ({ firebase, history }) => {
       .then(authUser => {
         history.push("/home");
       })
-      .catch(error => {
-        console.log("Error");
+      .catch(() => {
+        setError(e => ({
+          ...e,
+          email: true,
+          password: true
+        }));
       });
   };
 
@@ -86,6 +94,10 @@ const Login = ({ firebase, history }) => {
       ...f,
       [event.target.name]: event.target.value
     }));
+    setError(e => ({
+      ...e,
+      [event.target.name]: event.target.value === ""
+    }));
   };
 
   return (
@@ -93,12 +105,18 @@ const Login = ({ firebase, history }) => {
       <Card className={classes.Card}>
         <CardContent className={classes.CardContent}>
           <Typography className={classes.CardTitle}>Log In</Typography>
+          {(error.email || error.password) && (
+            <Typography style={{ fontSize: "1em", color: "red" }}>
+              *Invalid Credentials
+            </Typography>
+          )}
           <TextField
             id="email"
             label="Email"
             name="email"
             onChange={onChange}
             helperText="E.g. john.citizen@email.com"
+            error={error.email}
           />
           <TextField
             id="password"
@@ -108,6 +126,7 @@ const Login = ({ firebase, history }) => {
             onChange={onChange}
             FormHelperTextProps={{ classes: { root: classes.ForgotPassword } }}
             helperText={<span>Forgot Password?</span>}
+            error={error.password}
           />
 
           <Button
