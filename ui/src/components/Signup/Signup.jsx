@@ -2,19 +2,19 @@ import React, { useState, Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import Background from "../../assets/background.svg";
-import { CardContent, Typography, TextField, Button } from "@material-ui/core";
+import { CardContent, Typography } from "@material-ui/core";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
 import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
-
+import Step1 from "./Step1";
+import Step2 from "./Step2";
+import Step3 from "./Step3";
+import Step4 from "./Step4";
+import Step5 from "./Step5";
+import Step6 from "./Step6";
 const useStyles = makeStyles(theme => ({
   Card: {
     width: "300px",
-    height: "80%",
+    height: "90%",
     padding: "2em"
   },
   CardTitle: {
@@ -100,7 +100,8 @@ const useStyles = makeStyles(theme => ({
     }
   },
   checked: {},
-  disabled: {}
+  disabled: {},
+  focused: {}
 }));
 
 const Signup = ({ firebase, history }) => {
@@ -159,109 +160,30 @@ const Signup = ({ firebase, history }) => {
       <Card className={classes.Card}>
         <CardContent className={classes.CardContent}>
           <Typography className={classes.CardTitle}>Signup</Typography>
-          <Typography>Step {step} of 6</Typography>
-          {step === 1 && (
-            <Fragment>
-              <TextField
-                onChange={onChange}
-                id="username"
-                label="Username"
-                name="username"
-                error={error}
-              />
-              <TextField
-                onChange={onChange}
-                name="email"
-                id="email"
-                label="Email"
-                error={error}
-              />
-              <TextField
-                onChange={onChange}
-                name="password"
-                id="password"
-                label="Password"
-                type="password"
-                error={error}
-              />
-              <TextField
-                onChange={onChange}
-                name="confirmPassword"
-                id="confirmPassword"
-                label="Confirm Password"
-                type="password"
-                error={error}
-              />
-            </Fragment>
-          )}
+          <Typography style={{fontSize: "0.9em"}}>Step {step} of 6</Typography>
+          {step === 1 && <Step1 error={error} onChange={onChange} />}
           {step === 2 && (
-            <Fragment>
-              <FormControl component="fieldset">
-                <FormLabel
-                  style={{ marginBottom: "1em" }}
-                  className={classes.FormLabel}
-                  classes={{ focused: classes.focused }}
-                >
-                  Select your age range
-                </FormLabel>
-                <RadioGroup
-                  aria-label="age"
-                  name="age"
-                  value={value}
-                  onChange={handleChange}
-                >
-                  <FormControlLabel
-                    value="<30"
-                    control={
-                      <Radio
-                        classes={{
-                          checked: classes.checked,
-                          colorSecondary: classes.radio
-                        }}
-                      />
-                    }
-                    label="Under 30"
-                  />
-                  <FormControlLabel
-                    value="30-50"
-                    control={
-                      <Radio
-                        classes={{
-                          checked: classes.checked,
-                          colorSecondary: classes.radio
-                        }}
-                      />
-                    }
-                    label="30-50"
-                  />
-                  <FormControlLabel
-                    value="50-70"
-                    control={
-                      <Radio
-                        classes={{
-                          checked: classes.checked,
-                          colorSecondary: classes.radio
-                        }}
-                      />
-                    }
-                    label="50-70"
-                  />
-                  <FormControlLabel
-                    value=">70"
-                    classes={{ checked: classes.checked }}
-                    control={
-                      <Radio
-                        classes={{
-                          checked: classes.checked,
-                          colorSecondary: classes.radio
-                        }}
-                      />
-                    }
-                    label="Over 70"
-                  />
-                </RadioGroup>
-              </FormControl>
-            </Fragment>
+            <Step2
+              classes={classes}
+              value={value}
+              handleChange={handleChange}
+            />
+          )}
+          {step === 3 && <Step3 />}
+          {step === 4 && (
+            <Step4
+              classes={classes}
+              value={value}
+              handleChange={handleChange}
+            />
+          )}
+          {step === 5 && <Step5 classes={classes} />}
+          {step === 6 && (
+            <Step6
+              classes={classes}
+              value={value}
+              handleChange={handleChange}
+            />
           )}
           <div className={classes.ButtonGroup}>
             <Typography
