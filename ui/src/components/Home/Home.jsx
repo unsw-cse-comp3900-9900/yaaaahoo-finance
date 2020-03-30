@@ -59,9 +59,9 @@ const Home = ({ firebase }) => {
             <Grid item>
               <Typography>Hello {authUser.displayName || "World"}!</Typography>
             </Grid>
-            <Grid item>
+            {/* <Grid item>
               <Button onClick={onLogout} className={classes.button}>Logout</Button>
-            </Grid>
+            </Grid> */}
           </Grid>
         );
       }}

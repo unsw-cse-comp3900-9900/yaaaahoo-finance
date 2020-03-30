@@ -115,7 +115,6 @@ const Login = ({ firebase, history }) => {
             label="Email"
             name="email"
             onChange={onChange}
-            helperText="E.g. john.citizen@email.com"
             error={error.email}
           />
           <TextField
@@ -124,10 +123,16 @@ const Login = ({ firebase, history }) => {
             type="password"
             name="password"
             onChange={onChange}
-            FormHelperTextProps={{ classes: { root: classes.ForgotPassword } }}
-            helperText={<span>Forgot Password?</span>}
             error={error.password}
           />
+
+          <Typography
+            component={Link}
+            to="/password-reset"
+            className={classes.ForgotPassword}
+          >
+            Forgot Password?
+          </Typography>
 
           <Button
             variant="contained"

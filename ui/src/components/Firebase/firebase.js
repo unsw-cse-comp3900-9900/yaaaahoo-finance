@@ -3,14 +3,14 @@ import "firebase/auth";
 import "firebase/firestore";
 
 const config = {
-  apiKey: "AIzaSyAQGsevLr-DxFvRSEn9WHUsy0FRXR8K9EQ",
-  authDomain: "finance-3a76e.firebaseapp.com",
-  databaseURL: "https://finance-3a76e.firebaseio.com",
-  projectId: "finance-3a76e",
-  storageBucket: "finance-3a76e.appspot.com",
-  messagingSenderId: "1004372558258",
-  appId: "1:1004372558258:web:964664e91f28fda0fda4ab",
-  measurementId: "G-RF0S5VWRNS"
+  apiKey: "AIzaSyAQe81lKS4ZELWIBPDaFqI9RSosAzlgpaI",
+  authDomain: "aaaa-finance.firebaseapp.com",
+  databaseURL: "https://aaaa-finance.firebaseio.com",
+  projectId: "aaaa-finance",
+  storageBucket: "aaaa-finance.appspot.com",
+  messagingSenderId: "1075900888174",
+  appId: "1:1075900888174:web:9890fafcd1071a1502227f",
+  measurementId: "G-MVFVD7BDXP"
 };
 
 class Firebase {

@@ -4,6 +4,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, Button, Typography } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import Logo from "../../assets/logo192.png";
+import { withFirebase } from "../Firebase";
+import { compose } from "recompose";
 
 const useStyles = makeStyles(theme => ({
   logo: {
@@ -30,8 +32,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const NavBar = ({ authUser }) => {
+const NavBar = ({ authUser, firebase }) => {
   const classes = useStyles();
+  const onLogout = event => {
+    firebase.doSignOut();
+  };
   return (
     <AppBar className={classes.bar}>
       <Toolbar>
@@ -39,12 +44,19 @@ const NavBar = ({ authUser }) => {
           <img className={classes.logo} src={Logo} />
           <Typography className={classes.title}>Finance</Typography>
         </Link>
-        <Button component={Link} to={"/login"} style={{ color: "#2643e9" }}>
-          {authUser ? "Log Out" : "Log In"}
-        </Button>
+        {authUser && (
+          <Button onClick={onLogout} style={{ color: "#2643e9" }}>
+            Log out
+          </Button>
+        )}
+        {!authUser && (
+          <Button component={Link} to="/login" style={{ color: "#2643e9" }}>
+            Log in
+          </Button>
+        )}
       </Toolbar>
     </AppBar>
   );
 };
 
-export default NavBar;
+export default compose(withFirebase)(NavBar);
