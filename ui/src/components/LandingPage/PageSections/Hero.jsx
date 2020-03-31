@@ -63,17 +63,6 @@ const Hero = () => {
           Sign Up
         </Button>
       </Grid>
-      <Grid item>
-        <Button
-          variant="outlined"
-          color="primary"
-          component={Link}
-          to={"/login"}
-          className={classes.button}
-        >
-          Login
-        </Button>
-      </Grid>
     </Grid>
   );
 };
