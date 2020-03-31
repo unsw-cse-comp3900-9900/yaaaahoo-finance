@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import Background from "../../assets/background.svg";
@@ -24,8 +24,7 @@ const useStyles = makeStyles(theme => ({
   CardContent: {
     display: "flex",
     flexDirection: "column",
-    height: "100%",
-    justifyContent: "space-evenly"
+    height: "100%"
   },
   Page: {
     display: "flex",
@@ -57,7 +56,6 @@ const useStyles = makeStyles(theme => ({
     marginTop: "1em",
     marginLeft: "auto",
     alignItems: "center",
-    display: "flex",
     color: "#2643e9",
     "&:hover": {
       textDecoration: "underline"
@@ -69,7 +67,6 @@ const useStyles = makeStyles(theme => ({
     marginTop: "1em",
     marginRight: "auto",
     alignItems: "center",
-    display: "flex",
     color: "#2643e9",
     "&:hover": {
       textDecoration: "underline"
@@ -160,31 +157,47 @@ const Signup = ({ firebase, history }) => {
       <Card className={classes.Card}>
         <CardContent className={classes.CardContent}>
           <Typography className={classes.CardTitle}>Signup</Typography>
-          <Typography style={{fontSize: "0.9em"}}>Step {step} of 6</Typography>
-          {step === 1 && <Step1 error={error} onChange={onChange} />}
-          {step === 2 && (
-            <Step2
-              classes={classes}
-              value={value}
-              handleChange={handleChange}
-            />
-          )}
-          {step === 3 && <Step3 />}
-          {step === 4 && (
-            <Step4
-              classes={classes}
-              value={value}
-              handleChange={handleChange}
-            />
-          )}
-          {step === 5 && <Step5 classes={classes} />}
-          {step === 6 && (
-            <Step6
-              classes={classes}
-              value={value}
-              handleChange={handleChange}
-            />
-          )}
+          <Typography style={{ fontSize: "0.9em" }}>
+            Step {step} of 6
+          </Typography>
+<div
+            style={{
+              display: "flex",
+              justifyContent: "space-evenly",
+              flexDirection: "column",
+              marginTop: "2em",
+              marginBottom: "auto",
+              transition: "all 1s ease-in-out",
+            }}
+          >
+            {step === 1 && <Step1 error={error} onChange={onChange} />}
+            {step === 2 && (
+              <Step2
+                classes={classes}
+                value={value}
+                handleChange={handleChange}
+              />
+            )}
+            {step === 3 && <Step3 />}
+            {step === 4 && (
+              <Step4
+                classes={classes}
+                value={value}
+                handleChange={handleChange}
+              />
+            )}
+            {step === 5 && <Step5 classes={classes} />}
+            {step === 6 && (
+              <Step6
+                classes={classes}
+                value={value}
+                handleChange={handleChange}
+              />
+            )}
+          </div>
+   
+  
+
           <div className={classes.ButtonGroup}>
             <Typography
               className={

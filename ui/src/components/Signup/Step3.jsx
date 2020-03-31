@@ -4,7 +4,7 @@ import { TextField, Typography } from "@material-ui/core";
 const Step3 = ({ onChange, error }) => {
   return (
     <Fragment>
-      <Typography>What is your desired retirement age?</Typography>
+      <Typography style={{color: "#2643e9"}}>What is your desired retirement age?</Typography>
       <TextField
         onChange={onChange}
         id="retired-age"

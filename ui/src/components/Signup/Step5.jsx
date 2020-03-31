@@ -7,7 +7,6 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import Checkbox from "@material-ui/core/Checkbox";
 
 const Step5 = ({ classes }) => {
-  console.log(classes);
   const [state, setState] = React.useState({
     house: true,
     investmentProperties: false,
@@ -37,7 +36,7 @@ const Step5 = ({ classes }) => {
           className={classes.FormLabel}
           classes={{ focused: classes.focused }}
         >
-          Assign responsibility
+          What other types of investments do you have?
         </FormLabel>
         <FormGroup>
           <FormControlLabel
