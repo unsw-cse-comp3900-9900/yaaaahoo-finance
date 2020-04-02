@@ -4,6 +4,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Divider, Grid } from "@material-ui/core";
 import { config } from '../../config';
 import axios from 'axios'
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles(theme => ({
   gridItem: {
@@ -28,73 +35,89 @@ const useStyles = makeStyles(theme => ({
   },
   divider: {
     border: "0.5px solid #2643e9"
+  },
+  table: {
+    minWidth: 650,
   }
 }));
 
-const TopNews = () => {
+const TopStocks = () => {
   const classes = useStyles();
-  const [article1, setArticle1] = useState({article1: {}})
-  const [article2, setArticle2] = useState({article3: {}})
-  const [article3, setArticle3] = useState({article3: {}})
+  const [stock1, setStock1] = useState('loading...');
+  const [stock2, setStock2] = useState('loading...');
+  const [stock3, setStock3] = useState('loading...');
+  const [stock4, setStock4] = useState('loading...');
+  const [stock5, setStock5] = useState('loading...');
   useEffect(() => {
-    // NEWS API CALL
-    const url = `http://newsapi.org/v2/top-headlines?category=business&country=au&apiKey=${config.newsApiToken}`
-    axios.get(url)
-      .then(res => {
-        setArticle1(res.data.articles[0]);
-        setArticle2(res.data.articles[1]);
-        setArticle3(res.data.articles[2]);
-      })
-      .catch(error => {
-        console.log(error);
-      })
+    // AlphaVantage API CALL
+    var urlOne = `https://api.worldtradingdata.com/api/v1/stock?symbol=CBA.AX&api_token=${config.worldTradingApiToken}`;
+    var urlTwo = `https://cloud.iexapis.com/stable/stock/aapl/quote/latestPrice?token=${config.iexCloudApiToken}`;
+    var urlThree = `https://cloud.iexapis.com/stable/stock/msft/quote/latestPrice?token=${config.iexCloudApiToken}`;
+    var urlFour = `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=BTC&to_currency=AUD&apikey=${config.alphaVantageApiToken}`;
+    var urlFive = `https://api.worldtradingdata.com/api/v1/stock?symbol=WOW.AX&api_token=${config.worldTradingApiToken}`;
+
+    const requestOne = axios.get(urlOne);
+    const requestTwo = axios.get(urlTwo);
+    const requestThree = axios.get(urlThree);
+    const requestFour = axios.get(urlFour);
+    const requestFive = axios.get(urlFive);
+
+    axios.all([requestOne, requestTwo, requestThree, requestFour, requestFive])
+        .then(axios.spread((response1, response2, response3, response4, response5) => {
+              setStock1(response1.data.data[0]['price']);
+              setStock2(response2.data);
+              setStock3(response3.data);
+              setStock4(response4.data['Realtime Currency Exchange Rate']['5. Exchange Rate']);
+          console.log(response4);
+              setStock5(response5.data.data[0]['price']);
+            }))
+
   }, []);
+
+  function createData(companyName, symbol, price) {
+    return { companyName, symbol, price };
+  }
+
+  const rows = [
+    createData('Commonwealth Bank of Australia', 'CBA', stock1),
+    createData('Apple Inc.', 'AAPL', stock2),
+    createData('Microsoft Corporation', 'MSFT', stock3),
+    createData('Bitcoin (price is 1 bitcoin in AUD)', 'BTC', stock4),
+    createData('Woolworths Group Ltd', 'WOW', stock5),
+  ];
 
   return (
     <Fragment>
       <Grid container item justify="center">
         <Grid item className={classes.gridItem}>
           <Typography variant="h2" className={classes.title}>
-            Top News
+            Top Stocks
           </Typography>
           <Typography variant="subtitle1" className={classes.subtitle}>
-            Your daily edit of the finance news relevant to you, powered by NewsApi
-          </Typography>
-          <Typography variant="h6" className={classes.title}>
-            <a href = {article1.url} style={{ textDecoration: 'none' }}>
-              {article1.title}
-            </a>
-          </Typography>
-          <Typography variant="caption">
-            {article1.author}
-          </Typography>
-          <Typography variant="subtitle1" className={classes.subtitle}>
-            {article1.description}
-          </Typography>
-          <Typography variant="h6" className={classes.title}>
-            <a href = {article2.url} style={{ textDecoration: 'none' }}>
-              {article2.title}
-            </a>
-          </Typography>
-          <Typography variant="caption">
-            {article2.author}
-          </Typography>
-          <Typography variant="subtitle1" className={classes.subtitle}>
-            {article2.description}
-          </Typography>
-          <Typography variant="h6" className={classes.title}>
-            <a href = {article3.url} style={{ textDecoration: 'none' }}>
-              {article3.title}
-            </a>
-          </Typography>
-          <Typography variant="caption">
-            {article3.author}
-          </Typography>
-          <Typography variant="subtitle1" className={classes.subtitle}>
-            {article3.description}
+            The latest prices of our customers' favourite investments
           </Typography>
         </Grid>
-      </Grid>
+          <TableContainer component={Paper}>
+            <Table className={classes.table} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Investment</TableCell>
+                  <TableCell align="right">Symbol</TableCell>
+                  <TableCell align="right">Price</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row) => (
+                <TableRow key={row.name}>
+                  <TableCell component="th" scope="row">{row.companyName}</TableCell>
+                  <TableCell align="right">{row.symbol}</TableCell>
+                  <TableCell align="right">{row.price}</TableCell>
+                </TableRow>))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        <a href="https://iexcloud.io">Data provided by IEX Cloud</a>
+        </Grid>
       <Grid item className={classes.lastGridItem}>
         <Divider className={classes.divider} />
       </Grid>
@@ -102,4 +125,4 @@ const TopNews = () => {
   );
 };
 
-export default TopNews;
+export default TopStocks;

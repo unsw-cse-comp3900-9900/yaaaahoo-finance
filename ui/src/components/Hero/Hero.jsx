@@ -4,6 +4,7 @@ import { Typography, Divider, Button, Grid } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import AboutUs from "./AboutUs"
 import TopNews from "./TopNews";
+import TopStocks from "./TopStocks";
 
 const useStyles = makeStyles(theme => ({
   gridItem: {
@@ -81,6 +82,7 @@ const Hero = () => {
       </Grid>
     <AboutUs/>
     <TopNews/>
+    <TopStocks/>
     </Fragment>
   );
 };
