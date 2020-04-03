@@ -3,31 +3,9 @@ import FormLabel from "@material-ui/core/FormLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import Checkbox from "@material-ui/core/Checkbox";
 
-const Step5 = ({ classes }) => {
-  const [state, setState] = React.useState({
-    house: true,
-    investmentProperties: false,
-    shares: false,
-    termDepositOrCash: false,
-    crypto: false,
-    none: false
-  });
-
-  const handleChange = event => {
-    setState({ ...state, [event.target.name]: event.target.checked });
-  };
-
-  const {
-    house,
-    investmentProperties,
-    shares,
-    termDepositOrCash,
-    crypto,
-    none
-  } = state;
+const Step5 = ({ classes, handleChange, value }) => {
   return (
     <Fragment>
       <FormControl component="fieldset">
@@ -42,7 +20,7 @@ const Step5 = ({ classes }) => {
           <FormControlLabel
             control={
               <Checkbox
-                checked={house}
+                checked={value.house}
                 onChange={handleChange}
                 name="house"
                 classes={{
@@ -56,7 +34,7 @@ const Step5 = ({ classes }) => {
           <FormControlLabel
             control={
               <Checkbox
-                checked={investmentProperties}
+                checked={value.investmentProperties}
                 onChange={handleChange}
                 name="investmentProperties"
                 classes={{
@@ -70,7 +48,7 @@ const Step5 = ({ classes }) => {
           <FormControlLabel
             control={
               <Checkbox
-                checked={shares}
+                checked={value.shares}
                 onChange={handleChange}
                 name="shares"
                 classes={{
@@ -84,7 +62,7 @@ const Step5 = ({ classes }) => {
           <FormControlLabel
             control={
               <Checkbox
-                checked={termDepositOrCash}
+                checked={value.termDepositOrCash}
                 onChange={handleChange}
                 name="termDepositOrCash"
                 classes={{
@@ -98,7 +76,7 @@ const Step5 = ({ classes }) => {
           <FormControlLabel
             control={
               <Checkbox
-                checked={crypto}
+                checked={value.crypto}
                 onChange={handleChange}
                 name="crypto"
                 classes={{
@@ -112,7 +90,7 @@ const Step5 = ({ classes }) => {
           <FormControlLabel
             control={
               <Checkbox
-                checked={none}
+                checked={value.none}
                 onChange={handleChange}
                 name="none"
                 classes={{

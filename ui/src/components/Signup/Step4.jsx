@@ -19,8 +19,8 @@ const Step4 = ({ handleChange, value, classes }) => {
           What is your annual income?
         </FormLabel>
         <RadioGroup
-          aria-label="income"
-          name="income"
+          aria-label="annualIncome"
+          name="annualIncome"
           value={value}
           onChange={handleChange}
         >

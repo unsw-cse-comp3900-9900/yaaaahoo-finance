@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import Background from "../../assets/background.svg";
-import { CardContent, Typography } from "@material-ui/core";
+import { CardContent, Typography, LinearProgress } from "@material-ui/core";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
 import Step1 from "./Step1";
@@ -19,7 +19,8 @@ const useStyles = makeStyles(theme => ({
   },
   CardTitle: {
     fontSize: "1.5em",
-    fontWeight: "500"
+    fontWeight: "500",
+    marginBottom: "0.5em"
   },
   CardContent: {
     display: "flex",
@@ -104,35 +105,23 @@ const useStyles = makeStyles(theme => ({
 const Signup = ({ firebase, history }) => {
   const classes = useStyles();
   const [step, setStep] = useState(1);
-  const [value, setValue] = React.useState("<30");
   const [form, setForm] = useState({
     username: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
+    age: "Under 30",
+    retirementAge: "",
+    annualIncome: "Less than $20,000",
+    house: false,
+    investmentProperties: false,
+    shares: false,
+    termDepositOrCash: false,
+    crypto: false,
+    none: false,
+    portfolioType: "High Growth"
   });
   const [error, setError] = useState(false);
-  const onSubmit = event => {
-    const { username, email, password, confirmPassword } = form;
-    const isInvalid =
-      password !== confirmPassword ||
-      password === "" ||
-      email === "" ||
-      username === "";
-    if (isInvalid) {
-      setError(true);
-    } else {
-      firebase
-        .doCreateUserWithEmailAndPassword(username, email, password)
-        .then(authUser => {
-          history.push("/home");
-        })
-        .catch(error => {
-          setError(true);
-        });
-    }
-    event.preventDefault();
-  };
 
   const nextStep = () => {
     if (step < 6) setStep(step + 1);
@@ -149,54 +138,95 @@ const Signup = ({ firebase, history }) => {
       [event.target.name]: event.target.value
     }));
   };
-  const handleChange = event => {
-    setValue(event.target.value);
+
+  const handleCheck = event => {
+    event.persist();
+    setForm(f => ({
+      ...f,
+      [event.target.name]: event.target.checked
+    }));
+  }
+
+  const onSubmit = event => {
+    const { username, email, password, confirmPassword } = form;
+    const isInvalid =
+      password !== confirmPassword ||
+      password === "" ||
+      email === "" ||
+      username === "";
+    if (isInvalid) {
+      setError(true);
+    } else {
+      firebase.doCreateUserWithEmailAndPassword(email, password, {
+        username: form.username,
+        email: form.email,
+        age: form.age,
+        retirementAge: form.retirementAge,
+        annualIncome: form.annualIncome,
+        house: form.house,
+        investmentProperties: form.investmentProperties,
+        shares: form.shares,
+        termDepositOrCash: form.termDepositOrCash,
+        crypto: form.crypto,
+        none: form.none,
+        portfolioType: form.portfolioType
+      })
+        .then(authUser => {
+          history.push("/home");
+        })
+        .catch(error => {
+          setError(true);
+        });
+    }
+    event.preventDefault();
   };
+
   return (
     <div className={classes.Page}>
       <Card className={classes.Card}>
         <CardContent className={classes.CardContent}>
           <Typography className={classes.CardTitle}>Signup</Typography>
-          <Typography style={{ fontSize: "0.9em" }}>
-            Step {step} of 6
-          </Typography>
-<div
+          <LinearProgress variant="determinate" value={(step / 6) * 100} />
+          <div
             style={{
               display: "flex",
               justifyContent: "space-evenly",
               flexDirection: "column",
               marginTop: "2em",
-              marginBottom: "auto",
-              transition: "all 1s ease-in-out",
+              marginBottom: "auto"
             }}
           >
             {step === 1 && <Step1 error={error} onChange={onChange} />}
             {step === 2 && (
               <Step2
                 classes={classes}
-                value={value}
-                handleChange={handleChange}
+                value={form.age}
+                handleChange={onChange}
               />
             )}
-            {step === 3 && <Step3 />}
+            {step === 3 && <Step3 handleChange={onChange} error={error} />}
             {step === 4 && (
               <Step4
                 classes={classes}
-                value={value}
-                handleChange={handleChange}
+                value={form.annualIncome}
+                handleChange={onChange}
               />
             )}
-            {step === 5 && <Step5 classes={classes} />}
+            {step === 5 && (
+              <Step5
+                classes={classes}
+                handleChange={handleCheck}
+                value={form}
+              />
+            )}
             {step === 6 && (
               <Step6
                 classes={classes}
-                value={value}
-                handleChange={handleChange}
+                value={form.portfolioType}
+                handleChange={onChange}
               />
             )}
           </div>
-   
-  
 
           <div className={classes.ButtonGroup}>
             <Typography
@@ -209,9 +239,9 @@ const Signup = ({ firebase, history }) => {
             </Typography>
             <Typography
               className={
-                step === 6 ? classes.DisabledNextButton : classes.NextButton
+                classes.NextButton
               }
-              onClick={nextStep}
+              onClick={step === 6 ? onSubmit : nextStep}
             >
               <NavigateNextIcon style={{ fontSize: "2em" }} />
             </Typography>
