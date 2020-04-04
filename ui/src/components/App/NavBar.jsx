@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, Button, Typography } from "@material-ui/core";
 import { Link } from "react-router-dom";
@@ -41,7 +40,7 @@ const NavBar = ({ authUser, firebase }) => {
     <AppBar className={classes.bar}>
       <Toolbar>
         <Link to={"/"} className={classes.logoWrapper}>
-          <img className={classes.logo} src={Logo} />
+          <img alt="" className={classes.logo} src={Logo} />
           <Typography className={classes.title}>Finance</Typography>
         </Link>
         {authUser && (

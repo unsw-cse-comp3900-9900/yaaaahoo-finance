@@ -62,7 +62,6 @@ const Step4 = ({ handleChange, value, classes }) => {
           />
           <FormControlLabel
             value="$90,000-$180,000"
-            classes={{ checked: classes.checked }}
             control={
               <Radio
                 classes={{
@@ -75,7 +74,6 @@ const Step4 = ({ handleChange, value, classes }) => {
           />
           <FormControlLabel
             value="$180,000+"
-            classes={{ checked: classes.checked }}
             control={
               <Radio
                 classes={{

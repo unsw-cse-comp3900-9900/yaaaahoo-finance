@@ -1,11 +1,6 @@
 import React, {useEffect, useState} from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {Grid, Typography} from "@material-ui/core";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import SchoolIcon from "@material-ui/icons/School";
-import PersonOutlineIcon from "@material-ui/icons/PersonOutline";
-import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
 import {config} from "../../../config";
 import axios from "axios";
 const useStyles = makeStyles(theme => ({

@@ -25,7 +25,7 @@ const Step6 = ({ handleChange, value, classes }) => {
           onChange={handleChange}
         >
           <FormControlLabel
-            value="High growth"
+            value="High Growth"
             control={
               <Radio
                 classes={{
@@ -34,7 +34,7 @@ const Step6 = ({ handleChange, value, classes }) => {
                 }}
               />
             }
-            label="High growth"
+            label="High Growth"
           />
           <FormControlLabel
             value="Balanced"
@@ -49,7 +49,7 @@ const Step6 = ({ handleChange, value, classes }) => {
             label="Balanced"
           />
           <FormControlLabel
-            value="Conservative0"
+            value="Conservative"
             control={
               <Radio
                 classes={{

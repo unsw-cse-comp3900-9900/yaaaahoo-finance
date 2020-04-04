@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import Background from "../../assets/background.svg";
-import { CardContent, Typography, LinearProgress } from "@material-ui/core";
+import {
+  CardContent,
+  Typography,
+  LinearProgress,
+  Button
+} from "@material-ui/core";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
 import Step1 from "./Step1";
@@ -47,6 +52,13 @@ const useStyles = makeStyles(theme => ({
       paddingRight: "2em"
     }
   },
+  Button: {
+    width: "6em",
+    height: "3em",
+    color: "#fff",
+    borderColor: "#2643e9",
+    backgroundColor: "#2643e9"
+  },
   ButtonGroup: {
     display: "flex",
     flexDirection: "row"
@@ -54,7 +66,7 @@ const useStyles = makeStyles(theme => ({
   NextButton: {
     display: "flex",
     cursor: "pointer",
-    marginTop: "1em",
+
     marginLeft: "auto",
     alignItems: "center",
     color: "#2643e9",
@@ -65,7 +77,7 @@ const useStyles = makeStyles(theme => ({
   PrevButton: {
     display: "flex",
     cursor: "pointer",
-    marginTop: "1em",
+
     marginRight: "auto",
     alignItems: "center",
     color: "#2643e9",
@@ -88,6 +100,9 @@ const useStyles = makeStyles(theme => ({
     "&$focused": {
       color: "#2643e9"
     }
+  },
+  FormControlGroup: {
+    marginBottom: "1em"
   },
   radio: {
     "&$checked": {
@@ -121,9 +136,38 @@ const Signup = ({ firebase, history }) => {
     none: false,
     portfolioType: "High Growth"
   });
-  const [error, setError] = useState(false);
+
+  const [error, setError] = useState({
+    username: true,
+    email: true,
+    password: true,
+    confirmPassword: true,
+    retirementAge: true
+  });
+
+  const disableNext = () => {
+    const { username, email, password, confirmPassword, retirementAge } = error;
+    if (step === 1 && (username || email || password || confirmPassword ))
+      return true;
+    if (step === 3 && retirementAge) 
+      return true;
+    return false;
+  }
+
+  const validateEmail = email => {
+    const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return regex.test(String(email).toLowerCase());
+  };
+
+  const validateAge = age => {
+    const isNormalInteger = /^\+?(0|[1-9]\d*)$/;
+    const isValidAge = /^[1-9]?[0-9]{1}$|^100$/;
+    const parsedAge = parseInt(age, 10);
+    return isNormalInteger.test(age) && isValidAge.test(parsedAge);
+  };
 
   const nextStep = () => {
+    if (disableNext()) return;
     if (step < 6) setStep(step + 1);
   };
 
@@ -137,6 +181,28 @@ const Signup = ({ firebase, history }) => {
       ...f,
       [event.target.name]: event.target.value
     }));
+    
+    if (event.target.name === "email") {
+      setError(e => ({
+        ...e,
+        [event.target.name]: event.target.value === "" || !validateEmail(event.target.value)
+      }))
+    } else if (event.target.name === "retirementAge") {
+      setError(e => ({
+        ...e,
+        [event.target.name]: event.target.value === "" || !validateAge(event.target.value)
+      }))
+    } else if (event.target.name === "confirmPassword") {
+      setError(e => ({
+        ...e,
+        [event.target.name]: event.target.value !== form.password
+      }))
+    } else {
+      setError(e => ({
+        ...e,
+        [event.target.name]: event.target.value === ""
+      }))
+    }
   };
 
   const handleCheck = event => {
@@ -145,19 +211,13 @@ const Signup = ({ firebase, history }) => {
       ...f,
       [event.target.name]: event.target.checked
     }));
-  }
+  };
 
   const onSubmit = event => {
-    const { username, email, password, confirmPassword } = form;
-    const isInvalid =
-      password !== confirmPassword ||
-      password === "" ||
-      email === "" ||
-      username === "";
-    if (isInvalid) {
-      setError(true);
-    } else {
-      firebase.doCreateUserWithEmailAndPassword(email, password, {
+    const { email, password } = form;
+
+    firebase
+      .doCreateUserWithEmailAndPassword(email, password, {
         username: form.username,
         email: form.email,
         age: form.age,
@@ -171,13 +231,13 @@ const Signup = ({ firebase, history }) => {
         none: form.none,
         portfolioType: form.portfolioType
       })
-        .then(authUser => {
-          history.push("/home");
-        })
-        .catch(error => {
-          setError(true);
-        });
-    }
+      .then(authUser => {
+        history.push("/home");
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
     event.preventDefault();
   };
 
@@ -196,7 +256,13 @@ const Signup = ({ firebase, history }) => {
               marginBottom: "auto"
             }}
           >
-            {step === 1 && <Step1 error={error} onChange={onChange} />}
+            {step === 1 && (
+              <Step1
+                validateEmail={validateEmail}
+                handleChange={onChange}
+                form={form}
+              />
+            )}
             {step === 2 && (
               <Step2
                 classes={classes}
@@ -204,7 +270,9 @@ const Signup = ({ firebase, history }) => {
                 handleChange={onChange}
               />
             )}
-            {step === 3 && <Step3 handleChange={onChange} error={error} />}
+            {step === 3 && (
+              <Step3 validateAge={validateAge} handleChange={onChange} form={form} />
+            )}
             {step === 4 && (
               <Step4
                 classes={classes}
@@ -237,14 +305,25 @@ const Signup = ({ firebase, history }) => {
             >
               <NavigateBeforeIcon style={{ fontSize: "2em" }} />
             </Typography>
-            <Typography
-              className={
-                classes.NextButton
-              }
-              onClick={step === 6 ? onSubmit : nextStep}
-            >
-              <NavigateNextIcon style={{ fontSize: "2em" }} />
-            </Typography>
+
+            {step === 6 ? (
+              <Button
+                className={classes.Button}
+                variant="contained"
+                onClick={onSubmit}
+              >
+                Submit
+              </Button>
+            ) : (
+              <Typography
+                className={
+                  disableNext() ? classes.DisabledNextButton : classes.NextButton
+                }
+                onClick={nextStep}
+              >
+                <NavigateNextIcon style={{ fontSize: "2em" }} />
+              </Typography>
+            )}
           </div>
         </CardContent>
       </Card>

@@ -62,7 +62,6 @@ const Step2 = ({ handleChange, value, classes }) => {
           />
           <FormControlLabel
             value="Over 70"
-            classes={{ checked: classes.checked }}
             control={
               <Radio
                 classes={{

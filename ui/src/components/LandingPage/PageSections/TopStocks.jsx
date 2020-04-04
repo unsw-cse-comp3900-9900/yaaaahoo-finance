@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import {Grid, Typography} from "@material-ui/core";
+import {Typography} from "@material-ui/core";
 import axios from 'axios';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -9,9 +9,6 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import {config} from "../../../config";
-import SchoolIcon from "@material-ui/core/SvgIcon/SvgIcon";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
 
 const useStyles = makeStyles(theme => ({
   Page: {
@@ -86,8 +83,9 @@ const TopStocks = () => {
               setStock1(response1.data.data[0]['price']);
               setStock2(response2.data);
               setStock3(response3.data);
-              setStock4(response4.data['Realtime Currency Exchange Rate']['5. Exchange Rate']);
-          console.log(response4);
+              response4.data['Realtime Currency Exchange Rate'] ?
+              setStock4(response4.data['Realtime Currency Exchange Rate']['5. Exchange Rate']) 
+              : setStock4("")
               setStock5(response5.data.data[0]['price']);
             }))
 

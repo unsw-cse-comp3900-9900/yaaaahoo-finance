@@ -1,13 +1,23 @@
-import React, { Fragment } from "react";
+import React from "react";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core";
 
 const Step5 = ({ classes, handleChange, value }) => {
+  const theme = createMuiTheme({
+    overrides: {
+      MuiFormControlLabel: {
+        label: {
+          fontSize: "1em"
+        }
+      }
+    }
+  });
   return (
-    <Fragment>
+    <ThemeProvider theme={theme}>
       <FormControl component="fieldset">
         <FormLabel
           style={{ marginBottom: "1em" }}
@@ -30,6 +40,7 @@ const Step5 = ({ classes, handleChange, value }) => {
               />
             }
             label="I own my own house"
+            className={classes.FormControlGroup}
           />
           <FormControlLabel
             control={
@@ -44,6 +55,7 @@ const Step5 = ({ classes, handleChange, value }) => {
               />
             }
             label="I own one or more investment properties"
+            className={classes.FormControlGroup}
           />
           <FormControlLabel
             control={
@@ -58,6 +70,7 @@ const Step5 = ({ classes, handleChange, value }) => {
               />
             }
             label="I own shares (including managed funds or apps like Raiz/CommSec Pocket)"
+            className={classes.FormControlGroup}
           />
           <FormControlLabel
             control={
@@ -72,6 +85,7 @@ const Step5 = ({ classes, handleChange, value }) => {
               />
             }
             label="I have a term deposit and/or cash in the bank"
+            className={classes.FormControlGroup}
           />
           <FormControlLabel
             control={
@@ -86,6 +100,7 @@ const Step5 = ({ classes, handleChange, value }) => {
               />
             }
             label="Cryptocurrencies (e.g. bitcoin)"
+            className={classes.FormControlGroup}
           />
           <FormControlLabel
             control={
@@ -99,11 +114,12 @@ const Step5 = ({ classes, handleChange, value }) => {
                 }}
               />
             }
-            label="I don’t currently have any investments"
+            label={"I don’t currently have any investments"}
+            className={classes.FormControlGroup}
           />
         </FormGroup>
       </FormControl>
-    </Fragment>
+    </ThemeProvider>
   );
 };
 
