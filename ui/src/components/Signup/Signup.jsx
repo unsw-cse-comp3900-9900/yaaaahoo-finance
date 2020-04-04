@@ -139,21 +139,12 @@ const Signup = ({ firebase, history }) => {
   });
 
   const [error, setError] = useState({
-    username: true,
-    email: true,
-    password: true,
-    confirmPassword: true,
-    retirementAge: true
+    username: false,
+    email: false,
+    password: false,
+    confirmPassword: false,
+    retirementAge: false
   });
-
-  const disableNext = () => {
-    const { username, email, password, confirmPassword, retirementAge } = error;
-    if (step === 1 && (username || email || password || confirmPassword ))
-      return true;
-    if (step === 3 && retirementAge) 
-      return true;
-    return false;
-  }
 
   const validateEmail = email => {
     const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -167,8 +158,40 @@ const Signup = ({ firebase, history }) => {
     return isNormalInteger.test(age) && isValidAge.test(parsedAge);
   };
 
+  const disableNext = () => {
+    const { username, email, password, confirmPassword, retirementAge } = form;
+    if (
+      step === 1 &&
+      (username === "" ||
+        email === "" ||
+        !validateEmail(email) ||
+        password === "" ||
+        password !== confirmPassword)
+    )
+      return true;
+    if (step === 3 && (retirementAge === "" || !validateAge(retirementAge)))
+      return true;
+    return false;
+  };
+
   const nextStep = () => {
-    if (disableNext()) return;
+    if (step === 1 && disableNext()) {
+      setError(e => ({
+        ...e,
+        username: form.username === "",
+        email: form.email === "" || !validateEmail(form.email),
+        password: form.password === "",
+        confirmPassword: form.confirmPassword !== form.password
+      }));
+      return;
+    } else if (step === 3 && disableNext()) {
+      setError(e => ({
+        ...e,
+        retirementAge:
+          form.retirementAge === "" || !validateAge(form.retirementAge)
+      }));
+      return;
+    }
     if (step < 6) setStep(step + 1);
   };
 
@@ -182,27 +205,29 @@ const Signup = ({ firebase, history }) => {
       ...f,
       [event.target.name]: event.target.value
     }));
-    
+
     if (event.target.name === "email") {
       setError(e => ({
         ...e,
-        [event.target.name]: event.target.value === "" || !validateEmail(event.target.value)
-      }))
+        [event.target.name]:
+          event.target.value === "" || !validateEmail(event.target.value)
+      }));
     } else if (event.target.name === "retirementAge") {
       setError(e => ({
         ...e,
-        [event.target.name]: event.target.value === "" || !validateAge(event.target.value)
-      }))
+        [event.target.name]:
+          event.target.value === "" || !validateAge(event.target.value)
+      }));
     } else if (event.target.name === "confirmPassword") {
       setError(e => ({
         ...e,
         [event.target.name]: event.target.value !== form.password
-      }))
+      }));
     } else {
       setError(e => ({
         ...e,
         [event.target.name]: event.target.value === ""
-      }))
+      }));
     }
   };
 
@@ -262,6 +287,7 @@ const Signup = ({ firebase, history }) => {
                 validateEmail={validateEmail}
                 handleChange={onChange}
                 form={form}
+                error={error}
               />
             )}
             {step === 2 && (
@@ -272,7 +298,12 @@ const Signup = ({ firebase, history }) => {
               />
             )}
             {step === 3 && (
-              <Step3 validateAge={validateAge} handleChange={onChange} form={form} />
+              <Step3
+                validateAge={validateAge}
+                handleChange={onChange}
+                form={form}
+                error={error}
+              />
             )}
             {step === 4 && (
               <Step4
@@ -316,12 +347,7 @@ const Signup = ({ firebase, history }) => {
                 Submit
               </Button>
             ) : (
-              <Typography
-                className={
-                  disableNext() ? classes.DisabledNextButton : classes.NextButton
-                }
-                onClick={nextStep}
-              >
+              <Typography className={classes.NextButton} onClick={nextStep}>
                 <NavigateNextIcon style={{ fontSize: "2em" }} />
               </Typography>
             )}

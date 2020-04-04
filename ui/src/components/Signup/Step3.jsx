@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { TextField, Typography } from "@material-ui/core";
 
-const Step3 = ({ validateAge, handleChange, form }) => {
+const Step3 = ({ validateAge, handleChange, form, error }) => {
   return (
     <Fragment>
       <Typography style={{ color: "#2643e9" }}>
@@ -14,11 +14,11 @@ const Step3 = ({ validateAge, handleChange, form }) => {
         label="Retirement Age"
         type="number"
         name="retirementAge"
-        error={form.retirementAge === "" || !validateAge(form.retirementAge)}
+        error={error.retirementAge}
         helperText={
-          form.retirementAge === ""
+          error.retirementAge && form.retirementAge === ""
             ? "Desired retirement age required"
-            : !validateAge(form.retirementAge)
+            : error.retirementAge && !validateAge(form.retirementAge)
             ? "Invalid age"
             : ""
         }
