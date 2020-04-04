@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Divider } from "@material-ui/core";
 import Hero from "./PageSections/Hero";
 import AboutUs from "./PageSections/AboutUs";
+import TopNews from "./PageSections/TopNews";
 import TopStocks from "./PageSections/TopStocks";
 import Background from "../../assets/background.svg";
 
@@ -38,7 +39,10 @@ const LandingPage = () => {
       <Divider className={classes.divider} />
       <AboutUs />
       <Divider className={classes.divider} />
+      <TopNews />
+      <Divider className={classes.divider} />
       <TopStocks />
+      <Divider className={classes.divider} />
     </div>
   );
 };
