@@ -1,0 +1,61 @@
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import { AppBar, Toolbar, Button, Typography } from "@material-ui/core";
+import { Link } from "react-router-dom";
+import Logo from "../../assets/logo192.png";
+import { withFirebase } from "../Firebase";
+import { compose } from "recompose";
+
+const useStyles = makeStyles(theme => ({
+  logo: {
+    height: "3em",
+    marginRight: "0.4em"
+  },
+  bar: {
+    backgroundColor: "#fff",
+    color: "#2643e9",
+    boxShadow: "0px 1px 10px 0px rgba(0,0,0,0.12)",
+    height: "64px",
+    justifyContent: "center"
+  },
+  title: {
+    fontSize: "1.2em",
+    fontWeight: 500
+  },
+  logoWrapper: {
+    display: "flex",
+    marginRight: "auto",
+    alignItems: "center",
+    textDecoration: "none",
+    color: "#2643e9"
+  }
+}));
+
+const NavBar = ({ authUser, firebase }) => {
+  const classes = useStyles();
+  const onLogout = event => {
+    firebase.doSignOut();
+  };
+  return (
+    <AppBar className={classes.bar}>
+      <Toolbar>
+        <Link to={"/"} className={classes.logoWrapper}>
+          <img alt="" className={classes.logo} src={Logo} />
+          <Typography className={classes.title}>Finance</Typography>
+        </Link>
+        {authUser && (
+          <Button onClick={onLogout} style={{ color: "#2643e9" }}>
+            Log out
+          </Button>
+        )}
+        {!authUser && (
+          <Button component={Link} to="/login" style={{ color: "#2643e9" }}>
+            Log in
+          </Button>
+        )}
+      </Toolbar>
+    </AppBar>
+  );
+};
+
+export default compose(withFirebase)(NavBar);
