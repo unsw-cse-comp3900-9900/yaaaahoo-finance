@@ -10,14 +10,18 @@ const useStyles = makeStyles(theme => ({
   Page: {
     display: "flex",
     flexDirection: "column",
-    minHeight: "90%",
     paddingTop: "2em",
-    width: "100%"
+    width: "100%",
+    minHeight: "90%",
+    [theme.breakpoints.down("sm")]: {
+      minHeight: "inherit"
+    }
   },
   Title: {
     fontSize: "2em",
     fontWeight: 500,
-    color: "#2643e9"
+    color: "#2643e9",
+    marginBottom: "1em"
   },
   Card: {
     width: "85%",
@@ -48,6 +52,7 @@ const useStyles = makeStyles(theme => ({
     width: "100%",
     justifyContent: "space-evenly",
     alignItems: "center",
+    marginBottom: "3em"
   }
 }));
 
@@ -55,9 +60,7 @@ const AboutUs = () => {
   const classes = useStyles();
   return (
     <div className={classes.Page}>
-      <Typography className={classes.Title}>
-        What we do
-      </Typography>
+      <Typography className={classes.Title}>What we do</Typography>
       <div className={classes.CardContainer}>
         <div className={classes.CardItem}>
           <SchoolIcon

@@ -17,10 +17,11 @@ const useStyles = makeStyles(theme => ({
   Title: {
     fontSize: "2em",
     fontWeight: 500,
-    color: "#2643e9",
+    color: "#2643e9"
   },
   Subtitle: {
     fontSize: "1.3em",
+    marginBottom: "1em"
   },
   Card: {
     width: "85%",
@@ -29,10 +30,16 @@ const useStyles = makeStyles(theme => ({
   },
   CardTitle: {
     fontSize: "1.5em",
-    fontWeight: "400"
+    fontWeight: "400",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "1em"
+    }
   },
   CardBody: {
-    fontSize: "1.2em"
+    fontSize: "1.2em",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "0.8em"
+    }
   },
   CardContainer: {
     display: "flex",
@@ -47,7 +54,20 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "row",
     width: "100%",
     justifyContent: "space-evenly",
-    alignItems: "center"
+    alignItems: "center",
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column"
+    }
+  },
+  CardImage: {
+    marginRight: "1em",
+    marginBottom: "1em",
+    marginTop: "1em",
+    width: "25%",
+    [theme.breakpoints.down("sm")]: {
+      marginRight: 0,
+      width: "80%"
+    }
   }
 }));
 
@@ -75,7 +95,8 @@ const TopNews = () => {
         Powered by NewsAPI
       </Typography>
       <Typography className={classes.Subtitle} gutterBottom>
-        We provide relevant financial news to keep you informed with the stock market
+        We provide relevant financial news to keep you informed with the stock
+        market
       </Typography>
       <div
         style={{
@@ -92,15 +113,7 @@ const TopNews = () => {
             return (
               <div className={classes.CardContainer} key={`article-${index}`}>
                 <div className={classes.CardItem}>
-                  <img
-                    style={{
-                      width: "25%",
-                      marginRight: "1em",
-                      marginBottom: "1em",
-                      marginTop: "1em"
-                    }}
-                    src={article.urlToImage}
-                  />
+                  <img className={classes.CardImage} src={article.urlToImage} />
                   <Card className={classes.Card}>
                     <CardContent>
                       <Typography gutterBottom className={classes.CardTitle}>

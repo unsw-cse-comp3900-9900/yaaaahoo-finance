@@ -9,12 +9,12 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column",
     flexWrap: "wrap",
     minHeight: "90%",
-    overflowY: "auto",
+    overflowY: "auto"
   },
   title: {
     fontSize: "3em",
     marginBottom: "0.2em",
-    fontWeight: '500'
+    fontWeight: "500"
   },
   subtitle: {
     fontSize: "1.3em",

@@ -6,6 +6,7 @@ import AboutUs from "./PageSections/AboutUs";
 import TopNews from "./PageSections/TopNews";
 import TopStocks from "./PageSections/TopStocks";
 import Background from "../../assets/background.svg";
+import Footer from "./PageSections/Footer";
 
 const useStyles = makeStyles(theme => ({
   page: {
@@ -39,10 +40,11 @@ const LandingPage = () => {
       <Divider className={classes.divider} />
       <AboutUs />
       <Divider className={classes.divider} />
+      <TopStocks />
+      <Divider className={classes.divider} />
       <TopNews />
-      <Divider className={classes.divider} />
-      {/* <TopStocks /> */}
-      <Divider className={classes.divider} />
+      <Divider style={{ marginTop: "5em" }} className={classes.divider} />
+      <Footer />
     </div>
   );
 };
