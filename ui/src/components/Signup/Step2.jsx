@@ -25,7 +25,7 @@ const Step2 = ({ handleChange, value, classes }) => {
           onChange={handleChange}
         >
           <FormControlLabel
-            value="<30"
+            value="Under 30"
             control={
               <Radio
                 classes={{
@@ -61,7 +61,7 @@ const Step2 = ({ handleChange, value, classes }) => {
             label="50-70"
           />
           <FormControlLabel
-            value=">70"
+            value="Over 70"
             classes={{ checked: classes.checked }}
             control={
               <Radio

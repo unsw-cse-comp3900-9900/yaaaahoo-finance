@@ -1,16 +1,16 @@
 import React, { Fragment } from "react";
 import { TextField, Typography } from "@material-ui/core";
 
-const Step3 = ({ onChange, error }) => {
+const Step3 = ({ handleChange, error }) => {
   return (
     <Fragment>
       <Typography style={{color: "#2643e9"}}>What is your desired retirement age?</Typography>
       <TextField
-        onChange={onChange}
+        onChange={handleChange}
         id="retired-age"
-        label="Age"
+        label="Retirement Age"
         type="number"
-        name="age"
+        name="retirementAge"
         error={error}
       />
     </Fragment>
