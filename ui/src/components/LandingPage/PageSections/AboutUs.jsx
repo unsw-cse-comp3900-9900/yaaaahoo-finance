@@ -39,7 +39,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
     flexGrow: 1,
     width: "100%",
-    justifyContent: "space-evenly"
+    justifyContent: "space-around"
   },
   CardItem: {
     display: "flex",
@@ -55,7 +55,7 @@ const AboutUs = () => {
   const classes = useStyles();
   return (
     <div className={classes.Page}>
-      <Typography className={classes.Title} gutterBottom>
+      <Typography className={classes.Title}>
         What we do
       </Typography>
       <div className={classes.CardContainer}>

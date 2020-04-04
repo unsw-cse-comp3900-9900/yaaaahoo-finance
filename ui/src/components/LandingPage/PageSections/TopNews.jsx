@@ -1,7 +1,10 @@
-import React, {useEffect, useState} from "react";
+/* eslint-disable jsx-a11y/alt-text */
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import {Grid, Typography} from "@material-ui/core";
-import {config} from "../../../config";
+import { Typography } from "@material-ui/core";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import { config } from "../../../config";
 import axios from "axios";
 const useStyles = makeStyles(theme => ({
   Page: {
@@ -14,21 +17,22 @@ const useStyles = makeStyles(theme => ({
   Title: {
     fontSize: "2em",
     fontWeight: 500,
-    color: "#2643e9"
+    color: "#2643e9",
+  },
+  Subtitle: {
+    fontSize: "1.3em",
   },
   Card: {
     width: "85%",
     alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#cbd2f6",
-    color: "#2643e9"
+    justifyContent: "center"
   },
   CardTitle: {
     fontSize: "1.5em",
     fontWeight: "400"
   },
   CardBody: {
-    fontSize: "1em"
+    fontSize: "1.2em"
   },
   CardContainer: {
     display: "flex",
@@ -40,78 +44,85 @@ const useStyles = makeStyles(theme => ({
   },
   CardItem: {
     display: "flex",
-    flexWrap: "wrap",
     flexDirection: "row",
     width: "100%",
     justifyContent: "space-evenly",
-    alignItems: "center",
+    alignItems: "center"
   }
 }));
 
 const TopNews = () => {
   const classes = useStyles();
+  const [newsData, setNewsData] = useState(null);
 
-  const [article1, setArticle1] = useState({article1: {}})
-  const [article2, setArticle2] = useState({article2: {}})
-  const [article3, setArticle3] = useState({article3: {}})
   useEffect(() => {
     // NEWS API CALL
-    const url = `http://newsapi.org/v2/top-headlines?category=business&country=au&apiKey=${config.newsApiToken}`
-    axios.get(url)
-      .then(res => {
-        setArticle1(res.data.articles[0]);
-        setArticle2(res.data.articles[1]);
-        setArticle3(res.data.articles[2]);
+    // To-Do: handle cancelToken when component dismounted
+    const url = `http://newsapi.org/v2/top-headlines?category=business&country=au&apiKey=${config.newsApiToken}`;
+    axios
+      .get(url)
+      .then(({ data }) => {
+        setNewsData(data.articles);
       })
       .catch(error => {
         console.log(error);
-      })
+      });
   }, []);
 
   return (
-    <Grid container justify="left" className={classes.page}>
-      <Grid item>
+    <div className={classes.Page}>
       <Typography className={classes.Title} gutterBottom>
-        Top News
+        Powered by NewsAPI
       </Typography>
-      <Typography className={classes.subtitle}>
-        Your daily edit of the finance news relevant to you, powered by NewsApi
+      <Typography className={classes.Subtitle} gutterBottom>
+        We provide relevant financial news to keep you informed with the stock market
       </Typography>
-      </Grid>
-        <Grid item>
-        <Typography gutterBottom className={classes.CardTitle}>
-                <a href = {article1.url} style={{ textDecoration: 'none' }}>{article1.title}</a>
-              </Typography>
-              <Typography variant="caption">
-                {article1.author}
-              </Typography>
-              <Typography className={classes.CardBody}>
-                {article1.description}
-              </Typography>
-      </Grid>
-        <Grid item>
-        <Typography gutterBottom className={classes.CardTitle}>
-                <a href = {article2.url} style={{ textDecoration: 'none' }}>{article2.title}</a>
-              </Typography>
-              <Typography variant="caption">
-                {article2.author}
-              </Typography>
-              <Typography className={classes.CardBody}>
-                {article2.description}
-              </Typography>
-      </Grid>
-        <Grid item>
-        <Typography gutterBottom className={classes.CardTitle}>
-                <a href = {article3.url} style={{ textDecoration: 'none' }}>{article3.title}</a>
-              </Typography>
-              <Typography variant="caption">
-                {article3.author}
-              </Typography>
-              <Typography className={classes.CardBody}>
-                {article3.description}
-              </Typography>
-        </Grid>
-    </Grid>
+      <div
+        style={{
+          overflowY: "scroll",
+          display: "flex",
+          flexDirection: "column"
+        }}
+      >
+        {newsData &&
+          newsData.map((article, index) => {
+            if (!article.urlToImage) {
+              return null;
+            }
+            return (
+              <div className={classes.CardContainer} key={`article-${index}`}>
+                <div className={classes.CardItem}>
+                  <img
+                    style={{
+                      width: "25%",
+                      marginRight: "1em",
+                      marginBottom: "1em",
+                      marginTop: "1em"
+                    }}
+                    src={article.urlToImage}
+                  />
+                  <Card className={classes.Card}>
+                    <CardContent>
+                      <Typography gutterBottom className={classes.CardTitle}>
+                        <a
+                          href={article.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {article.title}
+                        </a>
+                      </Typography>
+                      <Typography className={classes.CardBody}>
+                        {article.description}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            );
+          })}
+      </div>
+    </div>
   );
 };
 

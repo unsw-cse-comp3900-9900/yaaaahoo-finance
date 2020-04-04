@@ -41,7 +41,7 @@ const LandingPage = () => {
       <Divider className={classes.divider} />
       <TopNews />
       <Divider className={classes.divider} />
-      <TopStocks />
+      {/* <TopStocks /> */}
       <Divider className={classes.divider} />
     </div>
   );
