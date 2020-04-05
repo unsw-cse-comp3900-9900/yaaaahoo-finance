@@ -1,0 +1,6 @@
+setuptools
+tensorflow
+flask
+flask_cors 
+searchtweets
+transformers

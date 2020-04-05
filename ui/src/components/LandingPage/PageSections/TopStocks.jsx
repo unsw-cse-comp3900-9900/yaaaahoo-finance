@@ -45,38 +45,38 @@ const TopStocks = () => {
   const [stock1, setStock1] = useState("loading...");
   const [stock2, setStock2] = useState("loading...");
   const [stock3, setStock3] = useState("loading...");
-  const [stock5, setStock5] = useState("loading...");
+  const [stock4, setStock4] = useState("loading...");
 
   useEffect(() => {
     var urlOne = `https://api.worldtradingdata.com/api/v1/stock?symbol=CBA.AX&api_token=${config.worldTradingApiToken}`;
-    var urlTwo = `https://cloud.iexapis.com/stable/stock/aapl/quote/latestPrice?token=${config.iexCloudApiToken}`;
-    var urlThree = `https://cloud.iexapis.com/stable/stock/msft/quote/latestPrice?token=${config.iexCloudApiToken}`;
-    var urlFive = `https://api.worldtradingdata.com/api/v1/stock?symbol=WOW.AX&api_token=${config.worldTradingApiToken}`;
+    var urlTwo = `https://api.worldtradingdata.com/api/v1/stock?symbol=APT.AX&api_token=${config.worldTradingApiToken}`;
+    var urlThree = `https://api.worldtradingdata.com/api/v1/stock?symbol=QAN.AX&api_token=${config.worldTradingApiToken}`;
+    var urlFour = `https://api.worldtradingdata.com/api/v1/stock?symbol=WOW.AX&api_token=${config.worldTradingApiToken}`;
 
     const requestOne = axios.get(urlOne);
     const requestTwo = axios.get(urlTwo);
     const requestThree = axios.get(urlThree);
-    const requestFive = axios.get(urlFive);
+    const requestFour = axios.get(urlFour);
 
-    axios.all([requestOne, requestTwo, requestThree, requestFive]).then(
-      axios.spread((response1, response2, response3, response5) => {
+    axios.all([requestOne, requestTwo, requestThree, requestFour]).then(
+      axios.spread((response1, response2, response3, response4) => {
         setStock1(response1.data.data[0]["price"]);
-        setStock2(response2.data);
-        setStock3(response3.data);
-        setStock5(response5.data.data[0]["price"]);
+        setStock2(response2.data.data[0]["price"]);
+        setStock3(response3.data.data[0]["price"]);
+        setStock4(response4.data.data[0]["price"]);
       })
     );
   }, []);
 
-  function createData(companyName, symbol, price) {
+  function createData(companyName, symbol, price, sentiment) {
     return { companyName, symbol, price };
   }
 
   const rows = [
     createData("Commonwealth Bank of Australia", "CBA", stock1),
-    createData("Apple Inc.*", "AAPL", stock2),
-    createData("Microsoft Corporation*", "MSFT", stock3),
-    createData("Woolworths Group Ltd", "WOW", stock5)
+    createData("Afterpay Limited", "APT", stock2),
+    createData("Qantas Airways Limited", "QAN", stock3),
+    createData("Woolworths Group Ltd", "WOW", stock4)
   ];
 
   return (
@@ -98,8 +98,8 @@ const TopStocks = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map(row => (
-                <TableRow key={row.name}>
+              {rows.map((row, index) => (
+                <TableRow key={index}>
                   <TableCell component="th" scope="row">
                     {row.companyName}
                   </TableCell>

@@ -1,6 +1,6 @@
 import app from "firebase/app";
 import "firebase/auth";
-import 'firebase/database';
+import "firebase/database";
 
 const config = {
   apiKey: "AIzaSyAQe81lKS4ZELWIBPDaFqI9RSosAzlgpaI",
@@ -24,7 +24,7 @@ class Firebase {
   doCreateUserWithEmailAndPassword = (email, password, profileData) =>
     this.auth
       .createUserWithEmailAndPassword(email, password)
-      .then(({user}) => {
+      .then(({ user }) => {
         return this.db.ref("users/" + user.uid).set(profileData);
       })
       .catch(error => console.log(error));
@@ -39,8 +39,10 @@ class Firebase {
 
   getUserData = async () => {
     const userId = await this.auth.currentUser.uid;
-    return await this.db.ref('/users/' + userId).once('value')
-    .then((snapshot) => snapshot.val())
-  }
+    return await this.db
+      .ref("/users/" + userId)
+      .once("value")
+      .then(snapshot => snapshot.val());
+  };
 }
 export default Firebase;
