@@ -4,7 +4,7 @@ import {
   FormLabel,
   RadioGroup,
   FormControlLabel,
-  Radio
+  Radio,
 } from "@material-ui/core";
 
 const Step2 = ({ handleChange, value, classes }) => {
@@ -16,61 +16,49 @@ const Step2 = ({ handleChange, value, classes }) => {
           className={classes.FormLabel}
           classes={{ focused: classes.focused }}
         >
-          Select your age range
+          How much risk are you willing to take in order to maximise gains?
         </FormLabel>
         <RadioGroup
-          aria-label="age"
-          name="age"
+          aria-label="risk"
+          name="risk"
           value={value}
           onChange={handleChange}
         >
           <FormControlLabel
-            value="Under 30"
+            value="High"
             control={
               <Radio
                 classes={{
                   checked: classes.checked,
-                  colorSecondary: classes.radio
+                  colorSecondary: classes.radio,
                 }}
               />
             }
-            label="Under 30"
+            label="High"
           />
           <FormControlLabel
-            value="30-50"
+            value="Balanced"
             control={
               <Radio
                 classes={{
                   checked: classes.checked,
-                  colorSecondary: classes.radio
+                  colorSecondary: classes.radio,
                 }}
               />
             }
-            label="30-50"
+            label="Balanced"
           />
           <FormControlLabel
-            value="50-70"
+            value="Low"
             control={
               <Radio
                 classes={{
                   checked: classes.checked,
-                  colorSecondary: classes.radio
+                  colorSecondary: classes.radio,
                 }}
               />
             }
-            label="50-70"
-          />
-          <FormControlLabel
-            value="Over 70"
-            control={
-              <Radio
-                classes={{
-                  checked: classes.checked,
-                  colorSecondary: classes.radio
-                }}
-              />
-            }
-            label="Over 70"
+            label="Low"
           />
         </RadioGroup>
       </FormControl>

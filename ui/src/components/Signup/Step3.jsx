@@ -1,28 +1,67 @@
 import React, { Fragment } from "react";
-import { TextField, Typography } from "@material-ui/core";
+import {
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+} from "@material-ui/core";
 
-const Step3 = ({ validateAge, handleChange, form, error }) => {
+const Step3 = ({ handleChange, value, classes }) => {
   return (
     <Fragment>
-      <Typography style={{ color: "#2643e9" }}>
-        What is your desired retirement age?
-      </Typography>
-      <TextField
-        onChange={handleChange}
-        value={form.retirementAge}
-        id="retired-age"
-        label="Retirement Age"
-        type="number"
-        name="retirementAge"
-        error={error.retirementAge}
-        helperText={
-          error.retirementAge && form.retirementAge === ""
-            ? "Desired retirement age required"
-            : error.retirementAge && !validateAge(form.retirementAge)
-            ? "Invalid age"
-            : ""
-        }
-      />
+      <FormControl component="fieldset">
+        <FormLabel
+          style={{ marginBottom: "1em" }}
+          className={classes.FormLabel}
+          classes={{ focused: classes.focused }}
+        >
+          How close are you to retirement age?
+        </FormLabel>
+        <RadioGroup
+          aria-label="age"
+          name="age"
+          value={value}
+          onChange={handleChange}
+        >
+          <FormControlLabel
+            value="Young"
+            control={
+              <Radio
+                classes={{
+                  checked: classes.checked,
+                  colorSecondary: classes.radio,
+                }}
+              />
+            }
+            label="Young"
+          />
+          <FormControlLabel
+            value="Middle-aged"
+            control={
+              <Radio
+                classes={{
+                  checked: classes.checked,
+                  colorSecondary: classes.radio,
+                }}
+              />
+            }
+            label="Middle-aged"
+          />
+          <FormControlLabel
+            value="Retiree"
+            control={
+              <Radio
+                classes={{
+                  checked: classes.checked,
+                  colorSecondary: classes.radio,
+                }}
+              />
+            }
+            label="Retiree"
+          />
+        </RadioGroup>
+      </FormControl>
     </Fragment>
   );
 };

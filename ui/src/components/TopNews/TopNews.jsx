@@ -4,42 +4,42 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import { config } from "../../../config";
+import { config } from "../../config";
 import axios from "axios";
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   Page: {
     display: "flex",
     flexDirection: "column",
     minHeight: "90%",
     paddingTop: "2em",
-    width: "100%"
+    width: "100%",
   },
   Title: {
     fontSize: "2em",
     fontWeight: 500,
-    color: "#2643e9"
+    color: "#2643e9",
   },
   Subtitle: {
     fontSize: "1.3em",
-    marginBottom: "1em"
+    marginBottom: "1em",
   },
   Card: {
     width: "85%",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   CardTitle: {
     fontSize: "1.5em",
     fontWeight: "400",
     [theme.breakpoints.down("sm")]: {
-      fontSize: "1em"
-    }
+      fontSize: "1em",
+    },
   },
   CardBody: {
     fontSize: "1.2em",
     [theme.breakpoints.down("sm")]: {
-      fontSize: "0.8em"
-    }
+      fontSize: "0.8em",
+    },
   },
   CardContainer: {
     display: "flex",
@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
     flexGrow: 1,
     width: "100%",
-    justifyContent: "space-evenly"
+    justifyContent: "space-evenly",
   },
   CardItem: {
     display: "flex",
@@ -56,8 +56,8 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "space-evenly",
     alignItems: "center",
     [theme.breakpoints.down("sm")]: {
-      flexDirection: "column"
-    }
+      flexDirection: "column",
+    },
   },
   CardImage: {
     marginRight: "1em",
@@ -66,12 +66,12 @@ const useStyles = makeStyles(theme => ({
     width: "25%",
     [theme.breakpoints.down("sm")]: {
       marginRight: 0,
-      width: "80%"
-    }
-  }
+      width: "80%",
+    },
+  },
 }));
 
-const TopNews = () => {
+const TopNews = ({ title, subtitle, titleColor }) => {
   const classes = useStyles();
   const [newsData, setNewsData] = useState(null);
 
@@ -84,25 +84,30 @@ const TopNews = () => {
       .then(({ data }) => {
         setNewsData(data.articles);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   }, []);
 
   return (
     <div className={classes.Page}>
-      <Typography className={classes.Title} gutterBottom>
-        Powered by NewsAPI
+      <Typography
+        style={{ color: titleColor }}
+        className={classes.Title}
+        gutterBottom
+      >
+        {title}
       </Typography>
-      <Typography className={classes.Subtitle} gutterBottom>
-        We provide relevant financial news to keep you informed with the stock
-        market
-      </Typography>
+      {subtitle && (
+        <Typography className={classes.Subtitle} gutterBottom>
+          {subtitle}
+        </Typography>
+      )}
       <div
         style={{
           overflowY: "scroll",
           display: "flex",
-          flexDirection: "column"
+          flexDirection: "column",
         }}
       >
         {newsData &&
