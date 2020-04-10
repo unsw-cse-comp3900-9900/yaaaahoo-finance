@@ -3,7 +3,21 @@ import { TextField, Typography} from "@material-ui/core";
 import {config} from "../../config";
 import axios from "axios";
 
-const Step3 = ({ searchList, handleChange, form, error }) => {
+const Step3 = ({ searchList, setSearchList, handleChange, form, error }) => {
+
+    useEffect(() => {
+    var url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${form.symbol}&apikey=${config.alphaVantageApiToken}`;
+    axios.get(url)
+        .then (res => {
+          console.log(res.data.bestMatches[0]);
+          //TO DO: Change to an actual list??
+          setSearchList(res.data.bestMatches[0]);
+        })
+        .catch(err => {
+          console.log(err);
+        })
+
+  }, []);
 
   return (
     <Fragment>

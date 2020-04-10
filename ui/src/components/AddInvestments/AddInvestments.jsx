@@ -15,8 +15,6 @@ import Step1 from "./Step1";
 import Step3 from "./Step3";
 import Step2 from "./Step2";
 import Step4 from "./Step4";
-import {config} from "../../config";
-import axios from "axios";
 const useStyles = makeStyles(theme => ({
   Card: {
     width: "300px",
@@ -139,8 +137,8 @@ const AddInvestments = ({ firebase, history }) => {
   });
 
   const validateSymbol = symbol => {
-    const regex = /^[a-zA-Z]{1,4}([\. ][a-zA-Z]{1,4})?$/;
-    return regex.test(String(symbol).toUpperCase());
+    const regex = /^([a-zA-Z]{1,4}([\. ][a-zA-Z]{1,4})?)$|^([a-zA-Z]+)$/;
+    return regex.test(String(symbol));
   };
 
   const validateNumberOfUnits = numberOfUnits => {
@@ -155,11 +153,10 @@ const AddInvestments = ({ firebase, history }) => {
   };
 
   const disableNext = () => {
-    const { index, symbol, companyName, numberOfUnits, costPerUnit, tradeDate } = form;
+    const { symbol, numberOfUnits, costPerUnit } = form;
     if (
-      step === 1 &&
-      (index === "" ||
-        symbol === "" ||
+      step === 2 &&
+      (symbol === "" ||
         !validateSymbol(symbol))
     )
       return true;
@@ -169,21 +166,6 @@ const AddInvestments = ({ firebase, history }) => {
     return false;
   };
 
-  const [searchList, setSearchList] = useState([]);
-    useEffect(() => {
-    var url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=AAPL&apikey=${config.alphaVantageApiToken}`;
-    axios.get(url)
-        .then (res => {
-          console.log(res.data.bestMatches[0]);
-          //TO DO: Change to an actual list??
-          setSearchList(res.data.bestMatches[0]);
-        })
-        .catch(err => {
-          console.log(err);
-        })
-
-  }, []);
-
   const nextStep = () => {
     if (step === 2 && disableNext()) {
       setError(e => ({
@@ -192,6 +174,9 @@ const AddInvestments = ({ firebase, history }) => {
         symbol: form.symbol === "" || !validateSymbol(form.symbol)
       }));
       return;
+    } else if (step === 3) {
+      form.symbol = searchList["1. symbol"];
+      form.companyName = searchList["2. name"];
     } else if (step === 4 && disableNext()) {
       setError(e => ({
         ...e,
@@ -256,9 +241,7 @@ const AddInvestments = ({ firebase, history }) => {
     firebase
       .doAddInvestmentToPortfolio(index, symbol, companyName, numberOfUnits, costPerUnit, tradeDate, {
         index: form.index,
-        // TO DO: Get symbol from API call
         symbol: form.symbol,
-        // TO DO: Get company name from API call
         companyName: form.companyName,
         numberOfUnits: form.numberOfUnits,
         costPerUnit: form.costPerUnit,
@@ -274,6 +257,8 @@ const AddInvestments = ({ firebase, history }) => {
 
     event.preventDefault();
   };
+
+  const [searchList, setSearchList] = useState([]);
 
   return (
     <div className={classes.Page}>
@@ -311,6 +296,7 @@ const AddInvestments = ({ firebase, history }) => {
                 form={form}
                 error={error}
                 searchList={searchList}
+                setSearchList={setSearchList}
               />
             )}
             {step === 4 && (
