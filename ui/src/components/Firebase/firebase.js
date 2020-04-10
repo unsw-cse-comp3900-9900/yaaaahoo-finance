@@ -3,14 +3,14 @@ import "firebase/auth";
 import "firebase/database";
 
 const config = {
-  apiKey: "AIzaSyAQe81lKS4ZELWIBPDaFqI9RSosAzlgpaI",
-  authDomain: "aaaa-finance.firebaseapp.com",
-  databaseURL: "https://aaaa-finance.firebaseio.com",
-  projectId: "aaaa-finance",
-  storageBucket: "aaaa-finance.appspot.com",
-  messagingSenderId: "1075900888174",
-  appId: "1:1075900888174:web:9890fafcd1071a1502227f",
-  measurementId: "G-MVFVD7BDXP"
+  apiKey: "AIzaSyCRl9wcdACPQhPgRA3QD-EQ9rXwnsyKeY8",
+  authDomain: "yaaaahoo-finance.firebaseapp.com",
+  databaseURL: "https://yaaaahoo-finance.firebaseio.com",
+  projectId: "yaaaahoo-finance",
+  storageBucket: "yaaaahoo-finance.appspot.com",
+  messagingSenderId: "236123170521",
+  appId: "1:236123170521:web:7bc52dd0dd71617e7b80c8",
+  measurementId: "G-XH5T7EN0SX"
 };
 
 class Firebase {
@@ -44,5 +44,18 @@ class Firebase {
       .once("value")
       .then(snapshot => snapshot.val());
   };
+
+  doAddInvestmentToPortfolio = (index, symbol, companyName, numberOfUnits, costPerUnit, tradeDate) => {
+      const userId = this.auth.currentUser.uid;
+      return this.db
+          .ref("/users/" + userId.portfolio).set({
+              index: index,
+              symbol: symbol,
+              companyName: companyName,
+              numberOfUnits: numberOfUnits,
+              costPerUnit: costPerUnit,
+              tradeDate: tradeDate
+            });
+          }
 }
 export default Firebase;
