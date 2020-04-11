@@ -1,10 +1,13 @@
 from flask import Flask
+from flask import jsonify
 from flask_cors import CORS, cross_origin
 from transformers import pipeline
 
 import searchtweets
 import json
 import tensorflow as tf
+import numpy as np
+import sklearn
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -14,6 +17,25 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @cross_origin()
 def home():
     return "please use an endpoint"
+
+@app.route('/prediction/<company>')
+def prediction(company):
+    model = tf.keras.models.load_model('model.h5')
+    feature_sets = 12
+    x = 40 * np.random.rand(1, 200, feature_sets)
+    scalers = [sklearn.preprocessing.MinMaxScaler() for a in range(feature_sets)]
+    # print(x)
+    for feature_num in range(feature_sets):
+        scaled = scalers[feature_num].fit_transform(x[0, :, feature_num].reshape(-1, 1))
+        # print(scaled.shape)
+        # print(x[:, :, feature_num])
+        x[:,:,feature_num] = scaled.reshape(-1)
+        # print(x[:, : , feature_num])
+    # print(x)
+    # print(x.shape)
+    preds = model.predict(x)
+    ayaya = scalers[0].inverse_transform(preds)
+    return jsonify(ayaya[0].tolist())
 
 @app.route('/sentiment/<company>')
 def sentiment(company):
