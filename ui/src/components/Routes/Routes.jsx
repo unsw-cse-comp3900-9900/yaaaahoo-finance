@@ -8,6 +8,7 @@ import Home from "../Home/Home";
 import { withFirebase } from "../Firebase";
 import LandingPage from "../LandingPage/LandingPage";
 import SentimentDemo from "../Company/SentimentDemo";
+import AddInvestments from "../AddInvestments/AddInvestments";
 
 class Routes extends Component {
   render() {
@@ -38,6 +39,11 @@ class Routes extends Component {
           path="/sentiment/:company"
           exact
           component={compose(withRouter, withFirebase)(SentimentDemo)}
+        />
+        <Route
+          path="/addInvestments"
+          exact
+          component={compose(withRouter, withFirebase)(AddInvestments)}
         />
       </Switch>
     );
