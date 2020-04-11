@@ -148,6 +148,7 @@ const Portfolio = ({
   recommendation,
   openEditModal,
   openDeleteModal,
+  openAddHoldingsModal
 }) => {
   const classes = useStyles();
 
@@ -167,7 +168,7 @@ const Portfolio = ({
         <Typography className={classes.sumHeading1}>$0.00</Typography>
       </div>
       <Typography className={classes.heading1}>
-        <AddCircleIcon className={classes.addIcon} /> Add Holdings
+        <AddCircleIcon className={classes.addIcon} onClick={openAddHoldingsModal} /> Add Holdings
       </Typography>
       <div className={classes.CardItem}>
         <Card className={classes.Card}>

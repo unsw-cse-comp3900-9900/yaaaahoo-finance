@@ -10,6 +10,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
+import AddHoldingsModal from "./AddHoldingsModal";
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -111,6 +112,7 @@ const Home = ({ firebase }) => {
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [openAddHoldingsModal, setOpenAddHoldingsModal] = useState(false);
   const [newPortfolioName, setNewPortfolioName] = useState("");
   const [error, setError] = useState(false);
 
@@ -140,6 +142,14 @@ const Home = ({ firebase }) => {
 
   const handleCloseDeleteModal = () => {
     setOpenDeleteModal(false);
+  };
+
+  const handleOpenAddHoldingsModal = () => {
+    setOpenAddHoldingsModal(true);
+  };
+
+  const handleCloseAddHoldingsModal = () => {
+    setOpenAddHoldingsModal(false);
   };
 
   const handleChange = (e) => {
@@ -211,6 +221,16 @@ const Home = ({ firebase }) => {
     });
   };
 
+  const addHolding = (portfolioId, form) => {
+    firebase.addHolding(portfolioId, form)
+    .then(() => {
+      firebase.getUserData().then((res) => {
+        setUserData(res);
+      });
+      setOpenAddHoldingsModal(false);
+    });
+  }
+
   return (
     <AuthUserContext.Consumer>
       {(authUser) => {
@@ -236,6 +256,7 @@ const Home = ({ firebase }) => {
                       recommendation={recommendation}
                       openDeleteModal={handleOpenDeleteModal}
                       openEditModal={handleOpenEditModal}
+                      openAddHoldingsModal={handleOpenAddHoldingsModal}
                     />
                     {openEditModal && (
                       <Modal
@@ -326,6 +347,14 @@ const Home = ({ firebase }) => {
                           </div>
                         </Fade>
                       </Modal>
+                    )}
+                    {openAddHoldingsModal && (
+                      <AddHoldingsModal
+                        isOpen={openAddHoldingsModal}
+                        onClose={handleCloseAddHoldingsModal}
+                        onSubmit={addHolding}
+                        portfolioId={portfolio.id}
+                      />
                     )}
                   </Fragment>
                 ))}

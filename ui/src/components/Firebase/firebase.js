@@ -44,7 +44,7 @@ class Firebase {
     const userPortfolioRef = this.db.ref("/users/" + userId + "/portfolios");
     const newPortfolioRef = userPortfolioRef.push();
     const portfolioId = newPortfolioRef.key;
-    await newPortfolioRef.set({
+    return await newPortfolioRef.set({
       name: portfolioName,
       id: portfolioId,
     });
@@ -52,7 +52,6 @@ class Firebase {
 
   deletePortfolio = async (portfolioId) => {
     const userId = await this.auth.currentUser.uid;
-    console.log(portfolioId);
     return await this.db
       .ref("/users/" + userId + "/portfolios/" + portfolioId)
       .remove()
@@ -70,6 +69,38 @@ class Firebase {
       .ref("/users/" + userId + "/portfolios/" + portfolioId)
       .update({
         name: portfolioName,
+      });
+  };
+
+  addHolding = async (portfolioId, form) => {
+    const userId = this.auth.currentUser.uid;
+    const userHoldingsRef = this.db.ref(
+      "/users/" + userId + "/portfolios/" + portfolioId + "/holdings"
+    );
+    const newHoldingsRef = userHoldingsRef.push();
+    const holdingId = newHoldingsRef.key;
+    const result = {...form};
+    result.id = holdingId;
+    return await (await newHoldingsRef).set(result);
+  };
+
+  removeHolding = async (portfolioId, holdingId) => {
+    const userId = await this.auth.currentUser.uid;
+    return await this.db
+      .ref(
+        "/users/" +
+          userId +
+          "/portfolios/" +
+          portfolioId +
+          "/holdings/" +
+          holdingId
+      )
+      .remove()
+      .then(function() {
+        console.log("Remove succeeded.");
+      })
+      .catch(function(error) {
+        console.log("Remove failed: " + error.message);
       });
   };
 
