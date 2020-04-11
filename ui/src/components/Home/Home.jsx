@@ -113,7 +113,9 @@ const Home = ({ firebase }) => {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [openAddHoldingsModal, setOpenAddHoldingsModal] = useState(false);
+  const [openRemoveHoldingsModal, setOpenRemoveHoldingsModal] = useState(false);
   const [newPortfolioName, setNewPortfolioName] = useState("");
+  const [selectedHolding, setSelectedHolding] = useState(null);
   const [error, setError] = useState(false);
 
   const handleOpenAddModal = () => {
@@ -150,6 +152,16 @@ const Home = ({ firebase }) => {
 
   const handleCloseAddHoldingsModal = () => {
     setOpenAddHoldingsModal(false);
+  };
+
+  const handleOpenRemoveHoldingsModal = (holdingId) => {
+    setOpenRemoveHoldingsModal(true);
+    setSelectedHolding(holdingId);
+  };
+
+  const handleCloseRemoveHoldingsModal = () => {
+    setOpenRemoveHoldingsModal(false);
+    setSelectedHolding(null);
   };
 
   const handleChange = (e) => {
@@ -222,14 +234,23 @@ const Home = ({ firebase }) => {
   };
 
   const addHolding = (portfolioId, form) => {
-    firebase.addHolding(portfolioId, form)
-    .then(() => {
+    firebase.addHolding(portfolioId, form).then(() => {
       firebase.getUserData().then((res) => {
         setUserData(res);
       });
       setOpenAddHoldingsModal(false);
     });
-  }
+  };
+
+  const removeHolding = (portfolioId) => {
+    if (!selectedHolding) return;
+    firebase.removeHolding(portfolioId, selectedHolding).then(() => {
+      firebase.getUserData().then((res) => {
+        setUserData(res);
+      });
+      setOpenRemoveHoldingsModal(false);
+    });
+  };
 
   return (
     <AuthUserContext.Consumer>
@@ -257,6 +278,7 @@ const Home = ({ firebase }) => {
                       openDeleteModal={handleOpenDeleteModal}
                       openEditModal={handleOpenEditModal}
                       openAddHoldingsModal={handleOpenAddHoldingsModal}
+                      openRemoveHoldingsModal={holdingId => handleOpenRemoveHoldingsModal(holdingId)}
                     />
                     {openEditModal && (
                       <Modal
@@ -355,6 +377,44 @@ const Home = ({ firebase }) => {
                         onSubmit={addHolding}
                         portfolioId={portfolio.id}
                       />
+                    )}
+                    {openRemoveHoldingsModal && (
+                      <Modal
+                        aria-labelledby="transition-modal-title"
+                        aria-describedby="transition-modal-description"
+                        className={classes.modal}
+                        open={openRemoveHoldingsModal}
+                        onClose={handleCloseRemoveHoldingsModal}
+                        closeAfterTransition
+                        BackdropComponent={Backdrop}
+                        BackdropProps={{
+                          timeout: 500,
+                        }}
+                      >
+                        <Fade in={openRemoveHoldingsModal}>
+                          <div className={classes.paper}>
+                            <Typography className={classes.heading}>
+                              Are you sure you want to delete this holding?
+                            </Typography>
+                            <div className={classes.buttonGroup}>
+                              <Button
+                                variant="outlined"
+                                onClick={handleCloseRemoveHoldingsModal}
+                                className={classes.button}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                variant="contained"
+                                onClick={() => removeHolding(portfolio.id)}
+                                className={classes.submitButton}
+                              >
+                                Delete
+                              </Button>
+                            </div>
+                          </div>
+                        </Fade>
+                      </Modal>
                     )}
                   </Fragment>
                 ))}

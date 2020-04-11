@@ -1,11 +1,13 @@
 import React, { Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { Link } from "react-router-dom";
 import { Typography, Button } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import DeleteIcon from "@material-ui/icons/Delete";
+import RemoveCircleIcon from "@material-ui/icons/RemoveCircle";
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -82,9 +84,29 @@ const useStyles = makeStyles((theme) => ({
       height: "400px",
     },
   },
+  HoldingCard: {
+    extend: "Card",
+    height: "120px",
+    [theme.breakpoints.down("sm")]: {
+      height: "120px",
+    },
+  },
   CardTitle: {
     fontSize: "1.5em",
     fontWeight: "400",
+  },
+  HoldingCardHeading: {
+    fontSize: "1.5em",
+    fontWeight: "400",
+  },
+  HoldingCardTitle: {
+    fontSize: "1.5em",
+    fontWeight: "500",
+    textDecoration: "underline",
+    color: "#2643e9",
+    "&:hover": {
+      opacity: "0.5",
+    },
   },
   CardBody: {
     fontSize: "1em",
@@ -111,8 +133,13 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     height: "100%",
     flexDirection: "column",
-    justifyContent: "space-evenly",
+    justifyContent: "space-around",
     alignItems: "center",
+  },
+  HoldingCardContent: {
+    extend: "CardContent",
+    flexDirection: "row",
+    padding: "1em",
   },
   link: {
     textDecoration: "underline",
@@ -141,6 +168,12 @@ const useStyles = makeStyles((theme) => ({
       fontSize: "2em",
     },
   },
+  removeIcon: {
+    cursor: "pointer",
+    "&:hover": {
+      opacity: "0.5",
+    },
+  },
 }));
 
 const Portfolio = ({
@@ -148,10 +181,13 @@ const Portfolio = ({
   recommendation,
   openEditModal,
   openDeleteModal,
-  openAddHoldingsModal
+  openAddHoldingsModal,
+  openRemoveHoldingsModal,
 }) => {
   const classes = useStyles();
-
+  const handleSubmit = holdingId => {
+    openRemoveHoldingsModal(holdingId)
+  }
   return (
     <Fragment>
       <div className={classes.header}>
@@ -168,21 +204,60 @@ const Portfolio = ({
         <Typography className={classes.sumHeading1}>$0.00</Typography>
       </div>
       <Typography className={classes.heading1}>
-        <AddCircleIcon className={classes.addIcon} onClick={openAddHoldingsModal} /> Add Holdings
+        <AddCircleIcon
+          className={classes.addIcon}
+          onClick={openAddHoldingsModal}
+        />{" "}
+        Add Holdings
       </Typography>
-      <div className={classes.CardItem}>
-        <Card className={classes.Card}>
-          <CardContent className={classes.CardContent}>
-            <Typography gutterBottom className={classes.CardTitle}>
-              Based on your profile we recommend building a{" "}
-              <span className={classes.link}>{recommendation} Portfolio</span>.
-            </Typography>
-            <Button variant="contained" className={classes.button}>
-              Learn More
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      {!portfolio.holdings && (
+        <div className={classes.CardItem}>
+          <Card className={classes.Card}>
+            <CardContent className={classes.CardContent}>
+              <Typography gutterBottom className={classes.CardTitle}>
+                Based on your profile we recommend building a{" "}
+                <span className={classes.link}>{recommendation} Portfolio</span>
+                .
+              </Typography>
+              <Button variant="contained" className={classes.button}>
+                Learn More
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+      {portfolio.holdings &&
+        Object.values(portfolio.holdings).map((holding, index) => {
+          const holdingId = holding.id
+          return (
+          <div className={classes.CardItem} key={index}>
+            <Card className={classes.HoldingCard}>
+              <CardContent
+                className={classes.HoldingCardContent}
+                style={{ paddingBottom: "1em" }}
+              >
+                <Typography
+                  component={Link}
+                  to={`/company/${holding.companyName}`}
+                  className={classes.HoldingCardTitle}
+                >
+                  {holding.symbol}
+                </Typography>
+                <Typography className={classes.HoldingCardHeading}>
+                  79.82
+                </Typography>
+                <Typography className={classes.HoldingCardHeading}>
+                  2.12%
+                </Typography>
+                <RemoveCircleIcon
+                  value={holding.id}
+                  className={classes.removeIcon}
+                  onClick={() => handleSubmit(holdingId)}
+                />
+              </CardContent>
+            </Card>
+          </div>
+        )})}
     </Fragment>
   );
 };
