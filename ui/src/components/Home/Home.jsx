@@ -1,15 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Typography, Button } from "@material-ui/core";
+import { Typography, TextField, Button } from "@material-ui/core";
 import { AuthUserContext, withAuthorization } from "../Session";
-import { useState } from "react";
-import EditIcon from "@material-ui/icons/Edit";
-import SearchIcon from "@material-ui/icons/Search";
-import AddCircleIcon from "@material-ui/icons/AddCircle";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
 import TopNews from "../TopNews/TopNews";
+import Portfolio from "../Portfolio/Portfolio";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
+import SearchIcon from "@material-ui/icons/Search";
+import Modal from "@material-ui/core/Modal";
+import Backdrop from "@material-ui/core/Backdrop";
+import Fade from "@material-ui/core/Fade";
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -26,22 +26,7 @@ const useStyles = makeStyles((theme) => ({
       paddingLeft: "2em",
       paddingRight: "2em",
       paddingTop: "2em",
-      paddingBottom: "2em"
-    },
-  },
-  title: {
-    fontSize: "3em",
-    fontWeight: "500",
-    [theme.breakpoints.down("sm")]: {
-      fontSize: "2em",
-    },
-    marginRight: "auto",
-  },
-  editButton: {
-    cursor: "pointer",
-    fontSize: "0.8em",
-    "&:hover": {
-      color: "#2643e9",
+      paddingBottom: "2em",
     },
   },
   searchButton: {
@@ -58,100 +43,111 @@ const useStyles = makeStyles((theme) => ({
   },
   addIcon: {
     margin: "1em 0",
-    fontSize: "1.5em",
+    fontSize: "2em",
     marginRight: "0.3em",
     "&:hover": {
       opacity: "0.5",
     },
     cursor: "pointer",
   },
+  heading: {
+    fontSize: "1.5em",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
   header: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
   },
-  summary: {
-    color: "#a9a9a9",
+  modal: {
     display: "flex",
-    flexDirection: "column",
-    marginTop: "1em",
-  },
-  sumHeading1: {
-    fontSize: "1.8em",
-  },
-  sumHeading2: {
-    fontSize: "1.5em",
-  },
-  heading1: {
-    fontSize: "1.3em",
-    display: "flex",
-    flexDirection: "row",
     alignItems: "center",
-  },
-  Card: {
-    width: "100%",
-    backgroundColor: "#f5f5f5",
-    display: "flex",
-    flexDirection: "column",
-    height: "200px",
-    [theme.breakpoints.down("sm")]: {
-      height: "400px",
+    justifyContent: "center",
+    "&:focus": {
+      outline: "none",
     },
+    outline: "none",
   },
-  CardTitle: {
-    fontSize: "1.5em",
-    fontWeight: "400",
-  },
-  CardBody: {
-    fontSize: "1em",
-  },
-  CardContainer: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    flexGrow: 1,
-    width: "100%",
-    justifyContent: "space-around",
-  },
-  CardItem: {
-    display: "flex",
-    flexWrap: "wrap",
-    flexDirection: "row",
-    width: "100%",
-    justifyContent: "space-evenly",
-    alignItems: "center",
-    marginBottom: "3em",
-  },
-  CardContent:{
-    padding: "3em",
-    display: "flex",
-    height: "100%",
-    flexDirection: "column",
-    justifyContent: "space-evenly",
-    alignItems: "center"
-  },
-  link: {
-    textDecoration: "underline",
-    color: "#2643e9",
-    cursor: "pointer",
-    "&:hover": {
-      opacity: "0.5",
+  paper: {
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    "&:focus": {
+      outline: "none",
     },
+    outline: "none",
+    display: "flex",
+    flexDirection: "column",
+    height: "300px",
+    width: "300px",
+    justifyContent: "space-evenly",
   },
   button: {
+    width: "100px",
     height: "3em",
-    color: "#fff",
+    color: "#2643e9",
     borderColor: "#2643e9",
+    marginTop: "2em",
+  },
+  submitButton: {
+    extend: "button",
+    color: "#fff",
     backgroundColor: "#2643e9",
-    width: "200px",
-  }
+  },
+  buttonGroup: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
 }));
 const Home = ({ firebase }) => {
   const classes = useStyles();
   const [userData, setUserData] = useState(null);
+  const [portfolios, setPortfolios] = useState(null);
   const [recommendation, setRecommendation] = useState(null);
+  const [openAddModal, setOpenAddModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [newPortfolioName, setNewPortfolioName] = useState("");
+  const [error, setError] = useState(false);
+
+  const handleOpenAddModal = () => {
+    setOpenAddModal(true);
+  };
+
+  const handleCloseAddModal = () => {
+    setOpenAddModal(false);
+    setNewPortfolioName("");
+    setError(false);
+  };
+
+  const handleOpenEditModal = () => {
+    setOpenEditModal(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setOpenEditModal(false);
+    setNewPortfolioName("");
+    setError(false);
+  };
+
+  const handleOpenDeleteModal = () => {
+    setOpenDeleteModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setOpenDeleteModal(false);
+  };
+
+  const handleChange = (e) => {
+    setNewPortfolioName(e.target.value);
+    setError(e.target.value === "");
+  };
+
   const calcRecommendation = () => {
-    if (!userData) return;
     const { risk, age } = userData;
     if (risk && age) {
       if (age === "Young") {
@@ -170,48 +166,221 @@ const Home = ({ firebase }) => {
   };
 
   useEffect(() => {
+    if (!userData) return;
     calcRecommendation();
+    setPortfolios(Object.values(userData.portfolios));
   }, [userData]);
 
   useEffect(() => {
-    firebase.getUserData().then((res) => setUserData(res));
+    firebase.getUserData().then((res) => {
+      setUserData(res);
+    });
   }, []);
+
+  const addNewPortfolio = () => {
+    if (error) return;
+    firebase.initializePortfolio(newPortfolioName).then(() => {
+      firebase.getUserData().then((res) => {
+        setUserData(res);
+      });
+      setOpenAddModal(false);
+      setNewPortfolioName("");
+      setError(false);
+    });
+  };
+
+  const deletePortfolio = (portfolioId) => {
+    firebase.deletePortfolio(portfolioId).then(() => {
+      firebase.getUserData().then((res) => {
+        setUserData(res);
+      });
+      setOpenDeleteModal(false);
+      setOpenAddModal(false);
+      setNewPortfolioName("");
+      setError(false);
+    });
+  };
+
+  const editPortfolioName = (portfolioId) => {
+    if (error) return;
+    firebase.editPortfolioName(newPortfolioName, portfolioId).then(() => {
+      firebase.getUserData().then((res) => {
+        setUserData(res);
+      });
+      setOpenEditModal(false);
+    });
+  };
 
   return (
     <AuthUserContext.Consumer>
       {(authUser) => {
         return (
           <div className={classes.page}>
-            {userData && recommendation && (
+            {userData && recommendation ? (
               <Fragment>
                 <div className={classes.header}>
-                  <Typography className={classes.title}>
-                    My Portfolio <EditIcon className={classes.editButton} />
+                  <Typography className={classes.heading}>
+                    <AddCircleIcon
+                      className={classes.addIcon}
+                      onClick={handleOpenAddModal}
+                    />{" "}
+                    Create new portfolio
                   </Typography>
                   <SearchIcon className={classes.searchButton} />
                 </div>
-                <div className={classes.summary}>
-                  <Typography className={classes.sumHeading2}>
-                    Estimated earnings today
-                  </Typography>
-                  <Typography className={classes.sumHeading1}>$0.00</Typography>
-                </div>
-                <Typography className={classes.heading1}>
-                  <AddCircleIcon className={classes.addIcon} /> Add Holdings
-                </Typography>
-                <div className={classes.CardItem}>
-                  <Card className={classes.Card}>
-                    <CardContent className={classes.CardContent}>
-                      <Typography gutterBottom className={classes.CardTitle}>
-                        Based on your profile we recommend building a{" "}
-                        <span className={classes.link}>{recommendation} Portfolio</span>.
-                      </Typography>
-                      <Button variant="contained" className={classes.button}>Learn More</Button>
-                    </CardContent>
-                  </Card>
-                </div>
-                <TopNews title="Top News" titleColor="#000000de" />
+
+                {portfolios.map((portfolio, index) => (
+                  <Fragment key={`portfolio-${index}`}>
+                    <Portfolio
+                      portfolio={portfolio}
+                      recommendation={recommendation}
+                      openDeleteModal={handleOpenDeleteModal}
+                      openEditModal={handleOpenEditModal}
+                    />
+                    {openEditModal && (
+                      <Modal
+                        aria-labelledby="transition-modal-title"
+                        aria-describedby="transition-modal-description"
+                        className={classes.modal}
+                        open={openEditModal}
+                        onClose={handleCloseEditModal}
+                        closeAfterTransition
+                        BackdropComponent={Backdrop}
+                        BackdropProps={{
+                          timeout: 500,
+                        }}
+                      >
+                        <Fade in={openEditModal}>
+                          <div className={classes.paper}>
+                            <Typography className={classes.heading}>
+                              Edit portfolio name
+                            </Typography>
+                            <TextField
+                              onChange={handleChange}
+                              onBlur={handleChange}
+                              id="editPortfolio"
+                              label="Portfolio name"
+                              name="editPortfolio"
+                              value={newPortfolioName}
+                              error={error}
+                              helperText={error ? "Name is required" : ""}
+                            />
+                            <div className={classes.buttonGroup}>
+                              <Button
+                                variant="outlined"
+                                onClick={handleCloseEditModal}
+                                className={classes.button}
+                                disabled={error}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                variant="contained"
+                                onClick={() => editPortfolioName(portfolio.id)}
+                                className={classes.submitButton}
+                                disabled={error}
+                              >
+                                Save
+                              </Button>
+                            </div>
+                          </div>
+                        </Fade>
+                      </Modal>
+                    )}
+                    {openDeleteModal && (
+                      <Modal
+                        aria-labelledby="transition-modal-title"
+                        aria-describedby="transition-modal-description"
+                        className={classes.modal}
+                        open={openDeleteModal}
+                        onClose={handleCloseDeleteModal}
+                        closeAfterTransition
+                        BackdropComponent={Backdrop}
+                        BackdropProps={{
+                          timeout: 500,
+                        }}
+                      >
+                        <Fade in={openDeleteModal}>
+                          <div className={classes.paper}>
+                            <Typography className={classes.heading}>
+                              Are you sure you want to delete this portfolio?
+                            </Typography>
+                            <div className={classes.buttonGroup}>
+                              <Button
+                                variant="outlined"
+                                onClick={handleCloseDeleteModal}
+                                className={classes.button}
+                                disabled={error}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                variant="contained"
+                                onClick={() => deletePortfolio(portfolio.id)}
+                                className={classes.submitButton}
+                                disabled={error}
+                              >
+                                Delete
+                              </Button>
+                            </div>
+                          </div>
+                        </Fade>
+                      </Modal>
+                    )}
+                  </Fragment>
+                ))}
+                {/* <TopNews title="Top News" titleColor="#000000de" /> */}
               </Fragment>
+            ) : null}
+            {openAddModal && (
+              <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                className={classes.modal}
+                open={openAddModal}
+                onClose={handleCloseAddModal}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                  timeout: 500,
+                }}
+              >
+                <Fade in={openAddModal}>
+                  <div className={classes.paper}>
+                    <Typography className={classes.heading}>
+                      Create new portfolio
+                    </Typography>
+                    <TextField
+                      onChange={handleChange}
+                      onBlur={handleChange}
+                      id="newPortfolio"
+                      label="Portfolio name"
+                      name="portfolio"
+                      value={newPortfolioName}
+                      error={error}
+                      helperText={error ? "Name is required" : ""}
+                    />
+                    <div className={classes.buttonGroup}>
+                      <Button
+                        variant="outlined"
+                        onClick={handleCloseAddModal}
+                        className={classes.button}
+                        disabled={error}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        variant="contained"
+                        onClick={addNewPortfolio}
+                        className={classes.submitButton}
+                        disabled={error}
+                      >
+                        Submit
+                      </Button>
+                    </div>
+                  </div>
+                </Fade>
+              </Modal>
             )}
           </div>
         );
