@@ -9,7 +9,7 @@ const withAuthorization = condition => Component => {
     useEffect(() => {
         props.firebase.auth.onAuthStateChanged(authUser => {
           if (!condition(authUser)) {
-            props.history.push("/login");
+            props.history.push("/");
           }
         });
     }, []);

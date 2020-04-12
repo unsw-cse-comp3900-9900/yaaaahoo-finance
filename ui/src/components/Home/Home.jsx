@@ -474,6 +474,7 @@ const Home = ({ firebase }) => {
                 </Fade>
               </Modal>
             )}
+            <TopNews title="Related News" titleColor="black" />
           </div>
         );
       }}

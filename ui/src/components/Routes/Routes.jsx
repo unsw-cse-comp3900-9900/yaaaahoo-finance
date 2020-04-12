@@ -10,6 +10,7 @@ import LandingPage from "../LandingPage/LandingPage";
 import SentimentDemo from "../Company/SentimentDemo";
 import AddInvestments from "../AddInvestments/AddInvestments";
 import Company from "../Company/Company";
+import News from "../TopNews/NewsPage";
 
 class Routes extends Component {
   render() {
@@ -46,6 +47,11 @@ class Routes extends Component {
           path="/company/:companyName"
           exact
           component={compose(withRouter, withFirebase)(Company)}
+        />
+        <Route
+          path="/news"
+          exact
+          component={compose(withRouter, withFirebase)(News)}
         />
       </Switch>
     );

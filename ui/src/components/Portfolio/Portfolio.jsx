@@ -203,7 +203,7 @@ const Portfolio = ({
     //     const currentPrice = data.latestPrice || "N/A";
     //     const currentPercentage =
     //       data.latestPrice && data.open
-    //         ? (data.latestPrice / data.open).toFixed(3)
+    //         ? ((data.latestPrice - data.open) / data.open).toFixed(3)
     //         : "N/A";
     //     const different =
     //       data.latestPrice && data.open

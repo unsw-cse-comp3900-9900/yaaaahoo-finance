@@ -11,6 +11,19 @@ import Plot from "react-plotly.js";
 import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
 import ThumbDownAltIcon from "@material-ui/icons/ThumbDownAlt";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+
+function createData(portfolio, daysGain, daysPerc, totalGain, totalPerc) {
+  return { portfolio, daysGain, daysPerc, totalGain, totalPerc };
+}
+
+const rows = [createData("My Portfolio", 159, 6.0, 24, 4.0)];
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -208,7 +221,7 @@ const Company = ({ history }) => {
     // getHistoricalData(company, "1m");
   }, []);
   const difference = companyData.latestPrice - companyData.open;
-  const differencePercentage = companyData.latestPrice / companyData.open;
+  const differencePercentage = difference / companyData.open;
 
   const trace1 = {
     fill: "tozeroy",
@@ -248,7 +261,8 @@ const Company = ({ history }) => {
                 indicatorColor="primary"
               >
                 <Tab label="Summary" {...a11yProps(0)} />
-                <Tab label="Analysis" {...a11yProps(1)} />
+                <Tab label="My Holdings" {...a11yProps(1)} />
+                <Tab label="Analysis" {...a11yProps(2)} />
               </Tabs>
               <TabPanel value={value} index={0}>
                 <Typography className={classes.Heading3}>
@@ -288,7 +302,37 @@ const Company = ({ history }) => {
                   style={{ width: "100%", height: "100%" }}
                 />
               </TabPanel>
+
               <TabPanel value={value} index={1}>
+                <TableContainer component={Paper}>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Portfolio</TableCell>
+                        <TableCell align="right">Days Gain</TableCell>
+                        <TableCell align="right">Days Gain (%)</TableCell>
+                        <TableCell align="right">Total Gain</TableCell>
+                        <TableCell align="right">Total Gain (%)</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {rows.map((row) => (
+                        <TableRow key={row.portfolio}>
+                          <TableCell component="th" scope="row">
+                            {row.portfolio}
+                          </TableCell>
+                          <TableCell align="right">{row.daysGain}</TableCell>
+                          <TableCell align="right">{row.daysPerc}</TableCell>
+                          <TableCell align="right">{row.totalGain}</TableCell>
+                          <TableCell align="right">{row.totalPerc}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </TabPanel>
+
+              <TabPanel value={value} index={2}>
                 <Typography
                   style={{ color: "#444444" }}
                   className={classes.Heading2}
