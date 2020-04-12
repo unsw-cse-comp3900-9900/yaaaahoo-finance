@@ -5,11 +5,12 @@ import { withAuthentication, AuthUserContext } from "../Session";
 import { BrowserRouter } from "react-router-dom";
 import { withFirebase } from "../Firebase";
 import { compose } from "recompose";
-import NavBar from "./NavBar";
+// import NavBar from "./NavBar";
 import { create } from "jss";
 import { StylesProvider, jssPreset } from "@material-ui/styles";
 import jssExtend from "jss-plugin-extend";
 import jssNested from "jss-plugin-nested";
+import NavBar from "./NavBarv2";
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
@@ -31,6 +32,7 @@ const App = ({ children }) => {
           <StylesProvider jss={jss}>
             <CssBaseline />
             <div className={classes.root}>
+              {/* <PrimarySearchAppBar /> */}
               <NavBar authUser={authUser} />
               {children}
             </div>

@@ -8,6 +8,9 @@ import Home from "../Home/Home";
 import { withFirebase } from "../Firebase";
 import LandingPage from "../LandingPage/LandingPage";
 import SentimentDemo from "../Company/SentimentDemo";
+import AddInvestments from "../AddInvestments/AddInvestments";
+import Company from "../Company/Company";
+import News from "../TopNews/NewsPage";
 
 class Routes extends Component {
   render() {
@@ -24,11 +27,7 @@ class Routes extends Component {
           exact
           component={compose(withRouter, withFirebase)(Signup)}
         />
-        <Route
-          path="/home"
-          exact
-          component={compose(withRouter)(Home)}
-        />
+        <Route path="/home" exact component={compose(withRouter)(Home)} />
         <Route
           path="/password-reset"
           exact
@@ -38,6 +37,21 @@ class Routes extends Component {
           path="/sentiment/:company"
           exact
           component={compose(withRouter, withFirebase)(SentimentDemo)}
+        />
+        <Route
+          path="/addInvestments"
+          exact
+          component={compose(withRouter, withFirebase)(AddInvestments)}
+        />
+        <Route
+          path="/company/:companyName"
+          exact
+          component={compose(withRouter, withFirebase)(Company)}
+        />
+        <Route
+          path="/news"
+          exact
+          component={compose(withRouter, withFirebase)(News)}
         />
       </Switch>
     );

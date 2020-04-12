@@ -7,7 +7,7 @@ import {
   Radio
 } from "@material-ui/core";
 
-const Step6 = ({ handleChange, value, classes }) => {
+const Step1 = ({ handleChange, value, classes }) => {
   return (
     <Fragment>
       <FormControl component="fieldset">
@@ -16,16 +16,16 @@ const Step6 = ({ handleChange, value, classes }) => {
           className={classes.FormLabel}
           classes={{ focused: classes.focused }}
         >
-          What type of investment portfolio do you want to have?
+          Select the index your investment is listed on
         </FormLabel>
         <RadioGroup
-          aria-label="portfolioType"
-          name="portfolioType"
+          aria-label="index"
+          name="index"
           value={value}
           onChange={handleChange}
         >
           <FormControlLabel
-            value="High Growth"
+            value="ASX"
             control={
               <Radio
                 classes={{
@@ -34,10 +34,10 @@ const Step6 = ({ handleChange, value, classes }) => {
                 }}
               />
             }
-            label="High Growth"
+            label="ASX"
           />
           <FormControlLabel
-            value="Balanced"
+            value="NASDAQ"
             control={
               <Radio
                 classes={{
@@ -46,19 +46,7 @@ const Step6 = ({ handleChange, value, classes }) => {
                 }}
               />
             }
-            label="Balanced"
-          />
-          <FormControlLabel
-            value="Conservative"
-            control={
-              <Radio
-                classes={{
-                  checked: classes.checked,
-                  colorSecondary: classes.radio
-                }}
-              />
-            }
-            label="Conservative"
+            label="NASDAQ"
           />
         </RadioGroup>
       </FormControl>
@@ -66,4 +54,4 @@ const Step6 = ({ handleChange, value, classes }) => {
   );
 };
 
-export default Step6;
+export default Step1;
