@@ -48,24 +48,24 @@ const TopStocks = () => {
   const [stock4, setStock4] = useState("loading...");
 
   useEffect(() => {
-    var urlOne = `https://api.worldtradingdata.com/api/v1/stock?symbol=CBA.AX&api_token=${config.worldTradingApiToken}`;
-    var urlTwo = `https://api.worldtradingdata.com/api/v1/stock?symbol=APT.AX&api_token=${config.worldTradingApiToken}`;
-    var urlThree = `https://api.worldtradingdata.com/api/v1/stock?symbol=QAN.AX&api_token=${config.worldTradingApiToken}`;
-    var urlFour = `https://api.worldtradingdata.com/api/v1/stock?symbol=WOW.AX&api_token=${config.worldTradingApiToken}`;
+    // var urlOne = `https://api.worldtradingdata.com/api/v1/stock?symbol=CBA.AX&api_token=${config.worldTradingApiToken}`;
+    // var urlTwo = `https://api.worldtradingdata.com/api/v1/stock?symbol=APT.AX&api_token=${config.worldTradingApiToken}`;
+    // var urlThree = `https://api.worldtradingdata.com/api/v1/stock?symbol=QAN.AX&api_token=${config.worldTradingApiToken}`;
+    // var urlFour = `https://api.worldtradingdata.com/api/v1/stock?symbol=WOW.AX&api_token=${config.worldTradingApiToken}`;
 
-    const requestOne = axios.get(urlOne);
-    const requestTwo = axios.get(urlTwo);
-    const requestThree = axios.get(urlThree);
-    const requestFour = axios.get(urlFour);
+    // const requestOne = axios.get(urlOne);
+    // const requestTwo = axios.get(urlTwo);
+    // const requestThree = axios.get(urlThree);
+    // const requestFour = axios.get(urlFour);
 
-    axios.all([requestOne, requestTwo, requestThree, requestFour]).then(
-      axios.spread((response1, response2, response3, response4) => {
-        setStock1(response1.data.data[0]["price"]);
-        setStock2(response2.data.data[0]["price"]);
-        setStock3(response3.data.data[0]["price"]);
-        setStock4(response4.data.data[0]["price"]);
-      })
-    );
+    // axios.all([requestOne, requestTwo, requestThree, requestFour]).then(
+    //   axios.spread((response1, response2, response3, response4) => {
+    //     setStock1(response1.data.data[0]["price"]);
+    //     setStock2(response2.data.data[0]["price"]);
+    //     setStock3(response3.data.data[0]["price"]);
+    //     setStock4(response4.data.data[0]["price"]);
+    //   })
+    // );
   }, []);
 
   function createData(companyName, symbol, price, sentiment) {

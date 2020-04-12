@@ -40,14 +40,14 @@ const LandingPage = () => {
       <Divider className={classes.divider} />
       <AboutUs />
       <Divider className={classes.divider} />
-      <TopStocks />
+      {/* <TopStocks />
       <Divider className={classes.divider} />
       <TopNews
         title="Powered by NewsAPI"
         subtitle="We provide relevant financial news to keep you informed with the stock market"
         titleColor="#2643e9"
-      />
-      <Divider style={{ marginTop: "5em" }} className={classes.divider} />
+      /> */}
+      {/* <Divider style={{ marginTop: "5em" }} className={classes.divider} /> */}
       <Footer />
     </div>
   );
