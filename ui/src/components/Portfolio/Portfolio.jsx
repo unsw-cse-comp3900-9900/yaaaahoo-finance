@@ -196,29 +196,30 @@ const Portfolio = ({
     openRemoveHoldingsModal(holdingId);
   };
   const getHoldingInfo = async (holding) => {
-    const url = `https://cloud.iexapis.com/v1/stock/${holding.symbol}/quote?token=${config.iexCloudApiToken}`;
-    return await axios
-      .get(url)
-      .then(({ data }) => {
-        const currentPrice = data.latestPrice || "N/A";
-        const currentPercentage =
-          data.latestPrice && data.open
-            ? (data.latestPrice / data.open).toFixed(3)
-            : "N/A";
-        const different =
-          data.latestPrice && data.open
-            ? (data.latestPrice - data.open) * holding.numberOfUnits
-            : 0;
-        if (different !== 0){
-          const price = estimatedEarnings + different;
-          setEstimatedEarnings(price);
-        }
-        return { currentPrice, currentPercentage };
-      })
-      .catch((error) => {
-        console.log(error);
-        return { currentPrice: "N/A", currentPercentage: "N/A" };
-      });
+    // const url = `https://cloud.iexapis.com/v1/stock/${holding.symbol}/quote?token=${config.iexCloudApiToken}`;
+    // return await axios
+    //   .get(url)
+    //   .then(({ data }) => {
+    //     const currentPrice = data.latestPrice || "N/A";
+    //     const currentPercentage =
+    //       data.latestPrice && data.open
+    //         ? (data.latestPrice / data.open).toFixed(3)
+    //         : "N/A";
+    //     const different =
+    //       data.latestPrice && data.open
+    //         ? (data.latestPrice - data.open) * holding.numberOfUnits
+    //         : 0;
+    //     if (different !== 0){
+    //       const price = estimatedEarnings + different;
+    //       setEstimatedEarnings(price);
+    //     }
+    //     return { currentPrice, currentPercentage };
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     return { currentPrice: "N/A", currentPercentage: "N/A" };
+    //   });
+      return { currentPrice: "N/A", currentPercentage: "N/A" };
   };
 
   useEffect(() => {
@@ -258,7 +259,7 @@ const Portfolio = ({
             >
               <Typography
                 component={Link}
-                to={`/company/${holding.companyName}`}
+                to={`/company/${holding.symbol}`}
                 className={classes.HoldingCardTitle}
               >
                 {holding.symbol}

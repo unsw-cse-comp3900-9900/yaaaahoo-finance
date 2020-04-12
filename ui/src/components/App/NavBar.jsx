@@ -84,17 +84,9 @@ const useStyles = makeStyles((theme) => ({
 
 const NavBar = ({ authUser, firebase, history }) => {
   const classes = useStyles();
+  const [menuOpen, setMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [form, setForm] = useState({
-    symbol: "",
-    companyName: "",
-  });
-  const [error, setError] = useState({
-    symbol: false,
-    companyName: false,
-  });
-
   const [searchResults, setSearchResults] = useState([
     {
       symbol: "AAPL.BA",
@@ -125,54 +117,32 @@ const NavBar = ({ authUser, firebase, history }) => {
       stock_exchange_long: "Sao Paolo Stock Exchange",
     },
   ]);
+
+  const openMenu = (e) => {
+    console.log(e);
+    setMenuOpen(true);
+  };
+
   const handleChange = (event, value, reason) => {
-    event.persist();
     setSearchTerm(value);
-    if (reason === "input")
-      setForm((f) => ({
-        ...f,
-        symbol: "",
-        companyName: "",
-      }));
-    setError((e) => ({
-      ...e,
-      symbol: true,
-      companyName: true,
-    }));
-    if (reason === "reset") {
-      const symbolAndName = value.split(" - ");
-      setForm((f) => ({
-        ...f,
-        symbol: symbolAndName[0],
-        companyName: symbolAndName[1],
-      }));
-      setError((e) => ({
-        ...e,
-        symbol: false,
-        companyName: false,
-      }));
-    }
   };
-  const handleBlur = (event) => {
-    event.persist();
-    setError((e) => ({
-      ...e,
-      [event.target.name]: form[event.target.name] === "",
-    }));
-  };
+
   const onLogout = (event) => {
     firebase.doSignOut();
   };
-  const keyPress = event => {
-    const results = searchResults.map(s => `${s.symbol} - ${s.name}`);
+  const keyPress = (event) => {
+    const results = searchResults.map((s) => `${s.symbol} - ${s.name}`);
     if (event.keyCode === 13) {
       if (!results.includes(event.target.value)) {
         console.log("Search word not found");
-        return;
       }
-      history.push(`/company/${event.target.value}`);
+      const symbolAndName = event.target.value.split(" - ");
+      setSearchTerm("");
+      setMenuOpen(false);
+      history.push(`/company/${symbolAndName[0]}`);
     }
-  }
+  };
+
   return (
     <AppBar className={classes.bar}>
       <Toolbar>
@@ -186,20 +156,24 @@ const NavBar = ({ authUser, firebase, history }) => {
               <Autocomplete
                 freeSolo
                 disableClearable
+                disablePortal
                 onKeyDown={keyPress}
+                value={searchTerm}
                 options={searchResults}
                 onInputChange={(event, value, reason) =>
                   handleChange(event, value, reason)
                 }
                 getOptionLabel={(option) => {
                   if (!option.symbol) return option;
-                  return `${option.symbol} - ${option.name}`}
-                }
+                  return `${option.symbol} - ${option.name}`;
+                }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
                     placeholder="Search…"
                     margin="normal"
+                    onMouseDown={openMenu}
+                    open={menuOpen}
                     name="symbol"
                     classes={{
                       root: classes.inputRoot,
