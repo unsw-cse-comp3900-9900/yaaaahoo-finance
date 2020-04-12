@@ -191,7 +191,7 @@ const Portfolio = ({
   const classes = useStyles();
   const [holdings, setHoldings] = useState(null);
   const [holdingsData, setHoldingsData] = useState(null);
-  const [estimatedEarnings, setEstimatedEarnings] = useState(0.0);
+  const [estimatedEarnings, setEstimatedEarnings] = useState(0);
   const handleSubmit = (holdingId) => {
     openRemoveHoldingsModal(holdingId);
   };
@@ -209,8 +209,10 @@ const Portfolio = ({
           data.latestPrice && data.open
             ? (data.latestPrice - data.open) * holding.numberOfUnits
             : 0;
-        if (different !== 0)
-          setEstimatedEarnings((estimatedEarnings + different).toFixed(3));
+        if (different !== 0){
+          const price = estimatedEarnings + different;
+          setEstimatedEarnings(price);
+        }
         return { currentPrice, currentPercentage };
       })
       .catch((error) => {
@@ -234,6 +236,7 @@ const Portfolio = ({
   const getContent = async () => {
     if (!holdings) {
       setHoldingsData(null);
+      setEstimatedEarnings(0)
       return;
     }
     const holdingsContent = [];
@@ -306,7 +309,7 @@ const Portfolio = ({
           className={classes.sumHeading1}
           style={{ color: styleColor }}
         >
-          ${estimatedEarnings}
+          ${estimatedEarnings.toFixed(2)}
         </Typography>
       </div>
       <Typography className={classes.heading1}>
