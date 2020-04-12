@@ -8,7 +8,10 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import DeleteIcon from "@material-ui/icons/Delete";
 import RemoveCircleIcon from "@material-ui/icons/RemoveCircle";
-
+import { config } from "../../config";
+import axios from "axios";
+import { useEffect } from "react";
+import { useState } from "react";
 const useStyles = makeStyles((theme) => ({
   page: {
     display: "flex",
@@ -183,11 +186,109 @@ const Portfolio = ({
   openDeleteModal,
   openAddHoldingsModal,
   openRemoveHoldingsModal,
+  updateEarningsInfo,
 }) => {
   const classes = useStyles();
-  const handleSubmit = holdingId => {
-    openRemoveHoldingsModal(holdingId)
-  }
+  const [holdings, setHoldings] = useState(null);
+  const [holdingsData, setHoldingsData] = useState(null);
+  const [estimatedEarnings, setEstimatedEarnings] = useState(0.0);
+  const handleSubmit = (holdingId) => {
+    openRemoveHoldingsModal(holdingId);
+  };
+  const getHoldingInfo = async (holding) => {
+    const url = `https://cloud.iexapis.com/v1/stock/${holding.symbol}/quote?token=${config.iexCloudApiToken}`;
+    return await axios
+      .get(url)
+      .then(({ data }) => {
+        const currentPrice = data.latestPrice || "N/A";
+        const currentPercentage =
+          data.latestPrice && data.open
+            ? (data.latestPrice / data.open).toFixed(3)
+            : "N/A";
+        const different =
+          data.latestPrice && data.open
+            ? (data.latestPrice - data.open) * holding.numberOfUnits
+            : 0;
+        if (different !== 0)
+          setEstimatedEarnings((estimatedEarnings + different).toFixed(3));
+        return { currentPrice, currentPercentage };
+      })
+      .catch((error) => {
+        console.log(error);
+        return { currentPrice: "N/A", currentPercentage: "N/A" };
+      });
+  };
+
+  useEffect(() => {
+    if (portfolio.holdings) {
+      setHoldings(Object.values(portfolio.holdings));
+    } else {
+      setHoldings(null);
+    }
+  }, [portfolio]);
+
+  useEffect(() => {
+    getContent();
+  }, [holdings]);
+
+  const getContent = async () => {
+    if (!holdings) {
+      setHoldingsData(null);
+      return;
+    }
+    const holdingsContent = [];
+    for (const holding of holdings) {
+      const holdingId = holding.id;
+      const currentInfo = await getHoldingInfo(holding);
+      const styleColor =
+        currentInfo.currentPercentage < 0
+          ? "#fb6340"
+          : currentInfo.currentPercentage > 0
+          ? "#2dce89"
+          : "inherit";
+      holdingsContent.push(
+        <div className={classes.CardItem} key={holding.id}>
+          <Card className={classes.HoldingCard}>
+            <CardContent
+              className={classes.HoldingCardContent}
+              style={{ paddingBottom: "1em" }}
+            >
+              <Typography
+                component={Link}
+                to={`/company/${holding.companyName}`}
+                className={classes.HoldingCardTitle}
+              >
+                {holding.symbol}
+              </Typography>
+              <Typography className={classes.HoldingCardHeading}>
+                {currentInfo.currentPrice}
+              </Typography>
+              <Typography
+                className={classes.HoldingCardHeading}
+                style={{ color: styleColor }}
+              >
+                {currentInfo.currentPercentage}%
+              </Typography>
+              <RemoveCircleIcon
+                value={holding.id}
+                className={classes.removeIcon}
+                onClick={() => handleSubmit(holdingId)}
+              />
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+    setHoldingsData(holdingsContent);
+  };
+
+  const styleColor =
+    estimatedEarnings < 0
+      ? "#fb6340"
+      : estimatedEarnings > 0
+      ? "#2dce89"
+      : "inherit";
+
   return (
     <Fragment>
       <div className={classes.header}>
@@ -201,7 +302,12 @@ const Portfolio = ({
         <Typography className={classes.sumHeading2}>
           Estimated earnings today
         </Typography>
-        <Typography className={classes.sumHeading1}>$0.00</Typography>
+        <Typography
+          className={classes.sumHeading1}
+          style={{ color: styleColor }}
+        >
+          ${estimatedEarnings}
+        </Typography>
       </div>
       <Typography className={classes.heading1}>
         <AddCircleIcon
@@ -226,38 +332,7 @@ const Portfolio = ({
           </Card>
         </div>
       )}
-      {portfolio.holdings &&
-        Object.values(portfolio.holdings).map((holding, index) => {
-          const holdingId = holding.id
-          return (
-          <div className={classes.CardItem} key={index}>
-            <Card className={classes.HoldingCard}>
-              <CardContent
-                className={classes.HoldingCardContent}
-                style={{ paddingBottom: "1em" }}
-              >
-                <Typography
-                  component={Link}
-                  to={`/company/${holding.companyName}`}
-                  className={classes.HoldingCardTitle}
-                >
-                  {holding.symbol}
-                </Typography>
-                <Typography className={classes.HoldingCardHeading}>
-                  79.82
-                </Typography>
-                <Typography className={classes.HoldingCardHeading}>
-                  2.12%
-                </Typography>
-                <RemoveCircleIcon
-                  value={holding.id}
-                  className={classes.removeIcon}
-                  onClick={() => handleSubmit(holdingId)}
-                />
-              </CardContent>
-            </Card>
-          </div>
-        )})}
+      {holdingsData}
     </Fragment>
   );
 };

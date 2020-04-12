@@ -11,6 +11,8 @@ import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import AddHoldingsModal from "./AddHoldingsModal";
+import { config } from "../../config";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -277,7 +279,9 @@ const Home = ({ firebase }) => {
                       openDeleteModal={handleOpenDeleteModal}
                       openEditModal={handleOpenEditModal}
                       openAddHoldingsModal={handleOpenAddHoldingsModal}
-                      openRemoveHoldingsModal={holdingId => handleOpenRemoveHoldingsModal(holdingId)}
+                      openRemoveHoldingsModal={(holdingId) =>
+                        handleOpenRemoveHoldingsModal(holdingId)
+                      }
                     />
                     {openEditModal && (
                       <Modal

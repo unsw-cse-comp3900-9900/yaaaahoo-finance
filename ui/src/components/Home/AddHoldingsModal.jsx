@@ -152,37 +152,36 @@ const AddHoldingsModal = ({ isOpen, onClose, onSubmit, portfolioId }) => {
     },
   ]);
 
-  //   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+    const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const searchCompanies = async (search) => {
-    return;
-    // const url = `https://api.worldtradingdata.com/api/v1/stock_search?search_term=${search}&limit=5&page=1&api_token=${config.worldTradingApiToken}`;
-    // return await axios
-    //   .get(url)
-    //   .then(({ data }) => data)
-    //   .catch((error) => {
-    //     console.error(error);
-    //     return {
-    //         data: []
-    //     };
-    //   });
+    const url = `https://api.worldtradingdata.com/api/v1/stock_search?search_term=${search}&limit=5&page=1&api_token=${config.worldTradingApiToken}`;
+    return await axios
+      .get(url)
+      .then(({ data }) => data)
+      .catch((error) => {
+        console.error(error);
+        return {
+            data: []
+        };
+      });
   };
 
-  //   useEffect(() => {
-  //     if (debouncedSearchTerm) {
-  //       // Set isSearching state
-  //       setIsSearching(true);
-  //       // Fire off our API call
-  //       searchCompanies(debouncedSearchTerm).then((results) => {
-  //         // Set back to false since request finished
-  //         setIsSearching(false);
-  //         // Set results state
-  //         // setSearchResults(results.data);
-  //       });
-  //     } else {
-  //     //   setSearchResults([]);
-  //     }
-  //   }, [debouncedSearchTerm]);
+    useEffect(() => {
+      if (debouncedSearchTerm) {
+        // Set isSearching state
+        setIsSearching(true);
+        // Fire off our API call
+        searchCompanies(debouncedSearchTerm).then((results) => {
+          // Set back to false since request finished
+          setIsSearching(false);
+          // Set results state
+          setSearchResults(results.data);
+        });
+      } else {
+        setSearchResults([]);
+      }
+    }, [debouncedSearchTerm]);
 
   const handleChange = (event, value, reason) => {
     event.persist();
