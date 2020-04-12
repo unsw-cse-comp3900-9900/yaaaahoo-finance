@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, Fragment } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, fade } from "@material-ui/core/styles";
 import { Typography, TextField, Button } from "@material-ui/core";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
@@ -15,6 +15,7 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
+import SearchIcon from "@material-ui/icons/Search";
 
 const useStyles = makeStyles((theme) => ({
   heading: {
@@ -62,6 +63,42 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  search: {
+    position: "relative",
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade(theme.palette.common.white, 0.15),
+    "&:hover": {
+      backgroundColor: fade(theme.palette.common.white, 0.25),
+    },
+    marginLeft: "auto",
+    marginRight: "auto",
+    width: "100%",
+  },
+  searchIcon: {
+    padding: theme.spacing(0, 2),
+    height: "100%",
+    position: "absolute",
+    pointerEvents: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  inputRoot: {
+    color: "inherit",
+  },
+  inputInput: {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      width: "12ch",
+      "&:focus": {
+        width: "20ch",
+      },
+    },
   },
 }));
 
@@ -146,9 +183,6 @@ const AddHoldingsModal = ({ isOpen, onClose, onSubmit, portfolioId }) => {
   //     //   setSearchResults([]);
   //     }
   //   }, [debouncedSearchTerm]);
-  const [selectedDate, setSelectedDate] = React.useState(
-    new Date("2014-08-18T21:11:54")
-  );
 
   const handleChange = (event, value, reason) => {
     event.persist();
@@ -232,15 +266,17 @@ const AddHoldingsModal = ({ isOpen, onClose, onSubmit, portfolioId }) => {
     }));
   };
 
-  const formInvalid = (form.symbol === "" ||
-  form.companyName === "" ||
-  form.numberOfUnits === "" || !validateNumberOfUnits(form.numberOfUnits) ||
-  form.costPerUnit === "" || !validateCostPerUnit(form.costPerUnit) ||
-  !form.tradeDate);
+  const formInvalid =
+    form.symbol === "" ||
+    form.companyName === "" ||
+    form.numberOfUnits === "" ||
+    !validateNumberOfUnits(form.numberOfUnits) ||
+    form.costPerUnit === "" ||
+    !validateCostPerUnit(form.costPerUnit) ||
+    !form.tradeDate;
 
   const handleSubmit = () => {
-    if (!formInvalid)
-        onSubmit(portfolioId, form);
+    if (!formInvalid) onSubmit(portfolioId, form);
   };
 
   return (
@@ -259,30 +295,47 @@ const AddHoldingsModal = ({ isOpen, onClose, onSubmit, portfolioId }) => {
       <Fade in={isOpen}>
         <div className={classes.paper}>
           <Typography className={classes.heading}>Add Holding</Typography>
-          <Autocomplete
-            freeSolo
-            disableClearable
-            options={searchResults}
-            onInputChange={(event, value, reason) =>
-              handleChange(event, value, reason)
-            }
-            getOptionLabel={(option) => `${option.symbol} - ${option.name}`}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Search company or symbol"
-                margin="normal"
-                variant="outlined"
-                name="symbol"
-                onBlur={handleBlur}
-                InputProps={{ ...params.InputProps, type: "search" }}
-                error={error.symbol || error.companyName}
-                helperText={
-                  error.symbol || error.companyName ? "Invalid input" : ""
-                }
-              />
-            )}
-          />
+          <div className={classes.search}>
+            <Autocomplete
+              freeSolo
+              disableClearable
+              options={searchResults}
+              onInputChange={(event, value, reason) =>
+                handleChange(event, value, reason)
+              }
+              getOptionLabel={(option) => {
+                if (!option.symbol) return option;
+                return `${option.symbol} - ${option.name}`;
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Search company or symbol"
+                  placeholder="Search…"
+                  margin="normal"
+                  name="symbol"
+                  classes={{
+                    root: classes.inputRoot,
+                  }}
+                  error={error.symbol || error.companyName}
+                  helperText={
+                    error.symbol || error.companyName ? "Invalid input" : ""
+                  }
+                  InputProps={{
+                    "aria-label": "search",
+                    ...params.InputProps,
+                    type: "search",
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon />
+                      </InputAdornment>
+                    ),
+                    classes: { input: classes.inputInput },
+                  }}
+                />
+              )}
+            />
+          </div>
           <TextField
             label="Unit quantity"
             type="number"

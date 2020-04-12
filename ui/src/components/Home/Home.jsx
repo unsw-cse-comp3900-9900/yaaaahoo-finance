@@ -267,7 +267,6 @@ const Home = ({ firebase }) => {
                     />{" "}
                     Create new portfolio
                   </Typography>
-                  <SearchIcon className={classes.searchButton} />
                 </div>
 
                 {portfolios.map((portfolio, index) => (
