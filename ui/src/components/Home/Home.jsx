@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
 const Home = ({ firebase }) => {
   const classes = useStyles();
   const [userData, setUserData] = useState(null);
-  const [portfolios, setPortfolios] = useState(null);
+  const [portfolios, setPortfolios] = useState([]);
   const [recommendation, setRecommendation] = useState(null);
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
@@ -192,7 +192,9 @@ const Home = ({ firebase }) => {
   useEffect(() => {
     if (!userData) return;
     calcRecommendation();
-    setPortfolios(Object.values(userData.portfolios));
+    if (userData.portfolios)
+      setPortfolios(Object.values(userData.portfolios));
+    else setPortfolios([])
   }, [userData]);
 
   useEffect(() => {
