@@ -52,10 +52,31 @@ const fetchTask = async (days) => {
 
 
 const data = {
+    // labels: ['cba', 'dsad']
     // labels: Array.from({length: 20}, () => Math.floor(Math.random() * 20)),
     datasets: [
       {
         label: company,
+        lineTension: 0.1,
+        backgroundColor: 'rgba(235, 82, 82,0.4)',
+        borderColor: 'rgba(235, 82, 82,1)',
+        borderCapStyle: 'butt',
+        borderDash: [],
+        borderDashOffset: 0.0,
+        borderJoinStyle: 'miter',
+        pointBorderColor: 'rgba(235, 82, 82,1)',
+        pointBackgroundColor: '#000',
+        pointBorderWidth: 1,
+        // pointHoverRadius: 5,
+        pointHoverBackgroundColor: 'rgba(235, 82, 82,1)',
+        pointHoverBorderColor: 'rgba(220,220,220,1)',
+        pointHoverBorderWidth: 2,
+        // pointRadius: 1,
+        // pointHitRadius: 10,
+        data: []
+      },
+      {
+        label: company + " predictions",
         // fill: false,
         lineTension: 0.1,
         backgroundColor: 'rgba(75,192,192,0.4)',
@@ -65,7 +86,7 @@ const data = {
         borderDashOffset: 0.0,
         borderJoinStyle: 'miter',
         pointBorderColor: 'rgba(75,192,192,1)',
-        pointBackgroundColor: '#fff',
+        pointBackgroundColor: '#000',
         pointBorderWidth: 1,
         // pointHoverRadius: 5,
         pointHoverBackgroundColor: 'rgba(75,192,192,1)',
@@ -81,10 +102,18 @@ const options = {
   scales: {
     xAxes: [{
       type: 'linear',
+      // ticks: {
+      //   min: 0,
+      // },
       // time: {
       //   unit: 'millisecond'
       // }
       // distribution: 'linear'
+    }],
+    yAxes: [{
+      ticks: {
+        beginAtZero: true,
+      }
     }]
   }
 }
@@ -99,23 +128,61 @@ async function getPredictions(days) {
     `http://localhost:8080/prediction/${days}/${company}`
   );
   console.log(nums['data']);
-  const preds = nums['data']
-  for(var i=0; i<days;i++) {
-    rands.push({
-      x: i+1,
-      y: preds[i]
-    })
-  }
-  // const rands = Array.from({length: 20}, () => Math.floor(Math.random() * 40));
-  console.log(rands);
-  const numbers = rands;
+  const info = nums['data']
 
-  data['datasets'][0]['data'] = numbers;
-  console.log(data['datasets'][0]['data']);
+  var predictions = [];
+  var prev = [];
+
+  console.log(info.length)
+  const prev_cut = info.length * 2/3
+
+  for(var i=0; i<info.length; i++) {
+    if(i<prev_cut) {
+      prev.push({
+        x: i,
+        y: info[i]
+      })
+    } else if(i == prev_cut) {
+      prev.push({
+        x: i,
+        y: info[i]
+      })
+      predictions.push({
+        x: i,
+        y: info[i]
+      })
+    } else {
+      predictions.push({
+        x: i,
+        y: info[i]
+      })
+    }
+  }
+
+  // for(var i=30; i<30+days;i++) {
+  //   rands.push({
+  //     x: i,
+  //     y: info[i-30]
+  //   })
+  // }
+  // var rands2 = []
+  // for(var i=0; i<days;i++) {
+  //   rands2.push({
+  //     x: i,
+  //     y: info[i]
+  //   })
+  // }
+  // console.log(rands);
+  // const numbers = rands;
+  // data['datasets'][0]['data'] = rands2;
+  // data['datasets'][1]['data'] = numbers;
+  data['datasets'][0]['data'] = prev;
+  data['datasets'][1]['data'] = predictions
+  // console.log(data['datasets'][0]['data']);
   
   let lineChart = lineRef.chartInstance
   lineChart.update();
-  return (numbers);
+  // return (numbers);
 };
 const Page = () => {
   // Use styling function above so you can call
