@@ -18,21 +18,22 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 def home():
     return "please use an endpoint"
 
-@app.route('/prediction/<company>')
-def prediction(company):
-    model = tf.keras.models.load_model('model.h5')
+@app.route('/prediction/<days>/<company>')
+def prediction(days, company):
+    days = int(days)
+    model = tf.keras.models.load_model('model_{}.h5'.format(days))
+    lags = 100 if days >= 10 else days * 10
+    print(lags)
     feature_sets = 12
-    x = 40 * np.random.rand(1, 200, feature_sets)
+    # currently just getting random numbers. change this to use the API
+    x = 40 * np.random.rand(1, lags, feature_sets)
     scalers = [sklearn.preprocessing.MinMaxScaler() for a in range(feature_sets)]
-    # print(x)
     for feature_num in range(feature_sets):
         scaled = scalers[feature_num].fit_transform(x[0, :, feature_num].reshape(-1, 1))
         # print(scaled.shape)
         # print(x[:, :, feature_num])
         x[:,:,feature_num] = scaled.reshape(-1)
         # print(x[:, : , feature_num])
-    # print(x)
-    # print(x.shape)
     preds = model.predict(x)
     ayaya = scalers[0].inverse_transform(preds)
     return jsonify(ayaya[0].tolist())
