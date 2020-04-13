@@ -27,7 +27,7 @@ function createData(portfolios, symbol, companyData) {
     let totalGain = "N/A";
     let totalPerc = "N/A";
     let daysGain = "N/A";
-
+    if(portfolios[i].holdings == null) continue;
     const portfolio_holdings = Object.values(portfolios[i].holdings);
 
     for (let j = 0; j < portfolio_holdings.length; j++) {
