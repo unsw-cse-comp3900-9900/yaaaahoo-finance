@@ -282,7 +282,6 @@ const Company = ({ history, firebase }) => {
   const styleColor =
     difference < 0 ? "#fb6340" : difference > 0 ? "#2dce89" : "inherit";
   
-  const company = history.location.pathname.replace("/company/", "");
   return (
     <AuthUserContext.Consumer>
       {(authUser) => {
