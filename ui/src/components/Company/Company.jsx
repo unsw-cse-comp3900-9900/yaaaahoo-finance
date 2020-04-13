@@ -19,11 +19,31 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 
-function createData(portfolio, daysGain, daysPerc, totalGain, totalPerc) {
-  return { portfolio, daysGain, daysPerc, totalGain, totalPerc };
-}
+function createData(portfolios, symbol, companyData) {
+  const holdings = []
+  for (let i = 0; i < portfolios.length; i++) {
 
-const rows = [createData("My Portfolio", 159, 6.0, 24, 4.0)];
+    let totalGain = "N/A";
+    let totalPerc = "N/A";
+
+    const portfolio_holdings = Object.values(portfolios[i].holdings);
+
+    for (let j = 0; j < portfolio_holdings.length; j++) {
+
+      if(portfolio_holdings[j].symbol == symbol) {
+
+        totalGain = ((companyData.latestPrice - portfolio_holdings[j].costPerUnit) * portfolio_holdings[j].numberOfUnits)
+            .toLocaleString(navigator.language, { minimumFractionDigits : 2});
+        totalPerc = (companyData.latestPrice / portfolio_holdings[j].costPerUnit).toLocaleString(navigator.language, { minimumFractionDigits : 2});
+
+        holdings.push({ portfolio: portfolios[i].name, daysGain: companyData.change, daysPerc: companyData.changePercent, totalGain: totalGain, totalPerc: totalPerc })
+
+      }
+
+    }
+  }
+  return holdings;
+}
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -104,9 +124,19 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "30px",
   },
 }));
-const Company = ({ history }) => {
+const Company = ({ history, firebase }) => {
   const classes = useStyles();
+  const company = history.location.pathname.replace("/company/", "");
   const [value, setValue] = React.useState(0);
+  const [userData, setUserData] = useState(null);
+  const [portfolios, setPortfolios] = useState([]);
+
+  useEffect(() => {
+    if (!userData) return;
+    if (userData.portfolios)
+      setPortfolios(Object.values(userData.portfolios));
+    else setPortfolios([])
+  }, [userData]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -216,12 +246,20 @@ const Company = ({ history }) => {
   };
 
   useEffect(() => {
-    const company = history.location.pathname.replace("/company/", "");
-    // getInfo(company);
+    const company = window.location.pathname.split("/").pop()
+    getInfo(company);
     // getHistoricalData(company, "1m");
   }, []);
   const difference = companyData.latestPrice - companyData.open;
   const differencePercentage = difference / companyData.open;
+
+  useEffect(() => {
+    firebase.getUserData().then((res) => {
+      setUserData(res);
+    });
+  }, []);
+
+  const rows = createData(portfolios, company, companyData);
 
   const trace1 = {
     fill: "tozeroy",
