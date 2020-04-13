@@ -18,6 +18,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import Analysis from "../Analysis/Analysis";
 
 function createData(portfolio, daysGain, daysPerc, totalGain, totalPerc) {
   return { portfolio, daysGain, daysPerc, totalGain, totalPerc };
@@ -240,6 +241,8 @@ const Company = ({ history }) => {
 
   const styleColor =
     difference < 0 ? "#fb6340" : difference > 0 ? "#2dce89" : "inherit";
+  
+  const company = history.location.pathname.replace("/company/", "");
   return (
     <AuthUserContext.Consumer>
       {(authUser) => {
@@ -333,59 +336,9 @@ const Company = ({ history }) => {
               </TabPanel>
 
               <TabPanel value={value} index={2}>
-                <Typography
-                  style={{ color: "#444444" }}
-                  className={classes.Heading2}
-                >
-                  Our 30-Day Prediction
-                </Typography>
-                <Typography className={classes.Heading2}>
-                  {companyData.latestPrice}
-                </Typography>
-                <Typography
-                  style={{ color: styleColor }}
-                  className={classes.Heading4}
-                >
-                  {difference.toFixed(2)} ({differencePercentage.toFixed(2)}%)
-                </Typography>
-                <Typography
-                  className={classes.Heading5}
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  Sentimental Analysis:{" "}
-                  {difference > 0 ? (
-                    <span style={{ color: "#2dce89", marginLeft: "1em" }}>
-                      <ThumbUpAltIcon style={{ fontSize: "2em" }} />
-                    </span>
-                  ) : difference < 0 ? (
-                    <span style={{ color: "#fb6340", marginLeft: "1em" }}>
-                      <ThumbDownAltIcon style={{ fontSize: "2em" }} />
-                    </span>
-                  ) : (
-                    <CircularProgress
-                      size="1.2em"
-                      style={{ marginLeft: "1em", color: "#2643e9" }}
-                    />
-                  )}
-                </Typography>
-                <Typography className={classes.Heading5}>
-                  Our Recommendation:{" "}
-                  <span
-                    style={{
-                      color: styleColor,
-                      marginLeft: "0.3em",
-                      fontWeight: 500,
-                      fontSize: "1.2em",
-                    }}
-                  >
-                    Buy
-                  </span>
-                </Typography>
-                <Plot
+
+                <Analysis company={company} classes={classes} />
+                {/* <Plot
                   data={[trace1]}
                   displayModeBar={false}
                   layout={{
@@ -405,7 +358,7 @@ const Company = ({ history }) => {
                   config={{ responsive: true, displayModeBar: false }}
                   useResizeHandler={true}
                   style={{ width: "100%", height: "100%" }}
-                />
+                /> */}
               </TabPanel>
             </div>
           </div>
