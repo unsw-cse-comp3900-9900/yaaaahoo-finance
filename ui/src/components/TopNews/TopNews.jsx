@@ -1,11 +1,12 @@
 /* eslint-disable jsx-a11y/alt-text */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { config } from "../../config";
 import axios from "axios";
+
 const useStyles = makeStyles((theme) => ({
   Page: {
     display: "flex",
@@ -24,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "1em",
   },
   Card: {
-    width: "85%",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -36,37 +36,40 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   CardBody: {
-    fontSize: "1.2em",
+    fontSize: "1em",
     [theme.breakpoints.down("sm")]: {
       fontSize: "0.8em",
     },
   },
-  CardContainer: {
+  CardItem: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    flexGrow: 1,
-    width: "100%",
-    justifyContent: "space-evenly",
-  },
-  CardItem: {
-    display: "flex",
-    flexDirection: "row",
-    width: "100%",
-    justifyContent: "space-evenly",
-    alignItems: "center",
+    height: "500px",
+    margin: "1em",
     [theme.breakpoints.down("sm")]: {
-      flexDirection: "column",
+      height: "auto",
     },
   },
   CardImage: {
-    marginRight: "1em",
     marginBottom: "1em",
     marginTop: "1em",
-    width: "25%",
+    marginRight: 0,
+    width: "100%",
+  },
+  description: {
+    display: "flex",
+    flexDirection: "column",
+    maxWidth: "500px",
+  },
+  Content: {
+    display: "flex",
+    flexDirection: "column",
+    width: "500px",
+    height: "500px",
     [theme.breakpoints.down("sm")]: {
-      marginRight: 0,
-      width: "80%",
+      height: "auto",
+      width: "100%",
     },
   },
 }));
@@ -74,19 +77,32 @@ const useStyles = makeStyles((theme) => ({
 const TopNews = ({ title, subtitle, titleColor }) => {
   const classes = useStyles();
   const [newsData, setNewsData] = useState(null);
+  const cancelToken = useRef(null);
 
   useEffect(() => {
-    // NEWS API CALL
-    // To-Do: handle cancelToken when component dismounted
+    if (cancelToken.current) {
+      cancelToken.current.cancel("Component unmounted");
+    }
     const url = `http://newsapi.org/v2/top-headlines?category=business&country=au&apiKey=${config.newsApiToken}`;
+    cancelToken.current = axios.CancelToken.source();
     axios
-      .get(url)
+      .get(url, { cancelToken: cancelToken.current.token })
       .then(({ data }) => {
         setNewsData(data.articles);
       })
       .catch((error) => {
-        console.log(error);
+        if (axios.isCancel(error)) {
+          console.log("Request canceled", error.message);
+        } else {
+          console.log(error);
+        }
       });
+
+    return () => {
+      if (cancelToken.current) {
+        cancelToken.current.cancel("Component unmounted");
+      }
+    };
   }, []);
 
   return (
@@ -107,7 +123,9 @@ const TopNews = ({ title, subtitle, titleColor }) => {
         style={{
           overflowY: "scroll",
           display: "flex",
-          flexDirection: "column",
+          flexDirection: "row",
+          flexWrap: "wrap",
+          justifyContent: "space-between",
         }}
       >
         {newsData &&
@@ -116,27 +134,32 @@ const TopNews = ({ title, subtitle, titleColor }) => {
               return null;
             }
             return (
-              <div className={classes.CardContainer} key={`article-${index}`}>
+              <Fragment key={`article-${index}`}>
                 <div className={classes.CardItem}>
-                  <img className={classes.CardImage} src={article.urlToImage} />
                   <Card className={classes.Card}>
-                    <CardContent>
-                      <Typography gutterBottom className={classes.CardTitle}>
-                        <a
-                          href={article.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {article.title}
-                        </a>
-                      </Typography>
-                      <Typography className={classes.CardBody}>
-                        {article.description}
-                      </Typography>
+                    <CardContent className={classes.Content}>
+                      <img
+                        className={classes.CardImage}
+                        src={article.urlToImage}
+                      />
+                      <div className={classes.description}>
+                        <Typography gutterBottom className={classes.CardTitle}>
+                          <a
+                            href={article.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {article.title}
+                          </a>
+                        </Typography>
+                        <Typography className={classes.CardBody}>
+                          {article.description}
+                        </Typography>
+                      </div>
                     </CardContent>
                   </Card>
                 </div>
-              </div>
+              </Fragment>
             );
           })}
       </div>

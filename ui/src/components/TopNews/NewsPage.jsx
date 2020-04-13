@@ -2,7 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { AuthUserContext, withAuthorization } from "../Session";
 import TopNews from "./TopNews";
-import { Typography } from "@material-ui/core";
+
 const useStyles = makeStyles((theme) => ({
   Page: {
     display: "flex",
@@ -27,20 +27,8 @@ const useStyles = makeStyles((theme) => ({
       minHeight: "inherit",
     },
   },
-  Title: {
-    fontSize: "2em",
-    fontWeight: 500,
-    marginBottom: "1em",
-  },
-  Heading2: {
-    fontSize: "1.3em",
-    fontWeight: 400,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-  },
 }));
-const News = ({ history }) => {
+const News = () => {
   const classes = useStyles();
 
   return (
