@@ -27,16 +27,22 @@ def prediction(days, company):
     feature_sets = 12
     # currently just getting random numbers. change this to use the API
     x = 40 * np.random.rand(1, lags, feature_sets)
+    scaled_x = np.zeros((1, lags, feature_sets))
     scalers = [sklearn.preprocessing.MinMaxScaler() for a in range(feature_sets)]
     for feature_num in range(feature_sets):
         scaled = scalers[feature_num].fit_transform(x[0, :, feature_num].reshape(-1, 1))
         # print(scaled.shape)
         # print(x[:, :, feature_num])
-        x[:,:,feature_num] = scaled.reshape(-1)
+        scaled_x[:,:,feature_num] = scaled.reshape(-1)
         # print(x[:, : , feature_num])
-    preds = model.predict(x)
+    
+    preds = model.predict(scaled_x)
     ayaya = scalers[0].inverse_transform(preds)
-    return jsonify(ayaya[0].tolist())
+    previous = x[:,:,0].reshape(-1)
+    final = np.concatenate((previous[-days*2:], ayaya[0]))
+    # print(final)
+    # return jsonify(ayaya[0].tolist())
+    return jsonify(final.tolist())
 
 @app.route('/sentiment/<company>')
 def sentiment(company):

@@ -15,22 +15,41 @@ const Analysis = ({ company, classes }) => {
 
   const getPredictions = async (days) => {
     cancelToken.current = axios.CancelToken.source();
-    const rands = [];
+    var predictions = [];
+    var prev = [];
     return await axios
       .get(`http://localhost:8080/prediction/${days}/${company}`, {
         cancelToken: cancelToken.current.token,
       })
       .then(({ data }) => {
-        for (let i = 0; i < days; i++) {
-          rands.push({
-            x: i + 1,
-            y: data[i],
-          });
+        const prev_cut = data.length * 2/3
+
+        for(var i=0; i<data.length; i++) {
+          if(i<prev_cut) {
+            prev.push({
+              x: i,
+              y: data[i]
+            })
+          } else if(i == prev_cut) {
+            prev.push({
+              x: i,
+              y: data[i]
+            })
+            predictions.push({
+              x: i,
+              y: data[i]
+            })
+          } else {
+            predictions.push({
+              x: i,
+              y: data[i]
+            })
+          }
         }
         const initialData = {
           datasets: [
             {
-              label: company,
+              label: company + " predictions",
               lineTension: 0.1,
               backgroundColor: "rgba(75,192,192,0.4)",
               borderColor: "rgba(75,192,192,1)",
@@ -44,7 +63,27 @@ const Analysis = ({ company, classes }) => {
               pointHoverBackgroundColor: "rgba(75,192,192,1)",
               pointHoverBorderColor: "rgba(220,220,220,1)",
               pointHoverBorderWidth: 2,
-              data: rands,
+              data: predictions,
+            },
+            {
+              label: company,
+              lineTension: 0.1,
+              backgroundColor: 'rgba(235, 82, 82,0.4)',
+              borderColor: 'rgba(235, 82, 82,1)',
+              borderCapStyle: 'butt',
+              borderDash: [],
+              borderDashOffset: 0.0,
+              borderJoinStyle: 'miter',
+              pointBorderColor: 'rgba(235, 82, 82,1)',
+              pointBackgroundColor: '#000',
+              pointBorderWidth: 1,
+              // pointHoverRadius: 5,
+              pointHoverBackgroundColor: 'rgba(235, 82, 82,1)',
+              pointHoverBorderColor: 'rgba(220,220,220,1)',
+              pointHoverBorderWidth: 2,
+              // pointRadius: 1,
+              // pointHitRadius: 10,
+              data: prev,
             },
           ],
         };
@@ -54,7 +93,7 @@ const Analysis = ({ company, classes }) => {
           let lineChart = lineRef.current.chartInstance;
           lineChart.update();
         }
-        return rands;
+        // return rands;
       })
       .catch((error) => {
         if (axios.isCancel(error)) {
@@ -97,6 +136,11 @@ const Analysis = ({ company, classes }) => {
           type: "linear",
         },
       ],
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+        }
+      }]
     },
   };
 
