@@ -25,6 +25,7 @@ function createData(portfolios, symbol, companyData) {
 
     let totalGain = "N/A";
     let totalPerc = "N/A";
+    let daysGain = "N/A";
 
     const portfolio_holdings = Object.values(portfolios[i].holdings);
 
@@ -35,8 +36,9 @@ function createData(portfolios, symbol, companyData) {
         totalGain = ((companyData.latestPrice - portfolio_holdings[j].costPerUnit) * portfolio_holdings[j].numberOfUnits)
             .toLocaleString(navigator.language, { minimumFractionDigits : 2});
         totalPerc = (companyData.latestPrice / portfolio_holdings[j].costPerUnit).toLocaleString(navigator.language, { minimumFractionDigits : 2});
+        daysGain = (companyData.change * portfolio_holdings[j].numberOfUnits).toLocaleString(navigator.language, {minimumFractionDigits: 2});
 
-        holdings.push({ portfolio: portfolios[i].name, daysGain: companyData.change, daysPerc: companyData.changePercent, totalGain: totalGain, totalPerc: totalPerc })
+        holdings.push({ portfolio: portfolios[i].name, daysGain: daysGain, daysPerc: companyData.changePercent, totalGain: totalGain, totalPerc: totalPerc })
 
       }
 
