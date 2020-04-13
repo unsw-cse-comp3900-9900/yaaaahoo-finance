@@ -20,7 +20,8 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Analysis from "../Analysis/Analysis";
 
-function createData(portfolios, symbol, companyData) {
+function createData(portfolios, companyData) {
+  const symbol = companyData.symbol;
   const holdings = []
   for (let i = 0; i < portfolios.length; i++) {
 
@@ -129,7 +130,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 const Company = ({ history, firebase }) => {
   const classes = useStyles();
-  const company = history.location.pathname.replace("/company/", "");
   const [value, setValue] = React.useState(0);
   const [userData, setUserData] = useState(null);
   const [portfolios, setPortfolios] = useState([]);
@@ -249,8 +249,8 @@ const Company = ({ history, firebase }) => {
   };
 
   useEffect(() => {
-    const company = window.location.pathname.split("/").pop()
-    getInfo(company);
+    // const company = history.location.pathname.replace("/company/", "");
+    // getInfo(company);
     // getHistoricalData(company, "1m");
   }, []);
   const difference = companyData.latestPrice - companyData.open;
@@ -262,7 +262,7 @@ const Company = ({ history, firebase }) => {
     });
   }, []);
 
-  const rows = createData(portfolios, company, companyData);
+  const rows = createData(portfolios, companyData);
 
   const trace1 = {
     fill: "tozeroy",
@@ -281,7 +281,8 @@ const Company = ({ history, firebase }) => {
 
   const styleColor =
     difference < 0 ? "#fb6340" : difference > 0 ? "#2dce89" : "inherit";
-  
+    const company = history.location.pathname.replace("/company/", "");
+
   return (
     <AuthUserContext.Consumer>
       {(authUser) => {
