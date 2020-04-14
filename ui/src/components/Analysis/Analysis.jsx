@@ -4,19 +4,48 @@ import { Line } from "react-chartjs-2";
 import { Button, Typography, CircularProgress } from "@material-ui/core";
 import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
 import ThumbDownAltIcon from "@material-ui/icons/ThumbDownAlt";
-
 const Analysis = ({ company, classes }) => {
   const [graphData, setGraphData] = useState(null);
   const [startDayPrice, setStartDayPrice] = useState(0);
   const [finalDayPrice, setFinalDayPrice] = useState(0);
-
+  const [sentiment, setSentiment] = useState(null);
+  const [predictionName, setPredictionName] = useState("Our 1-Month Prediction");
   const lineRef = useRef(null);
   const cancelToken = useRef(null);
+
+  const getSentiment = async () => {
+    cancelToken.current = axios.CancelToken.source();
+    await axios
+      .get(`http://localhost:8080/sentiment/${company}`, {
+        cancel: cancelToken.current.token,
+      })
+      .then(({ data }) => {
+        setSentiment(data['sentiment']);
+      })
+      .catch((error) => {
+        if (axios.isCancel(error)) {
+          console.log("Request canceled", error.message);
+        } else {
+          console.log(error);
+        }
+      });
+      console.log("AAA,BBB");
+  }
 
   const getPredictions = async (days) => {
     cancelToken.current = axios.CancelToken.source();
     var predictions = [];
     var prev = [];
+    if(days < 5) {
+      setPredictionName("Our " + days + "-Day Prediction");
+    } else if(days == 5) {
+      setPredictionName("Our 1-Week Prediction");
+    } else if(days == 10) {
+      setPredictionName("Our 2-Week Prediction");
+    } else if(days == 20) {
+      setPredictionName("Our 1-Month Prediction");
+    }
+
     return await axios
       .get(`http://localhost:8080/prediction/${days}/${company}`, {
         cancelToken: cancelToken.current.token,
@@ -93,7 +122,6 @@ const Analysis = ({ company, classes }) => {
           let lineChart = lineRef.current.chartInstance;
           lineChart.update();
         }
-        // return rands;
       })
       .catch((error) => {
         if (axios.isCancel(error)) {
@@ -107,10 +135,11 @@ const Analysis = ({ company, classes }) => {
   useEffect(() => {
     if (!graphData) return;
     const { datasets } = graphData;
-    const [firstElem] = datasets;
+    const [firstElem, secondElem] = datasets;
     if (firstElem.data && firstElem.data.length > 0) {
       console.log(firstElem.data[firstElem.data.length - 1]);
-      const startPrice = firstElem.data[0].y;
+      // changed so it is second last because the last day is actually just for visual effect
+      const startPrice = secondElem.data[secondElem.data.length - 2].y;
       const lastPrice = firstElem.data[firstElem.data.length - 1].y;
       setStartDayPrice(startPrice);
       setFinalDayPrice(lastPrice);
@@ -128,7 +157,9 @@ const Analysis = ({ company, classes }) => {
       }
     };
   }, []);
-
+  useEffect(() => {
+    getSentiment();
+  });
   const options = {
     scales: {
       xAxes: [
@@ -146,14 +177,31 @@ const Analysis = ({ company, classes }) => {
 
   const difference = finalDayPrice - startDayPrice;
   const differencePercentage = (finalDayPrice - startDayPrice) / startDayPrice;
+
+  const recommendation = () => {
+    if(sentiment == null) return "N/A";
+    if(sentiment > 0) {
+      if(difference < 0) return "Hold"
+      else if(difference >= 0) return "Buy";
+    } else if(sentiment < 0) {
+      if(difference < 0) return "Sell";
+      else if(difference >= 0) return "Hold";
+    } else if(sentiment == 0) {
+      if(difference < 0) return "Sell"; 
+      else if(difference > 0) return "Buy";
+      else return "Hold";
+    }
+  }
+
   const styleColor =
     difference < 0 ? "#fb6340" : difference > 0 ? "#2dce89" : "inherit";
+  console.log(predictionName);
   return (
     <Fragment>
       {graphData ? (
         <Fragment>
           <Typography style={{ color: "#444444" }} className={classes.Heading2}>
-            Our 30-Day Prediction
+            {predictionName}
           </Typography>
           <Typography className={classes.Heading2}>
             {finalDayPrice ? finalDayPrice.toFixed(2) : "N/A"}
@@ -175,11 +223,11 @@ const Analysis = ({ company, classes }) => {
             }}
           >
             Sentimental Analysis:{" "}
-            {difference > 0 ? (
+            {sentiment > 0 ? (
               <span style={{ color: "#2dce89", marginLeft: "1em" }}>
                 <ThumbUpAltIcon style={{ fontSize: "2em" }} />
               </span>
-            ) : difference < 0 ? (
+            ) : sentiment < 0 ? (
               <span style={{ color: "#fb6340", marginLeft: "1em" }}>
                 <ThumbDownAltIcon style={{ fontSize: "2em" }} />
               </span>
@@ -200,7 +248,7 @@ const Analysis = ({ company, classes }) => {
                 fontSize: "1.2em",
               }}
             >
-              N/A
+              {recommendation()}
             </span>
           </Typography>
           <div
