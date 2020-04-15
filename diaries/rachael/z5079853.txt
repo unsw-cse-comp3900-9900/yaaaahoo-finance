@@ -1,16 +1,46 @@
 Week 1
 
-Group formed in lab.  I volunteered to be scrummaster given my existing experience with JIRA.  I created the first task on our scrum board based on discussions in class - we need to agree on our user persona, and what our problem statement is at a high level.  This will enable us to make sure our solution design can be refined to something achievable in the set time period.
-As a group we discussed a number of ideas for features we can build and APIs we can use.  I documented these in the JIRA task to ensure we remember our ideas.
+Group formed in lab.  I volunteered to be scrummaster given my existing experience with JIRA.  I created the first task
+on our scrum board based on discussions in class - we need to agree on our user persona, and what our problem statement
+is at a high level.  This will enable us to make sure our solution design can be refined to something achievable in the
+set time period.
+As a group we discussed a number of ideas for features we can build and APIs we can use.  I documented these in the JIRA
+task to ensure we remember our ideas.
 
 Week 2
 
-Started work on the problem statement based on my knowledge of existing products in the market. Carried out further research on other products in the market. Researched APIs available in Australia that we may be able to use.  In the lab, finalised our group of 5 and agreed on the problem statement and idea I proposed.  As a group, discussed and agreed on the epics (including which would be harder/easier), high-level infrastructure/technologies.
+Started work on the problem statement based on my knowledge of existing products in the market. Carried out further
+research on other products in the market. Researched APIs available in Australia that we may be able to use.  In the
+lab, finalised our group of 5 and agreed on the problem statement and idea I proposed.  As a group, discussed and
+agreed on the epics (including which would be harder/easier), high-level infrastructure/technologies.
 
 Week 3
 
-Completed problem statement and project management sections of the proposal.  Peer reviewed all other sections of the proposal then combined them into a final document for submission.
+Completed problem statement and project management sections of the proposal.  Peer reviewed all other sections of the
+proposal then combined them into a final document for submission.
 
 Week 4
 
-Started work on a story to allow users to view their existing portfolio.  Wrote a Python script that will pull the data from a user's portfolio in Python, call the Alpha Vantage API to get the current share prices, and then return the total value of the portfolio to the user.
+Started work on a story to allow users to view their existing portfolio.  Wrote a Python script that will pull the
+data from a user's portfolio in Python, call the Alpha Vantage API to get the current share prices, and then return
+the total value of the portfolio to the user.
+
+Week 5
+
+Unwell and had other commitments so was unable to complete any stories.
+
+Week 6
+
+Created the "Top News" section of the homepage.  This section uses the NewsAPI Api to retrieve business-related news
+stories and displays them to the user on the landing page.
+
+Week 7
+
+Created the "Top Stocks" section of the homepage.  This section uses Alpha Vantage, IEX Cloud and World Trading Data APIs
+to retrieve the latest prices for some popular shares and displays them to the user on the landing page.
+Created stories in JIRA for all remaining work to be done on the project.
+
+Week 8
+
+Wrote the code for a basic flow of adding investments to a portfolio.  Used the Alpha Vantage API to enable the user to
+search for an investment based on either stock symbol or company name.
