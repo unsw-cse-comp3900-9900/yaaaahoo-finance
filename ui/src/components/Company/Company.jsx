@@ -19,6 +19,8 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Analysis from "../Analysis/Analysis";
+import MaterialTable from "material-table";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 
 function createData(portfolios, companyData) {
   const symbol = companyData.symbol;
@@ -345,38 +347,39 @@ const Company = ({ history, firebase }) => {
 
               <TabPanel value={value} index={1}>
                 <TableContainer component={Paper}>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Portfolio</TableCell>
-                        <TableCell align="right">Days Gain</TableCell>
-                        <TableCell align="right">Days Gain (%)</TableCell>
-                        <TableCell align="right">Total Gain</TableCell>
-                        <TableCell align="right">Total Gain (%)</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {rows.map((row) => (
-                        <TableRow key={row.portfolio}>
-                          <TableCell component="th" scope="row">
-                            {row.portfolio}
-                          </TableCell>
-                          <TableCell align="right">
-                            {row.daysGain.toFixed(2)}
-                          </TableCell>
-                          <TableCell align="right">
-                            {row.daysPerc.toFixed(2)}%
-                          </TableCell>
-                          <TableCell align="right">
-                            {row.totalGain.toFixed(2)}
-                          </TableCell>
-                          <TableCell align="right">
-                            {row.totalPerc.toFixed(2)}%
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                  <MaterialTable
+                  title="Portfolios Table"
+                  columns={[
+                    { title: "Portfolio", field: "portfolio" },
+                    { title: "Days Gain", field: "daysGain" , type: "numeric"},
+                    { title: "Days Gain (%)", field: "daysGainPerc" , type: "numeric"},
+                    { title: "Total Gain", field: "totalGain" , type: "numeric"},
+                    { title: "Total Gain (%)", field: "totalGainPerc", type: "numeric" }
+                  ]}
+                  data={[
+                    {portfolio: "My Portfolio", daysGain: 12, daysGainPerc: 11, totalGain: 12, totalGainPerc: 11},
+                    {portfolio: "Second Portfolio", daysGain: "", daysGainPerc: "", totalGain: "", totalGainPerc: ""},
+                  ]}
+                  actions={[
+                    rowData => ({ icon: () => <AddCircleIcon className={classes.addIcon} />,
+                      tooltip: "Add to portfolio",
+                      onClick: (event) => alert("SAVE!!"),
+                      hidden: rowData.daysGain != ""})
+                  ]}
+                  options={
+                    {
+                      actionsColumnIndex: -1,
+                      paging: false,
+                      search: false,
+                      showTitle: false
+                    }
+                  }
+                  localization={{
+                    header: {
+                      actions: ""
+                    }
+                  }}
+                  />
                 </TableContainer>
               </TabPanel>
 
