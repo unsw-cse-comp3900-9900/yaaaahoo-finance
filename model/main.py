@@ -2,6 +2,7 @@ from flask import Flask
 from flask import jsonify
 from flask_cors import CORS, cross_origin
 from transformers import pipeline
+from tinydb import TinyDB, Query
 
 import searchtweets
 import json
@@ -20,6 +21,11 @@ def home():
 
 @app.route('/prediction/<days>/<company>')
 def prediction(days, company):
+
+    if (use_backup):
+        try:
+            return prediction_db.get(User.symbol == company)['json']
+
     days = int(days)
     model = tf.keras.models.load_model('model_{}.h5'.format(days))
     lags = 100 if days >= 10 else days * 10
@@ -42,10 +48,21 @@ def prediction(days, company):
     final = np.concatenate((previous[-days*2:], ayaya[0]))
     # print(final)
     # return jsonify(ayaya[0].tolist())
-    return jsonify(final.tolist())
+    
+    result = jsonify(final.tolist();
+
+    # Add to backup
+    prediction_db.insert{'symbol': company, 'json': result}
+
+    return result;
 
 @app.route('/sentiment/<company>')
 def sentiment(company):
+
+    if (use_backup):
+        try:
+            return sentiment_db.get(User.symbol == company)['json']
+
     print("Getting tweets....")
     creds = searchtweets.load_credentials(filename='test.yaml')
     rule = searchtweets.gen_rule_payload(company, results_per_call=30)
@@ -84,7 +101,16 @@ def sentiment(company):
     if positive > 0: aggregated_sentiment = 1
     elif positive < 0: aggregated_sentiment = -1
     result = str(aggregated_sentiment)
-    return '{"sentiment":"'+result+'"}'
+
+    result = '{"sentiment":"'+result+'"}'
+
+    prediction_db.insert{'symbol': company, 'json': result}
+
+    return result
 
 if __name__ == '__main__':
+    use_backup = false
+    prediction_db = TinyDB('prediction_db')
+    sentiment_db = TinyDB('sentiment_db')
+    User = Query();
     app.run()
