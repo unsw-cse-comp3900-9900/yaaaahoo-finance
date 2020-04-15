@@ -44,25 +44,31 @@ def prediction(days, company):
     # return jsonify(ayaya[0].tolist())
     return jsonify(final.tolist())
 
+# TO-DO: If searchtweets api limit call reached for demo company,
+# read backup tweets stored for that demo company.
 @app.route('/sentiment/<company>')
 def sentiment(company):
-    print("Getting tweets....")
-    creds = searchtweets.load_credentials(filename='test.yaml')
-    rule = searchtweets.gen_rule_payload(company, results_per_call=30)
+    # print("Getting tweets....")
+    try:
+        creds = searchtweets.load_credentials(filename='test.yaml')
+        rule = searchtweets.gen_rule_payload(company, results_per_call=30)
+        json_results = searchtweets.collect_results(rule, max_results=30,result_stream_args=creds)
+    except Exception as e:
+        return '{"sentiment": "N/A"}'
+
+    ### Commented out code for backing up demo data
     # with open('tttt.json', 'r') as j:
-    #     json_results = json.loads(j.read())  
+    #     json_results = json.loads(j.read())     
 
-    json_results = searchtweets.collect_results(rule, max_results=30,result_stream_args=creds)
-    with open('tttt.json', 'w+') as f:
-        f.write('[')
-        for index in range(len(json_results)):
-            result = json_results[index]
-            f.write(json.dumps(result))
-            if index < len(json_results) - 1:
-                f.write(',\n')
-        f.write(']')
+    # with open('tttt.json', 'w+') as f:
+    #     f.write('[')
+    #     for index in range(len(json_results)):
+    #         result = json_results[index]
+    #         f.write(json.dumps(result))
+    #         if index < len(json_results) - 1:
+    #             f.write(',\n')
+    #     f.write(']')
     
-
     # tweets = []
 
     # for tweet in json_results:
@@ -76,7 +82,6 @@ def sentiment(company):
     aggregated_sentiment = 0
     for tweet in tweets:
         analysis = sentiment(tweet)
-        print(analysis)
         if analysis[0]['label'] == "POSITIVE":
             positive += 1
         else:

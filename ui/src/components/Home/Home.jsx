@@ -118,42 +118,51 @@ const Home = ({ firebase }) => {
   const [openRemoveHoldingsModal, setOpenRemoveHoldingsModal] = useState(false);
   const [newPortfolioName, setNewPortfolioName] = useState("");
   const [selectedHolding, setSelectedHolding] = useState(null);
+  const [selectedPortfolio, setSelectedPortfolio] = useState(null);
   const [error, setError] = useState(false);
 
-  const handleOpenAddModal = () => {
+  const handleOpenAddModal = (portfolioId) => {
     setOpenAddModal(true);
+    setSelectedPortfolio(portfolioId);
   };
 
   const handleCloseAddModal = () => {
     setOpenAddModal(false);
     setNewPortfolioName("");
+    setSelectedPortfolio(null);
     setError(false);
   };
 
-  const handleOpenEditModal = () => {
+  const handleOpenEditModal = (portfolioId) => {
     setOpenEditModal(true);
+    setSelectedPortfolio(portfolioId);
   };
 
   const handleCloseEditModal = () => {
     setOpenEditModal(false);
     setNewPortfolioName("");
+    setSelectedPortfolio(null);
     setError(false);
   };
 
-  const handleOpenDeleteModal = () => {
+  const handleOpenDeleteModal = (portfolioId) => {
     setOpenDeleteModal(true);
+    setSelectedPortfolio(portfolioId);
   };
 
   const handleCloseDeleteModal = () => {
     setOpenDeleteModal(false);
+    setSelectedPortfolio(null);
   };
 
-  const handleOpenAddHoldingsModal = () => {
+  const handleOpenAddHoldingsModal = (portfolioId) => {
     setOpenAddHoldingsModal(true);
+    setSelectedPortfolio(portfolioId);
   };
 
   const handleCloseAddHoldingsModal = () => {
     setOpenAddHoldingsModal(false);
+    setSelectedPortfolio(null);
   };
 
   const handleOpenRemoveHoldingsModal = (holdingId) => {
@@ -192,9 +201,8 @@ const Home = ({ firebase }) => {
   useEffect(() => {
     if (!userData) return;
     calcRecommendation();
-    if (userData.portfolios)
-      setPortfolios(Object.values(userData.portfolios));
-    else setPortfolios([])
+    if (userData.portfolios) setPortfolios(Object.values(userData.portfolios));
+    else setPortfolios([]);
   }, [userData]);
 
   useEffect(() => {
@@ -278,9 +286,9 @@ const Home = ({ firebase }) => {
                     <Portfolio
                       portfolio={portfolio}
                       recommendation={recommendation}
-                      openDeleteModal={handleOpenDeleteModal}
-                      openEditModal={handleOpenEditModal}
-                      openAddHoldingsModal={handleOpenAddHoldingsModal}
+                      openDeleteModal={(portfolioId) => handleOpenDeleteModal(portfolioId)}
+                      openEditModal={(portfolioId) => handleOpenEditModal(portfolioId)}
+                      openAddHoldingsModal={(portfolioId) => handleOpenAddHoldingsModal(portfolioId)}
                       openRemoveHoldingsModal={(holdingId) =>
                         handleOpenRemoveHoldingsModal(holdingId)
                       }
@@ -324,7 +332,7 @@ const Home = ({ firebase }) => {
                               </Button>
                               <Button
                                 variant="contained"
-                                onClick={() => editPortfolioName(portfolio.id)}
+                                onClick={() => editPortfolioName(selectedPortfolio)}
                                 className={classes.submitButton}
                                 disabled={error}
                               >
@@ -364,7 +372,7 @@ const Home = ({ firebase }) => {
                               </Button>
                               <Button
                                 variant="contained"
-                                onClick={() => deletePortfolio(portfolio.id)}
+                                onClick={() => deletePortfolio(selectedPortfolio)}
                                 className={classes.submitButton}
                                 disabled={error}
                               >
@@ -380,7 +388,7 @@ const Home = ({ firebase }) => {
                         isOpen={openAddHoldingsModal}
                         onClose={handleCloseAddHoldingsModal}
                         onSubmit={addHolding}
-                        portfolioId={portfolio.id}
+                        portfolioId={selectedPortfolio}
                       />
                     )}
                     {openRemoveHoldingsModal && (
@@ -411,7 +419,7 @@ const Home = ({ firebase }) => {
                               </Button>
                               <Button
                                 variant="contained"
-                                onClick={() => removeHolding(portfolio.id)}
+                                onClick={() => removeHolding(selectedPortfolio)}
                                 className={classes.submitButton}
                               >
                                 Delete
