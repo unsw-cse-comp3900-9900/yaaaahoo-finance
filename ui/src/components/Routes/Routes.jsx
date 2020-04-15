@@ -54,13 +54,17 @@ class Routes extends Component {
           exact
           component={compose(withRouter, withFirebase)(News)}
         />
-
         <Route
           path="/analysis"
           exact
           component={compose(withRouter, withFirebase)(Analysis)}
         />
-        
+        <Route     
+          path="/404"     
+          exact     
+          component={compose(withRouter, withFirebase)(Page404)}   
+        /> 
+        <Route component={Page404} />
       </Switch>
     );
   }
