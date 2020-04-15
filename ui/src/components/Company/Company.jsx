@@ -22,31 +22,29 @@ import Analysis from "../Analysis/Analysis";
 
 function createData(portfolios, companyData) {
   const symbol = companyData.symbol;
-  const holdings = []
-  for (let i = 0; i < portfolios.length; i++) {
-
-    let totalGain = "N/A";
-    let totalPerc = "N/A";
-    let daysGain = "N/A";
-    if(portfolios[i].holdings == null) continue;
-    const portfolio_holdings = Object.values(portfolios[i].holdings);
-
-    for (let j = 0; j < portfolio_holdings.length; j++) {
-
-      if(portfolio_holdings[j].symbol == symbol) {
-
-        totalGain = ((companyData.latestPrice - portfolio_holdings[j].costPerUnit) * portfolio_holdings[j].numberOfUnits)
-            .toLocaleString(navigator.language, { minimumFractionDigits : 2});
-        totalPerc = (companyData.latestPrice / portfolio_holdings[j].costPerUnit).toLocaleString(navigator.language, { minimumFractionDigits : 2});
-        daysGain = (companyData.change * portfolio_holdings[j].numberOfUnits).toLocaleString(navigator.language, {minimumFractionDigits: 2});
-
-        holdings.push({ portfolio: portfolios[i].name, daysGain: daysGain, daysPerc: companyData.changePercent, totalGain: totalGain, totalPerc: totalPerc })
-
+  const rows = [];
+  portfolios.forEach((portfolio) => {
+    if (!portfolio.holdings) return;
+    for (let holding of Object.values(portfolio.holdings)) {
+      if (holding.symbol === symbol) {
+        const totalGain =
+          (companyData.latestPrice - holding.costPerUnit) *
+          holding.numberOfUnits;
+        const totalPerc = companyData.latestPrice / holding.costPerUnit;
+        const daysGain = companyData.change * holding.numberOfUnits;
+        const daysPerc = companyData.changePercent * holding.numberOfUnits;
+        rows.push({
+          portfolio: portfolio.name,
+          daysGain,
+          daysPerc,
+          totalGain,
+          totalPerc,
+        });
+        break;
       }
-
     }
-  }
-  return holdings;
+  });
+  return rows;
 }
 
 function TabPanel(props) {
@@ -136,9 +134,8 @@ const Company = ({ history, firebase }) => {
 
   useEffect(() => {
     if (!userData) return;
-    if (userData.portfolios)
-      setPortfolios(Object.values(userData.portfolios));
-    else setPortfolios([])
+    if (userData.portfolios) setPortfolios(Object.values(userData.portfolios));
+    else setPortfolios([]);
   }, [userData]);
 
   const handleChange = (event, newValue) => {
@@ -281,7 +278,7 @@ const Company = ({ history, firebase }) => {
 
   const styleColor =
     difference < 0 ? "#fb6340" : difference > 0 ? "#2dce89" : "inherit";
-    const company = history.location.pathname.replace("/company/", "");
+  const company = history.location.pathname.replace("/company/", "");
 
   return (
     <AuthUserContext.Consumer>
@@ -364,10 +361,18 @@ const Company = ({ history, firebase }) => {
                           <TableCell component="th" scope="row">
                             {row.portfolio}
                           </TableCell>
-                          <TableCell align="right">{row.daysGain}</TableCell>
-                          <TableCell align="right">{row.daysPerc}</TableCell>
-                          <TableCell align="right">{row.totalGain}</TableCell>
-                          <TableCell align="right">{row.totalPerc}</TableCell>
+                          <TableCell align="right">
+                            {row.daysGain.toFixed(2)}
+                          </TableCell>
+                          <TableCell align="right">
+                            {row.daysPerc.toFixed(2)}%
+                          </TableCell>
+                          <TableCell align="right">
+                            {row.totalGain.toFixed(2)}
+                          </TableCell>
+                          <TableCell align="right">
+                            {row.totalPerc.toFixed(2)}%
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -376,7 +381,6 @@ const Company = ({ history, firebase }) => {
               </TabPanel>
 
               <TabPanel value={value} index={2}>
-
                 <Analysis company={company} classes={classes} />
                 {/* <Plot
                   data={[trace1]}
