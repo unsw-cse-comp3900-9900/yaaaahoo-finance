@@ -6,6 +6,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { config } from "../../config";
 import axios from "axios";
+import Portfolio from "../Portfolio/Portfolio";
 
 const useStyles = makeStyles((theme) => ({
   Page: {
@@ -79,11 +80,27 @@ const TopNews = ({ title, subtitle, titleColor }) => {
   const [newsData, setNewsData] = useState(null);
   const cancelToken = useRef(null);
 
+
   useEffect(() => {
     if (cancelToken.current) {
       cancelToken.current.cancel("Component unmounted");
     }
-    const url = `http://newsapi.org/v2/top-headlines?category=business&country=au&apiKey=${config.newsApiToken}`;
+
+    if (!portfolio.holdings){
+        const url = `http://newsapi.org/v2/top-headlines?category=business&country=au&apiKey=${config.newsApiToken}`;
+    }
+    if (portfolio.holdings){
+        var temp="";
+        for (let holding of portfolio.holdings) {
+            temp=temp+holding.symbol+"+";
+        }
+        const url = 'http://newsapi.org/v2/top-headlines?' +
+          'q=${temp}&' +
+          'from=2020-01-01&' +
+          'sortBy=popularity&' +
+          'apiKey=${config.newsApiToken}';
+    }
+
     cancelToken.current = axios.CancelToken.source();
     axios
       .get(url, { cancelToken: cancelToken.current.token })
@@ -96,7 +113,7 @@ const TopNews = ({ title, subtitle, titleColor }) => {
         } else {
           console.log(error);
         }
-      });
+    });
 
     return () => {
       if (cancelToken.current) {
