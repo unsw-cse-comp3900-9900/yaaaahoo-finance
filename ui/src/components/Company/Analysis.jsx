@@ -25,10 +25,19 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
     var predictions = [];
     var prev = [];
     const today = new Date();
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      cancelToken: cancelToken.current.token,
+    };
     return await axios
-      .get(`http://localhost:8080/prediction/${days}/${company}`, {
-        cancelToken: cancelToken.current.token,
-      })
+      .post(
+        `http://localhost:8080/prediction`,
+        { historicalData, days, company },
+        config
+      )
       .then(({ data }) => {
         const prev_cut = (data.length * 2) / 3;
         for (var i = 0; i < data.length; i++) {

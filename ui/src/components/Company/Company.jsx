@@ -10,6 +10,7 @@ import Box from "@material-ui/core/Box";
 import Analysis from "./Analysis";
 import Holdings from "./Holdings";
 import Summary from "./Summary";
+import testData from "./sampleHistoricalData.json";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -95,6 +96,9 @@ const Company = ({ history, firebase }) => {
   const [value, setValue] = React.useState(0);
   const [userData, setUserData] = useState(null);
   const [portfolios, setPortfolios] = useState([]);
+  const [companyData, setCompanyData] = useState(null);
+  const [historicalData, setHistoricalData] = useState(null);
+  const [predictionInput, setPredictionInput] = useState([]);
 
   useEffect(() => {
     if (!userData) return;
@@ -105,8 +109,6 @@ const Company = ({ history, firebase }) => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const [companyData, setCompanyData] = useState(null);
-  const [historicalData, setHistoricalData] = useState(null);
 
   const getInfo = async (company) => {
     const url = `https://cloud.iexapis.com/v1/stock/${company}/quote?token=${config.iexCloudApiToken}`;
@@ -123,9 +125,21 @@ const Company = ({ history, firebase }) => {
         setHistoricalData(data);
       })
       .catch((error) => {
-        setHistoricalData([]);
+        setHistoricalData(testData);
       });
   };
+
+  useEffect(() => {
+    const closingPrices = [];
+    if (!historicalData) return;
+    let count = 1;
+    for (let i = historicalData.length-1; i >= 0; i--) {
+      if (count > 300) break;
+      count++;
+      closingPrices.push(historicalData[i].close);
+    }
+    setPredictionInput(closingPrices);
+  }, [historicalData])
 
   useEffect(() => {
     const company = history.location.pathname.replace("/company/", "");
@@ -187,7 +201,7 @@ const Company = ({ history, firebase }) => {
                       company={company}
                       classes={classes}
                       companyData={companyData}
-                      historicalData={historicalData}
+                      historicalData={predictionInput}
                     />
                   </TabPanel>
                 </Fragment>

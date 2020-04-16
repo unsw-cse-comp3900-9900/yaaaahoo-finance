@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import jsonify
+from flask import jsonify, request
 from flask_cors import CORS, cross_origin
 from transformers import pipeline
 
@@ -18,30 +18,27 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 def home():
     return "please use an endpoint"
 
-@app.route('/prediction/<days>/<company>')
-def prediction(days, company):
-    days = int(days)
+@app.route('/prediction',methods=['POST'])
+def prediction():
+    days = int(request.get_json()['days'])
+    company = request.get_json()['company']
     model = tf.keras.models.load_model('model_{}.h5'.format(days))
-    lags = 100 if days >= 10 else days * 10
-    print(lags)
-    feature_sets = 12
-    # currently just getting random numbers. change this to use the API
-    x = 40 * np.random.rand(1, lags, feature_sets)
-    scaled_x = np.zeros((1, lags, feature_sets))
-    scalers = [sklearn.preprocessing.MinMaxScaler() for a in range(feature_sets)]
-    for feature_num in range(feature_sets):
-        scaled = scalers[feature_num].fit_transform(x[0, :, feature_num].reshape(-1, 1))
-        # print(scaled.shape)
-        # print(x[:, :, feature_num])
-        scaled_x[:,:,feature_num] = scaled.reshape(-1)
-        # print(x[:, : , feature_num])
+    x = request.get_json()['historicalData']
+
+    #### TO-DO check if company is cached if historicalData is empty
+    if (len(x) == 0):
+        print("No historical data provided")
+        return jsonify([])
+
+    #### TO-DO model to accept one dimensional array (300, 1)
+    try:
+        preds = model.predict(x)
+    except Exception as e:
+        return jsonify([])
     
-    preds = model.predict(scaled_x)
     ayaya = scalers[0].inverse_transform(preds)
     previous = x[:,:,0].reshape(-1)
     final = np.concatenate((previous[-days*2:], ayaya[0]))
-    # print(final)
-    # return jsonify(ayaya[0].tolist())
     return jsonify(final.tolist())
 
 # TO-DO: If searchtweets api limit call reached for demo company,

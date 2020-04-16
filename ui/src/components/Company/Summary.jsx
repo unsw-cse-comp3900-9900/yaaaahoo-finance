@@ -10,10 +10,10 @@ const Summary = ({
   const lineRef = useRef(null);
 
   const getHistoricalData = (days) => {
-      if (!historicalData) return;
+    if (!historicalData) return;
     const formatData = [];
     let count = 1;
-    for (let i = historicalData.length-1; i >=0; i--) {
+    for (let i = historicalData.length-1; i >= 0; i--) {
       if (count > days) break;
       count++;
       const data = {
