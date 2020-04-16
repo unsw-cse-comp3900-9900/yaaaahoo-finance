@@ -1,7 +1,6 @@
 import React, { Fragment, useState, useEffect, useRef } from "react";
 import { Typography, Button, CircularProgress } from "@material-ui/core";
 import { Line } from "react-chartjs-2";
-
 const Summary = ({
   companyData,
   historicalData,
@@ -13,7 +12,10 @@ const Summary = ({
   const getHistoricalData = (days) => {
       if (!historicalData) return;
     const formatData = [];
-    for (let i = 0; i < historicalData.length && i < days; i++) {
+    let count = 1;
+    for (let i = historicalData.length-1; i >=0; i--) {
+      if (count > days) break;
+      count++;
       const data = {
         x: new Date(historicalData[i].date),
         y: historicalData[i].close,
