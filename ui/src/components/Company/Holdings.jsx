@@ -8,15 +8,18 @@ function createData(portfolios, companyData) {
     const symbol = companyData.symbol;
     const rows = [];
     portfolios.forEach((portfolio) => {
+      let portfolioRecorded = false;
       if (!portfolio.holdings) return;
       for (let holding of Object.values(portfolio.holdings)) {
         if (holding.symbol === symbol) {
-          const totalGain =
-            (companyData.latestPrice - holding.costPerUnit) *
-            holding.numberOfUnits;
-          const totalPerc = companyData.latestPrice / holding.costPerUnit;
-          const daysGain = companyData.change * holding.numberOfUnits;
-          const daysPerc = companyData.changePercent * holding.numberOfUnits;
+          const totalGain = ((companyData.latestPrice - holding.costPerUnit) * holding.numberOfUnits)
+              .toLocaleString(navigator.language, {minimumFractionDigits: 2});
+          const totalPerc = ((companyData.latestPrice - holding.costPerUnit) / holding.costPerUnit * 100)
+              .toLocaleString(navigator.language, {minimumFractionDigits: 2});
+          const daysGain = (companyData.change * holding.numberOfUnits)
+              .toLocaleString(navigator.language, {minimumFractionDigits: 2});
+          const daysPerc = (companyData.changePercent)
+              .toLocaleString(navigator.language, {minimumFractionDigits: 2});
           rows.push({
             portfolio: portfolio.name,
             daysGain,
@@ -24,8 +27,18 @@ function createData(portfolios, companyData) {
             totalGain,
             totalPerc,
           });
+          portfolioRecorded = true;
           break;
         }
+      }
+      if (portfolioRecorded === false) {
+        rows.push({
+            portfolio: portfolio.name,
+            daysGain: "",
+            daysPerc: "",
+            totalGain: "",
+            totalPerc: "",
+          });
       }
     });
     return rows;
@@ -39,26 +52,11 @@ const Holdings = ({ portfolios, companyData }) => {
         columns={[
           { title: "Portfolio", field: "portfolio" },
           { title: "Days Gain", field: "daysGain", type: "numeric" },
-          { title: "Days Gain (%)", field: "daysGainPerc", type: "numeric" },
+          { title: "Days Gain (%)", field: "daysPerc", type: "numeric" },
           { title: "Total Gain", field: "totalGain", type: "numeric" },
-          { title: "Total Gain (%)", field: "totalGainPerc", type: "numeric" },
+          { title: "Total Gain (%)", field: "totalPerc", type: "numeric" },
         ]}
-        data={[
-          {
-            portfolio: "My Portfolio",
-            daysGain: 12,
-            daysGainPerc: 11,
-            totalGain: 12,
-            totalGainPerc: 11,
-          },
-          {
-            portfolio: "Second Portfolio",
-            daysGain: "",
-            daysGainPerc: "",
-            totalGain: "",
-            totalGainPerc: "",
-          },
-        ]}
+        data={createData(portfolios, companyData)}
         actions={[
           (rowData) => ({
             icon: () => <AddCircleIcon />,
