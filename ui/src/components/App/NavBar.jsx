@@ -1,24 +1,41 @@
-import React, { Fragment, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { Fragment, useState, useEffect } from "react";
+import { fade, makeStyles } from "@material-ui/core/styles";
+import axios from "axios";
+import { config } from "../../config";
 import {
   AppBar,
   Toolbar,
   Button,
   Typography,
   TextField,
+  MenuItem,
+  Menu,
+  IconButton,
+  InputAdornment,
 } from "@material-ui/core";
+import SearchIcon from "@material-ui/icons/Search";
+import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
+import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
+import MoreIcon from "@material-ui/icons/MoreVert";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import { withRouter } from "react-router";
 import { Link } from "react-router-dom";
 import Logo from "../../assets/logo192.png";
 import { withFirebase } from "../Firebase";
 import { compose } from "recompose";
-import SearchIcon from "@material-ui/icons/Search";
-import InputBase from "@material-ui/core/InputBase";
-import { fade } from "@material-ui/core/styles";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import { withRouter } from "react-router";
+import useDebounce from "./useDebounce";
 
 const useStyles = makeStyles((theme) => ({
+  bar: {
+    backgroundColor: "#fff",
+    color: "#2643e9",
+    boxShadow: "0px 1px 10px 0px rgba(0,0,0,0.12)",
+    justifyContent: "center",
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
   logo: {
     height: "3em",
     marginRight: "0.4em",
@@ -33,13 +50,34 @@ const useStyles = makeStyles((theme) => ({
   title: {
     fontSize: "1.2em",
     fontWeight: 500,
+    [theme.breakpoints.down("sm")]: {
+      display: "none",
+    },
   },
   logoWrapper: {
     display: "flex",
-    marginRight: "auto",
     alignItems: "center",
     textDecoration: "none",
     color: "#2643e9",
+    marginRight: "2em",
+    [theme.breakpoints.down("sm")]: {
+      marginRight: 0,
+    },
+  },
+  desktopItem: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: "2em",
+    marginLeft: "2em",
+    cursor: "pointer",
+    "&:hover": {
+      opacity: 0.5,
+    },
+  },
+  heading: {
+    fontSize: "1.2em",
+    fontWeight: 400,
   },
   search: {
     position: "relative",
@@ -48,12 +86,9 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       backgroundColor: fade(theme.palette.common.white, 0.25),
     },
+    marginRight: "auto",
     marginLeft: "auto",
-    marginRight: "1em",
-    width: "35%",
-    [theme.breakpoints.up("sm")]: {
-      width: "25%",
-    },
+    width: "100%",
   },
   searchIcon: {
     padding: theme.spacing(0, 2),
@@ -73,53 +108,100 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create("width"),
     width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      width: "12ch",
-      "&:focus": {
-        width: "20ch",
-      },
+  },
+  sectionDesktop: {
+    display: "none",
+    [theme.breakpoints.up("md")]: {
+      display: "flex",
+    },
+  },
+  sectionMobile: {
+    display: "flex",
+    [theme.breakpoints.up("md")]: {
+      display: "none",
     },
   },
 }));
 
 const NavBar = ({ authUser, firebase, history }) => {
   const classes = useStyles();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [searchResults, setSearchResults] = useState([
-    {
-      symbol: "AAPL.BA",
-      name: "APPLE INC CEDEAR",
-      currency: "ARS",
-      price: null,
-      stock_exchange_long: "Buenos Aires Stock Exchange",
-    },
-    {
-      symbol: "AAPL.MI",
-      name: "Apple Inc.",
-      currency: "EUR",
-      price: null,
-      stock_exchange_long: "Milan Stock Exchange",
-    },
-    {
-      symbol: "AAPL.MX",
-      name: "Apple Inc.",
-      currency: "MXN",
-      price: null,
-      stock_exchange_long: "Mexican Stock Exchange",
-    },
-    {
-      symbol: "AAPL34.SA",
-      name: "APPLE085/UnSBDR QI",
-      currency: "BRL",
-      price: null,
-      stock_exchange_long: "Sao Paolo Stock Exchange",
-    },
-  ]);
+  const [searchResults, setSearchResults] = useState([]);
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const searchCompanies = async (search) => {
+    const url = `https://api.worldtradingdata.com/api/v1/stock_search?stock_exchange=NYSE&search_term=${search}&limit=5&page=1&api_token=${config.worldTradingApiToken}`;
+    return await axios
+      .get(url)
+      .then(({ data }) => data)
+      .catch((error) => {
+        console.error(error);
+        return {
+          data: [],
+        };
+      });
+  };
+
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      // Set isSearching state
+      setIsSearching(true);
+      // Fire off our API call
+      searchCompanies(debouncedSearchTerm).then((results) => {
+        // Set back to false since request finished
+        setIsSearching(false);
+        // Set results state
+        setSearchResults(results.data);
+      });
+    } else {
+      setSearchResults([]);
+    }
+  }, [debouncedSearchTerm]);
+
+  const handleMobileMenuClose = () => {
+    setMobileMoreAnchorEl(null);
+  };
+
+  const handleMobileMenuOpen = (event) => {
+    setMobileMoreAnchorEl(event.currentTarget);
+  };
+
+  const mobileMenuId = "primary-search-account-menu-mobile";
+  const renderMobileMenu = (
+    <Menu
+      anchorEl={mobileMoreAnchorEl}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      id={mobileMenuId}
+      keepMounted
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
+      open={isMobileMenuOpen}
+      onClose={handleMobileMenuClose}
+    >
+      <MenuItem style={{ color: "#2643e9" }}>
+        <IconButton color="inherit">
+          <LibraryBooksIcon />
+        </IconButton>
+        <p>Top News</p>
+      </MenuItem>
+      <MenuItem style={{ color: "#2643e9" }} onClick={handleMobileMenuOpen}>
+        <IconButton
+          aria-label="account of current user"
+          aria-controls="primary-search-account-menu"
+          aria-haspopup="true"
+          color="inherit"
+        >
+          <PowerSettingsNewIcon />
+        </IconButton>
+        <p>Logout</p>
+      </MenuItem>
+    </Menu>
+  );
 
   const openMenu = (e) => {
-    console.log(e);
     setMenuOpen(true);
   };
 
@@ -130,6 +212,11 @@ const NavBar = ({ authUser, firebase, history }) => {
   const onLogout = (event) => {
     firebase.doSignOut();
   };
+
+  const goToNews = () => {
+    history.push("/news");
+  };
+
   const keyPress = (event) => {
     const results = searchResults.map((s) => `${s.symbol} - ${s.name}`);
     if (event.keyCode === 13) {
@@ -144,67 +231,101 @@ const NavBar = ({ authUser, firebase, history }) => {
   };
 
   return (
-    <AppBar className={classes.bar}>
-      <Toolbar>
-        <Link to={authUser ? "/home" : "/"} className={classes.logoWrapper}>
-          <img alt="" className={classes.logo} src={Logo} />
-          <Typography className={classes.title}>Finance</Typography>
-        </Link>
-        {authUser && (
-          <Fragment>
-            <div className={classes.search}>
-              <Autocomplete
-                freeSolo
-                disableClearable
-                disablePortal
-                onKeyDown={keyPress}
-                value={searchTerm}
-                options={searchResults}
-                onInputChange={(event, value, reason) =>
-                  handleChange(event, value, reason)
-                }
-                getOptionLabel={(option) => {
-                  if (!option.symbol) return option;
-                  return `${option.symbol} - ${option.name}`;
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    placeholder="Search…"
-                    margin="normal"
-                    onMouseDown={openMenu}
-                    open={menuOpen}
-                    name="symbol"
-                    classes={{
-                      root: classes.inputRoot,
-                    }}
-                    InputProps={{
-                      "aria-label": "search",
-                      ...params.InputProps,
-                      type: "search",
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <SearchIcon />
-                        </InputAdornment>
-                      ),
-                      classes: { input: classes.inputInput },
-                    }}
-                  />
-                )}
-              />
-            </div>
-            <Button onClick={onLogout} style={{ color: "#2643e9" }}>
-              Log out
+    <Fragment>
+      <AppBar className={classes.bar}>
+        <Toolbar>
+          <Link to={authUser ? "/home" : "/"} className={classes.logoWrapper}>
+            <img alt="" className={classes.logo} src={Logo} />
+            <Typography className={classes.title}>Finance</Typography>
+          </Link>
+          {!authUser && (
+            <Button
+              component={Link}
+              to="/login"
+              style={{ color: "#2643e9", marginLeft: "auto" }}
+            >
+              Log in
             </Button>
-          </Fragment>
-        )}
-        {!authUser && (
-          <Button component={Link} to="/login" style={{ color: "#2643e9" }}>
-            Log in
-          </Button>
-        )}
-      </Toolbar>
-    </AppBar>
+          )}
+          {authUser && (
+            <Fragment>
+              <div className={classes.search}>
+                <Autocomplete
+                  freeSolo
+                  disableClearable
+                  disablePortal
+                  onKeyDown={keyPress}
+                  value={searchTerm}
+                  options={searchResults}
+                  onInputChange={(event, value, reason) =>
+                    handleChange(event, value, reason)
+                  }
+                  getOptionLabel={(option) => {
+                    if (!option.symbol) return option;
+                    return `${option.symbol} - ${option.name}`;
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      placeholder="Search NYSE: The New York Stock Exchange"
+                      margin="normal"
+                      onMouseDown={openMenu}
+                      open={menuOpen}
+                      name="symbol"
+                      classes={{
+                        root: classes.inputRoot,
+                      }}
+                      InputProps={{
+                        "aria-label": "search",
+                        ...params.InputProps,
+                        type: "search",
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <SearchIcon />
+                          </InputAdornment>
+                        ),
+                        classes: { input: classes.inputInput },
+                      }}
+                    />
+                  )}
+                />
+              </div>
+              <div className={classes.grow} />
+              <div className={classes.sectionDesktop}>
+                <div onClick={goToNews} className={classes.desktopItem}>
+                  <LibraryBooksIcon style={{ marginRight: "0.3em" }} />
+                  <Typography className={classes.heading} variant="h6" noWrap>
+                    Top News
+                  </Typography>
+                </div>
+                <div
+                  className={classes.desktopItem}
+                  onClick={onLogout}
+                  style={{ marginRight: 0 }}
+                >
+                  <PowerSettingsNewIcon style={{ marginRight: "0.3em" }} />
+                  <Typography className={classes.heading} variant="h6" noWrap>
+                    Log out
+                  </Typography>
+                </div>
+              </div>
+              <div className={classes.sectionMobile}>
+                <IconButton
+                  aria-label="show more"
+                  aria-controls={mobileMenuId}
+                  aria-haspopup="true"
+                  onClick={handleMobileMenuOpen}
+                  color="inherit"
+                >
+                  <MoreIcon />
+                </IconButton>
+              </div>
+            </Fragment>
+          )}
+        </Toolbar>
+      </AppBar>
+      {renderMobileMenu}
+    </Fragment>
   );
 };
 

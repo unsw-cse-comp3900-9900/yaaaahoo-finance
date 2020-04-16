@@ -5,21 +5,21 @@ import { withAuthentication, AuthUserContext } from "../Session";
 import { BrowserRouter } from "react-router-dom";
 import { withFirebase } from "../Firebase";
 import { compose } from "recompose";
-// import NavBar from "./NavBar";
+import NavBar from "./NavBar";
 import { create } from "jss";
 import { StylesProvider, jssPreset } from "@material-ui/styles";
 import jssExtend from "jss-plugin-extend";
 import jssNested from "jss-plugin-nested";
-import NavBar from "./NavBarv2";
-const useStyles = makeStyles(theme => ({
+
+const useStyles = makeStyles(() => ({
   root: {
     display: "flex",
-    height: "100vh"
-  }
+    height: "100vh",
+  },
 }));
 
 const jss = create({
-  plugins: [jssExtend(), jssNested(), ...jssPreset().plugins]
+  plugins: [jssExtend(), jssNested(), ...jssPreset().plugins],
 });
 
 const App = ({ children }) => {
@@ -27,12 +27,11 @@ const App = ({ children }) => {
 
   return (
     <AuthUserContext.Consumer>
-      {authUser => (
+      {(authUser) => (
         <BrowserRouter>
           <StylesProvider jss={jss}>
             <CssBaseline />
             <div className={classes.root}>
-              {/* <PrimarySearchAppBar /> */}
               <NavBar authUser={authUser} />
               {children}
             </div>
