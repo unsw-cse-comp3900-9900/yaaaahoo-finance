@@ -298,9 +298,9 @@ const Portfolio = ({
       <div className={classes.header}>
         <Typography className={classes.title}>
           {portfolio.name}{" "}
-          <EditIcon className={classes.editButton} onClick={openEditModal} />
+          <EditIcon className={classes.editButton} onClick={() => openEditModal(portfolio.id)} />
         </Typography>
-        <DeleteIcon className={classes.delete} onClick={openDeleteModal} />
+        <DeleteIcon className={classes.delete} onClick={() => openDeleteModal(portfolio.id)} />
       </div>
       <div className={classes.summary}>
         <Typography className={classes.sumHeading2}>
@@ -316,7 +316,7 @@ const Portfolio = ({
       <Typography className={classes.heading1}>
         <AddCircleIcon
           className={classes.addIcon}
-          onClick={openAddHoldingsModal}
+          onClick={() => openAddHoldingsModal(portfolio.id)}
         />{" "}
         Add Holdings
       </Typography>
