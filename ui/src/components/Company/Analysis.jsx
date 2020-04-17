@@ -17,7 +17,6 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
       style={{ marginLeft: "1em", color: "#2643e9" }}
     />
   );
-  const [recommendation, setRecommendation] = useState("N/A");
   const [predictionName, setPredictionName] = useState("Our 1-Month Prediction");
   const lineRef = useRef(null);
   const cancelToken = useRef(null);
@@ -136,7 +135,6 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
         cancelToken: cancelToken.current.token,
       })
       .then(({ data }) => {
-        console.log(startDayPrice);
         if (data.sentiment === "N/A")
           setSentiment(
             <span
@@ -145,7 +143,6 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
                 fontWeight: 500,
                 fontSize: "1.2em",
               }}
-              className='neutral'
             >
               N/A
             </span>
@@ -171,6 +168,7 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
             <SVG
               style={{ marginLeft: "0.3em", fontSize: "3em" }}
               src={NeutralSentiment}
+              className='neutral'
             />
           );
       })
@@ -183,13 +181,14 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
         setSentiment("N/A");
       });
   };
-
+  
   useEffect(() => {
     if (!graphData) return;
     const { datasets } = graphData;
-    const [firstElem] = datasets;
+    const [firstElem, secondElem] = datasets;
     if (firstElem.data && firstElem.data.length > 0) {
-      const startPrice = firstElem.data[0].y;
+      // changed so it is second last because the last day is actually just for visual effect
+      const startPrice = secondElem.data[secondElem.data.length - 2].y;
       const lastPrice = firstElem.data[firstElem.data.length - 1].y;
       setStartDayPrice(startPrice);
       setFinalDayPrice(lastPrice);
@@ -237,6 +236,27 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
       : companyData.change > 0
       ? "#2dce89"
       : "inherit";
+
+  const recommendation = () => {
+    // console.log(sentiment);
+    // console.log(sentiment['props']['className']);
+    // console.log(startDayPrice);
+    // console.log(finalDayPrice);
+    const difference = finalDayPrice - startDayPrice;
+    const sentiment_str = sentiment['props']['className'];
+    if(sentiment_str == null) return "N/A";
+    if(sentiment_str == "positive") {
+      if(difference < 0) return "Hold"
+      else if(difference >= 0) return "Buy";
+    } else if(sentiment_str < 0) {
+      if(difference == "negative") return "Sell";
+      else if(difference >= 0) return "Hold";
+    } else if(sentiment_str == 0) {
+      if(difference == "neutral") return "Sell"; 
+      else if(difference > 0) return "Buy";
+      else return "Hold";
+    }
+  }
   return (
     <Fragment>
       {graphData ? (
@@ -273,7 +293,7 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
                 fontSize: "1.2em",
               }}
             >
-              {recommendation}
+              {recommendation()}
             </span>
           </Typography>
           <div
