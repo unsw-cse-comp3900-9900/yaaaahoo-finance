@@ -179,6 +179,7 @@ const Company = ({ history, firebase }) => {
                     <Holdings
                       portfolios={portfolios}
                       companyData={companyData}
+                      firebase={firebase}
                     />
                   </TabPanel>
 
