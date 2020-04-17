@@ -1,8 +1,9 @@
-import React from "react";
+import React, {useState} from "react";
 import MaterialTable from "material-table";
 import { Paper } from "@material-ui/core";
 import TableContainer from "@material-ui/core/TableContainer";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
+import AddCurrentHoldingModal from "./AddCurrentHoldingModal";
 
 function createData(portfolios, companyData) {
     const symbol = companyData.symbol;
@@ -22,6 +23,8 @@ function createData(portfolios, companyData) {
               .toLocaleString(navigator.language, {minimumFractionDigits: 2});
           rows.push({
             portfolio: portfolio.name,
+            portfolioId: portfolio.id,
+            numberOfUnits : holding.numberOfUnits,
             daysGain,
             daysPerc,
             totalGain,
@@ -34,6 +37,8 @@ function createData(portfolios, companyData) {
       if (portfolioRecorded === false) {
         rows.push({
             portfolio: portfolio.name,
+            portfolioId: portfolio.id,
+            numberOfUnits: 0,
             daysGain: "",
             daysPerc: "",
             totalGain: "",
@@ -44,13 +49,37 @@ function createData(portfolios, companyData) {
     return rows;
   }
 
-const Holdings = ({ portfolios, companyData }) => {
+const Holdings = ({ portfolios, companyData, firebase}) => {
+  const [openAddCurrentHoldingModal, setOpenAddCurrentHoldingModal] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const [portfolioId, setPortfolioId] = useState("");
+
+  const handleOpenAddCurrentHoldingModal = (portfolioId) => {
+    setPortfolioId(portfolioId);
+    setOpenAddCurrentHoldingModal(true);
+  };
+
+  const handleCloseAddCurrentHoldingModal = () => {
+    setOpenAddCurrentHoldingModal(false);
+  };
+
+  const addHolding = (portfolioId, form) => {
+    firebase.addHolding(portfolioId, form).then(() => {
+      firebase.getUserData().then((res) => {
+        setUserData(res);
+      });
+      setOpenAddCurrentHoldingModal(false);
+    });
+  };
+
   return (
     <TableContainer component={Paper}>
       <MaterialTable
         title="Portfolios Table"
         columns={[
           { title: "Portfolio", field: "portfolio" },
+          { title: "PortfolioID", field: "portfolioId", hidden: true },
+          { title: "Number of units", field: "numberOfUnits", type: "numeric"},
           { title: "Days Gain", field: "daysGain", type: "numeric" },
           { title: "Days Gain (%)", field: "daysPerc", type: "numeric" },
           { title: "Total Gain", field: "totalGain", type: "numeric" },
@@ -58,13 +87,15 @@ const Holdings = ({ portfolios, companyData }) => {
         ]}
         data={createData(portfolios, companyData)}
         actions={[
-          (rowData) => ({
-            icon: () => <AddCircleIcon />,
-            tooltip: "Add to portfolio",
-            onClick: (event) => alert("SAVE!!"),
-            hidden: rowData.daysGain !== "",
-          }),
-        ]}
+        rowData => ({
+          icon: () => <AddCircleIcon />,
+          tooltip: 'Add to portfolio',
+          onClick: (event, rowData) => {
+              return handleOpenAddCurrentHoldingModal(rowData.portfolioId);
+          },
+          hidden: rowData.daysGain !== "",
+        })
+      ]}
         options={{
           actionsColumnIndex: -1,
           paging: false,
@@ -77,6 +108,16 @@ const Holdings = ({ portfolios, companyData }) => {
           },
         }}
       />
+      {openAddCurrentHoldingModal && (
+                      <AddCurrentHoldingModal
+                        isOpen={openAddCurrentHoldingModal}
+                        onClose={handleCloseAddCurrentHoldingModal}
+                        onSubmit={addHolding}
+                        portfolioId={portfolioId}
+                        symbol={companyData.symbol}
+                        companyName={companyData.companyName}
+                      />
+                    )}
     </TableContainer>
   );
 };
