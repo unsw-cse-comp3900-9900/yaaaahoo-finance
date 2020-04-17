@@ -6,3 +6,4 @@ searchtweets
 transformers
 numpy
 sklearn
+pandas

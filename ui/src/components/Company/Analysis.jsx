@@ -17,6 +17,8 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
       style={{ marginLeft: "1em", color: "#2643e9" }}
     />
   );
+  const [recommendation, setRecommendation] = useState("N/A");
+  const [predictionName, setPredictionName] = useState("Our 1-Month Prediction");
   const lineRef = useRef(null);
   const cancelToken = useRef(null);
 
@@ -32,6 +34,17 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
       },
       cancelToken: cancelToken.current.token,
     };
+
+    if(days < 5) {
+      setPredictionName("Our " + days + "-Day Prediction");
+    } else if(days == 5) {
+      setPredictionName("Our 1-Week Prediction");
+    } else if(days == 10) {
+      setPredictionName("Our 2-Week Prediction");
+    } else if(days == 20) {
+      setPredictionName("Our 1-Month Prediction");
+    }
+
     return await axios
       .post(
         `http://localhost:8080/prediction`,
@@ -123,6 +136,7 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
         cancelToken: cancelToken.current.token,
       })
       .then(({ data }) => {
+        console.log(startDayPrice);
         if (data.sentiment === "N/A")
           setSentiment(
             <span
@@ -131,6 +145,7 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
                 fontWeight: 500,
                 fontSize: "1.2em",
               }}
+              className='neutral'
             >
               N/A
             </span>
@@ -140,6 +155,7 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
             <SVG
               style={{ marginLeft: "0.3em", fontSize: "3em" }}
               src={HappySentiment}
+              className="positive"
             />
           );
         if (data.sentiment === "-1")
@@ -147,6 +163,7 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
             <SVG
               style={{ marginLeft: "0.3em", fontSize: "3em" }}
               src={SadSentiment}
+              className="negative"
             />
           );
         if (data.sentiment === "0")
@@ -214,7 +231,6 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
       ],
     },
   };
-
   const styleColor =
     companyData.change < 0
       ? "#fb6340"
@@ -226,7 +242,7 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
       {graphData ? (
         <Fragment>
           <Typography style={{ color: "#444444" }} className={classes.Heading2}>
-            Our 30-Day Prediction
+            {predictionName}
           </Typography>
           <Typography className={classes.Heading2}>
             {finalDayPrice ? finalDayPrice.toFixed(2) : "N/A"}
@@ -257,7 +273,7 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
                 fontSize: "1.2em",
               }}
             >
-              N/A
+              {recommendation}
             </span>
           </Typography>
           <div

@@ -136,7 +136,7 @@ const Company = ({ history, firebase }) => {
     for (let i = historicalData.length-1; i >= 0; i--) {
       if (count > 300) break;
       count++;
-      closingPrices.push(historicalData[i].close);
+      closingPrices.push([historicalData[i].close, historicalData[i].volume]);
     }
     setPredictionInput(closingPrices);
   }, [historicalData])
