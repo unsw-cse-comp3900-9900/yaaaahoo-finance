@@ -9,7 +9,6 @@ import HappySentiment from "../../assets/happy-sentiment.svg";
 
 const Analysis = ({ company, classes, companyData, historicalData }) => {
   const [graphData, setGraphData] = useState(null);
-  const [startDayPrice, setStartDayPrice] = useState(0);
   const [finalDayPrice, setFinalDayPrice] = useState(0);
   const [sentiment, setSentiment] = useState(
     <CircularProgress
@@ -18,7 +17,7 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
     />
   );
   const [recommendation, setRecommendation] = useState("N/A");
-  const [predictionName, setPredictionName] = useState("Our 1-Month Prediction");
+  const [predictionName, setPredictionName] = useState("Our 1 Month Prediction");
   const lineRef = useRef(null);
   const cancelToken = useRef(null);
 
@@ -36,13 +35,13 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
     };
 
     if(days < 5) {
-      setPredictionName("Our " + days + "-Day Prediction");
+      setPredictionName("Our " + days + "Day Prediction");
     } else if(days == 5) {
-      setPredictionName("Our 1-Week Prediction");
+      setPredictionName("Our 1 Week Prediction");
     } else if(days == 10) {
-      setPredictionName("Our 2-Week Prediction");
+      setPredictionName("Our 2 Week Prediction");
     } else if(days == 20) {
-      setPredictionName("Our 1-Month Prediction");
+      setPredictionName("Our 1 Month Prediction");
     }
 
     return await axios
@@ -136,7 +135,6 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
         cancelToken: cancelToken.current.token,
       })
       .then(({ data }) => {
-        console.log(startDayPrice);
         if (data.sentiment === "N/A")
           setSentiment(
             <span
@@ -189,9 +187,7 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
     const { datasets } = graphData;
     const [firstElem] = datasets;
     if (firstElem.data && firstElem.data.length > 0) {
-      const startPrice = firstElem.data[0].y;
       const lastPrice = firstElem.data[firstElem.data.length - 1].y;
-      setStartDayPrice(startPrice);
       setFinalDayPrice(lastPrice);
     }
   }, [graphData]);
@@ -246,12 +242,6 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
           </Typography>
           <Typography className={classes.Heading2}>
             {finalDayPrice ? finalDayPrice.toFixed(2) : "N/A"}
-          </Typography>
-          <Typography
-            style={{ color: styleColor }}
-            className={classes.Heading4}
-          >
-            N/A
           </Typography>
           <div
             className={classes.Heading5}

@@ -54,7 +54,7 @@ def prediction():
     for feature_num in range(feature_sets):
         scaled = scalers[feature_num].fit_transform(x[:, :, feature_num].reshape(-1, 1))
         scaled_x[:,:,feature_num] = scaled.reshape(-1)
-    #### TO-DO model to accept one dimensional array (300, 1)
+
     try:
         preds = model.predict(scaled_x)
     except Exception as e:
@@ -69,8 +69,7 @@ def prediction():
 # read backup tweets stored for that demo company.
 @app.route('/sentiment/<company>')
 def sentiment(company):
-    # print("Getting tweets....")
-    return '{"sentiment":"'+str(1)+'"}'
+    print("Getting tweets....")
     try:
         creds = searchtweets.load_credentials(filename='test.yaml')
         rule = searchtweets.gen_rule_payload(company, results_per_call=30)

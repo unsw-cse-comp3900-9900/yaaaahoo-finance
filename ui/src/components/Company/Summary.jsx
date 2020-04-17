@@ -8,6 +8,10 @@ const Summary = ({
 }) => {
   const [graphData, setGraphData] = useState(null);
   const lineRef = useRef(null);
+  const [daysGain, setDaysGain] = useState('N/A');
+  const [daysPerc, setDaysPerc] = useState('N/A');
+  const [prevClose, setPrevClose] = useState('N/A');
+  const [prevOpen, setPrevOpen] = useState('N/A');
 
   const getHistoricalData = (days) => {
     if (!historicalData) return;
@@ -48,6 +52,14 @@ const Summary = ({
 
   useEffect(() => {
     getHistoricalData(7);
+    if (historicalData && historicalData.length > 0) {
+      const previousClose = historicalData[historicalData.length-1].close;
+      const previousOpen = historicalData[historicalData.length-1].open;
+      setPrevOpen(previousOpen);
+      setPrevClose(previousClose);
+      setDaysGain((companyData.latestPrice - previousClose).toFixed(2));
+      setDaysPerc((((companyData.latestPrice - previousClose)/previousClose)*100).toFixed(2))
+    }
   }, [historicalData]);
   const options = {
     scales: {
@@ -71,8 +83,9 @@ const Summary = ({
       ],
     },
   };
+
   const styleColor =
-  companyData.change < 0 ? "#fb6340" : companyData.change > 0 ? "#2dce89" : "inherit";
+  daysGain < 0 ? "#fb6340" : daysGain > 0 ? "#2dce89" : "inherit";
 
   return (
     <Fragment>
@@ -80,13 +93,13 @@ const Summary = ({
         {companyData.latestPrice || "N/A"}
       </Typography>
       <Typography style={{ color: styleColor }} className={classes.Heading4}>
-        {companyData.change || "N/A"} ({companyData.changePercent || "N/A"}%)
+        {daysGain || "N/A"} ({daysPerc || "N/A"}%)
       </Typography>
       <Typography className={classes.Heading5}>
-        Previous Close: {companyData.previousClose || "N/A"}
+        Previous Close: {prevClose || "N/A"}
       </Typography>
       <Typography className={classes.Heading5}>
-        Open: {companyData.open || "N/A"}
+        Open: {companyData.open || prevOpen}
       </Typography>
       {graphData ? (
         <Fragment>
