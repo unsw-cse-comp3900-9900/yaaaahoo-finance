@@ -121,14 +121,7 @@ const Company = ({ history, firebase }) => {
     return await axios
     .get(`http://localhost:8080/historical/${company}`)
     .then(({ data }) => {
-      const formattedData = Object.entries(data["Time Series (Daily)"]).map(entry => {
-        return {
-          date: entry[0],
-          close: entry[1]["4. close"],
-          volume: entry[1]["5. volume"]
-        }
-      })
-      setHistoricalData(formattedData);
+      setHistoricalData(data);
     })
   }
 
