@@ -31,20 +31,51 @@ def get_technical_analysis(dataset):
   dataset['EMA 26'] = dataset['Close'].ewm(span=26).mean()
   dataset['MACD'] = dataset['EMA 12'] - dataset['EMA 26']
 
+@app.route('/historical/<company>', methods=['GET'])
+def get_historical(company):
+    print("Retrieving historical data....")
+    # Get backed up data
+    with open('backup_data.json') as backup_data_file:
+        backup_data = json.loads(backup_data_file.read())
+    if company in backup_data:
+        return jsonify(backup_data[company]['historical_data'])
+    else:
+        return jsonify([])
+
 @app.route('/prediction',methods=['POST'])
 def prediction():
     days = int(request.get_json()['days'])
     company = request.get_json()['company']
     model = tf.keras.models.load_model('model_{}.h5'.format(days))
-    x = request.get_json()['historicalData']
+    x = request.get_json()['predictionInput']
+    historicalData = request.get_json()['historicalData']
+
+    # Get backed up data
+    with open('backup_data.json') as backup_data_file:
+        backup_data = json.loads(backup_data_file.read())
+    
+    if (len(x) == 0):
+        print("No historical data provided, reading from backed up data")
+        # Check if we have company info backed up
+        if company in backup_data:
+           if backup_data[company]["prediction_input"]:
+               x = backup_data[company]["prediction_input"]
+               print("retrieve prediction input from backed up data")
+        else: return jsonify([])
+    else:
+        print("backed up data updated with latest historical data info")
+        if company in backup_data:
+            backup_data[company]["prediction_input"] = x
+            backup_data[company]["historical_data"] = historicalData
+        else:
+            backup_data[company] = {
+                "prediction_input": x,
+                "historical_data": historicalData
+            }
+        with open('backup_data.json', 'w') as f:
+            json.dump(backup_data, f)
     x = pd.DataFrame(x, columns = ['Close', 'Volume'])
     lags = 100 if days >= 10 else days * 10
-    
-    #### TO-DO check if company is cached if historicalData is empty
-    if (len(x) == 0):
-        print("No historical data provided")
-        return jsonify([])
-
     get_technical_analysis(x)
     x = x[-lags:]
     x = x.to_numpy().reshape((1, x.shape[0], x.shape[1]))

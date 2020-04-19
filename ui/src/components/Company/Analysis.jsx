@@ -7,7 +7,7 @@ import NeutralSentiment from "../../assets/neutral-sentiment.svg";
 import SadSentiment from "../../assets/sad-sentiment.svg";
 import HappySentiment from "../../assets/happy-sentiment.svg";
 
-const Analysis = ({ company, classes, companyData, historicalData }) => {
+const Analysis = ({ company, classes, historicalData, predictionInput }) => {
   const [graphData, setGraphData] = useState(null);
   const [startDayPrice, setStartDayPrice] = useState(0);
   const [finalDayPrice, setFinalDayPrice] = useState(0);
@@ -35,7 +35,7 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
     cancelToken.current = axios.CancelToken.source();
     var predictions = [];
     var prev = [];
-    const today = new Date();
+    
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -45,7 +45,7 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
     };
 
     if (days < 5) {
-      setPredictionName("Our " + days + "Day Prediction");
+      setPredictionName("Our " + days + " Day Prediction");
     } else if (days == 5) {
       setPredictionName("Our 1 Week Prediction");
     } else if (days == 10) {
@@ -57,13 +57,14 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
     return await axios
       .post(
         `http://localhost:8080/prediction`,
-        { historicalData, days, company },
+        { predictionInput, historicalData, days, company },
         config
       )
       .then(({ data }) => {
         const prev_cut = (data.length * 2) / 3;
+        const firstDay = new Date(historicalData[0].date);
         for (var i = 0; i < data.length; i++) {
-          const currentDate = today.setDate(today.getDate() + 1);
+          const currentDate = firstDay.setDate(firstDay.getDate() + 1);
           if (i < prev_cut) {
             prev.push({
               x: currentDate,
@@ -242,7 +243,7 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
         cancelToken.current.cancel("Component unmounted");
       }
     };
-  }, []);
+  }, [historicalData]);
 
   const options = {
     scales: {
@@ -341,7 +342,7 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
             justifyContent: "center",
           }}
         >
-          <CircularProgress style={{ color: "#cbd2f6" }} />
+          <CircularProgress style={{ color: "#cbd2f6", }} />
         </div>
       )}
     </Fragment>

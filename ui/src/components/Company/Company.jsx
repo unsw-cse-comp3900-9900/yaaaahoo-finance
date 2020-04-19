@@ -117,26 +117,49 @@ const Company = ({ history, firebase }) => {
     });
   };
 
-  const getHistoricalData = async (company, range) => {
-    const url = `https://cloud.iexapis.com/v1/stock/${company}/chart/${range}?token=${config.iexCloudApiToken}`;
+  const getBackup = async (company) => {
+    return await axios
+    .get(`http://localhost:8080/historical/${company}`)
+    .then(({ data }) => {
+      const formattedData = Object.entries(data["Time Series (Daily)"]).map(entry => {
+        return {
+          date: entry[0],
+          close: entry[1]["4. close"],
+          volume: entry[1]["5. volume"]
+        }
+      })
+      setHistoricalData(formattedData);
+    })
+  }
+
+  const getHistoricalData = async (company) => {
+    const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${company}&outputsize=full&apikey=${config.alphaVantageApiToken}`;
     return await axios
       .get(url)
       .then(({ data }) => {
-        setHistoricalData(data);
+        const formattedData = Object.entries(data["Time Series (Daily)"]).map(entry => {
+          return {
+            date: entry[0],
+            close: entry[1]["4. close"],
+            volume: entry[1]["5. volume"]
+          }
+        })
+        setHistoricalData(formattedData);
       })
-      .catch((error) => {
-        setHistoricalData(testData);
-      });
-  };
+      .catch(error => {
+        console.log(error);
+        getBackup(company)
+      })
+  }
 
   useEffect(() => {
     const closingPrices = [];
     if (!historicalData) return;
     let count = 1;
-    for (let i = historicalData.length-1; i >= 0; i--) {
+    for (let i = 0; i < historicalData.length-1; i++) {
       if (count > 300) break;
       count++;
-      closingPrices.push([historicalData[i].close, historicalData[i].volume]);
+      closingPrices.push([parseInt(historicalData[i].close), parseInt(historicalData[i].volume)]);
     }
     setPredictionInput(closingPrices);
   }, [historicalData])
@@ -202,7 +225,8 @@ const Company = ({ history, firebase }) => {
                       company={company}
                       classes={classes}
                       companyData={companyData}
-                      historicalData={predictionInput}
+                      historicalData={historicalData}
+                      predictionInput={predictionInput}
                     />
                   </TabPanel>
                 </Fragment>
