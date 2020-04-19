@@ -1,6 +1,8 @@
-import React, { Fragment } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { Fragment, useEffect, useState } from "react";
+import { config } from "../../config";
+import axios from "axios";
 import { Link } from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Button } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
@@ -8,10 +10,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import DeleteIcon from "@material-ui/icons/Delete";
 import RemoveCircleIcon from "@material-ui/icons/RemoveCircle";
-import { config } from "../../config";
-import axios from "axios";
-import { useEffect } from "react";
-import { useState } from "react";
+
 const useStyles = makeStyles((theme) => ({
   page: {
     display: "flex",
@@ -186,47 +185,28 @@ const Portfolio = ({
   openDeleteModal,
   openAddHoldingsModal,
   openRemoveHoldingsModal,
-  updateEarningsInfo,
+  getHoldingsInfo,
 }) => {
   const classes = useStyles();
   const [holdings, setHoldings] = useState(null);
   const [holdingsData, setHoldingsData] = useState(null);
   const [estimatedEarnings, setEstimatedEarnings] = useState(0);
   const handleSubmit = (holdingId) => {
-    openRemoveHoldingsModal(holdingId);
+    openRemoveHoldingsModal(holdingId, portfolio.id);
   };
-  const getHoldingInfo = async (holding) => {
-    // const url = `https://cloud.iexapis.com/v1/stock/${holding.symbol}/quote?token=${config.iexCloudApiToken}`;
-    // return await axios
-    //   .get(url)
-    //   .then(({ data }) => {
-    //     const currentPrice = data.latestPrice || "N/A";
-    //     const currentPercentage =
-    //       data.latestPrice && data.open
-    //         ? ((data.latestPrice - data.open) / data.open).toFixed(3)
-    //         : "N/A";
-    //     const different =
-    //       data.latestPrice && data.open
-    //         ? (data.latestPrice - data.open) * holding.numberOfUnits
-    //         : 0;
-    //     if (different !== 0){
-    //       const price = estimatedEarnings + different;
-    //       setEstimatedEarnings(price);
-    //     }
-    //     return { currentPrice, currentPercentage };
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //     return { currentPrice: "N/A", currentPercentage: "N/A" };
-    //   });
-      return { currentPrice: "N/A", currentPercentage: "N/A" };
+
+  const getHoldingsData = async () => {
+    const result = await getHoldingsInfo(Object.values(portfolio.holdings));
+    setHoldings(result.holdingsList);
+    setEstimatedEarnings(result.earnings);
   };
 
   useEffect(() => {
     if (portfolio.holdings) {
-      setHoldings(Object.values(portfolio.holdings));
+      getHoldingsData();
     } else {
       setHoldings(null);
+      setEstimatedEarnings(0);
     }
   }, [portfolio]);
 
@@ -237,21 +217,20 @@ const Portfolio = ({
   const getContent = async () => {
     if (!holdings) {
       setHoldingsData(null);
-      setEstimatedEarnings(0)
+      setEstimatedEarnings(0);
       return;
     }
     const holdingsContent = [];
     for (const holding of holdings) {
       const holdingId = holding.id;
-      const currentInfo = await getHoldingInfo(holding);
       const styleColor =
-        currentInfo.currentPercentage < 0
+        holding.currentPercentage < 0
           ? "#fb6340"
-          : currentInfo.currentPercentage > 0
+          : holding.currentPercentage > 0
           ? "#2dce89"
           : "inherit";
       holdingsContent.push(
-        <div className={classes.CardItem} key={holding.id}>
+        <div className={classes.CardItem} key={holdingId}>
           <Card className={classes.HoldingCard}>
             <CardContent
               className={classes.HoldingCardContent}
@@ -265,13 +244,13 @@ const Portfolio = ({
                 {holding.symbol}
               </Typography>
               <Typography className={classes.HoldingCardHeading}>
-                {currentInfo.currentPrice}
+                {holding.currentPrice}
               </Typography>
               <Typography
                 className={classes.HoldingCardHeading}
                 style={{ color: styleColor }}
               >
-                {currentInfo.currentPercentage}%
+                {holding.currentPercentage}%
               </Typography>
               <RemoveCircleIcon
                 value={holding.id}
@@ -298,9 +277,15 @@ const Portfolio = ({
       <div className={classes.header}>
         <Typography className={classes.title}>
           {portfolio.name}{" "}
-          <EditIcon className={classes.editButton} onClick={() => openEditModal(portfolio.id)} />
+          <EditIcon
+            className={classes.editButton}
+            onClick={() => openEditModal(portfolio.id)}
+          />
         </Typography>
-        <DeleteIcon className={classes.delete} onClick={() => openDeleteModal(portfolio.id)} />
+        <DeleteIcon
+          className={classes.delete}
+          onClick={() => openDeleteModal(portfolio.id)}
+        />
       </div>
       <div className={classes.summary}>
         <Typography className={classes.sumHeading2}>

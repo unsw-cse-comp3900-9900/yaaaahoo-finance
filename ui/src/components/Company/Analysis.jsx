@@ -11,11 +11,22 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
   const [graphData, setGraphData] = useState(null);
   const [startDayPrice, setStartDayPrice] = useState(0);
   const [finalDayPrice, setFinalDayPrice] = useState(0);
+  const [sentimentString, setSentimentString] = useState(null);
   const [sentiment, setSentiment] = useState(
     <CircularProgress
       size="1.2em"
       style={{ marginLeft: "1em", color: "#2643e9" }}
     />
+  );
+  const [recommendation, setRecommendation] = useState(
+    <CircularProgress
+      size="1.2em"
+      style={{ marginLeft: "1em", color: "#2643e9" }}
+    />
+  );
+
+  const [predictionName, setPredictionName] = useState(
+    "Our 1 Month Prediction"
   );
   const lineRef = useRef(null);
   const cancelToken = useRef(null);
@@ -25,10 +36,30 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
     var predictions = [];
     var prev = [];
     const today = new Date();
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      cancelToken: cancelToken.current.token,
+    };
+
+    if (days < 5) {
+      setPredictionName("Our " + days + "Day Prediction");
+    } else if (days == 5) {
+      setPredictionName("Our 1 Week Prediction");
+    } else if (days == 10) {
+      setPredictionName("Our 2 Week Prediction");
+    } else if (days == 20) {
+      setPredictionName("Our 1 Month Prediction");
+    }
+
     return await axios
-      .get(`http://localhost:8080/prediction/${days}/${company}`, {
-        cancelToken: cancelToken.current.token,
-      })
+      .post(
+        `http://localhost:8080/prediction`,
+        { historicalData, days, company },
+        config
+      )
       .then(({ data }) => {
         const prev_cut = (data.length * 2) / 3;
         for (var i = 0; i < data.length; i++) {
@@ -114,39 +145,42 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
         cancelToken: cancelToken.current.token,
       })
       .then(({ data }) => {
-        if (data.sentiment === "N/A")
-          setSentiment(
-            <span
-              style={{
-                marginLeft: "0.3em",
-                fontWeight: 500,
-                fontSize: "1.2em",
-              }}
-            >
-              N/A
-            </span>
-          );
-        if (data.sentiment === "1")
-          setSentiment(
-            <SVG
-              style={{ marginLeft: "0.3em", fontSize: "3em" }}
-              src={HappySentiment}
-            />
-          );
-        if (data.sentiment === "-1")
-          setSentiment(
-            <SVG
-              style={{ marginLeft: "0.3em", fontSize: "3em" }}
-              src={SadSentiment}
-            />
-          );
-        if (data.sentiment === "0")
-          setSentiment(
-            <SVG
-              style={{ marginLeft: "0.3em", fontSize: "3em" }}
-              src={NeutralSentiment}
-            />
-          );
+        if (data.sentiment === "N/A") setSentimentString("0");
+        setSentiment(
+          <span
+            style={{
+              marginLeft: "0.3em",
+              fontWeight: 500,
+              fontSize: "1.2em",
+            }}
+          >
+            N/A
+          </span>
+        );
+        if (data.sentiment === "1") setSentimentString("1");
+        setSentiment(
+          <SVG
+            style={{ marginLeft: "0.3em", fontSize: "3em" }}
+            src={HappySentiment}
+            className="positive"
+          />
+        );
+        if (data.sentiment === "-1") setSentimentString("-1");
+        setSentiment(
+          <SVG
+            style={{ marginLeft: "0.3em", fontSize: "3em" }}
+            src={SadSentiment}
+            className="negative"
+          />
+        );
+        if (data.sentiment === "0") setSentimentString("0");
+        setSentiment(
+          <SVG
+            style={{ marginLeft: "0.3em", fontSize: "3em" }}
+            src={NeutralSentiment}
+            className="neutral"
+          />
+        );
       })
       .catch((error) => {
         if (axios.isCancel(error)) {
@@ -154,6 +188,7 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
         } else {
           console.log(error);
         }
+        setSentimentString("N/A");
         setSentiment("N/A");
       });
   };
@@ -161,14 +196,40 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
   useEffect(() => {
     if (!graphData) return;
     const { datasets } = graphData;
-    const [firstElem] = datasets;
+    const [firstElem, secondElem] = datasets;
     if (firstElem.data && firstElem.data.length > 0) {
-      const startPrice = firstElem.data[0].y;
+      // changed so it is second last because the last day is actually just for visual effect
+      const startPrice = secondElem.data[secondElem.data.length - 2].y;
       const lastPrice = firstElem.data[firstElem.data.length - 1].y;
       setStartDayPrice(startPrice);
       setFinalDayPrice(lastPrice);
     }
   }, [graphData]);
+
+  useEffect(() => {
+    const difference = finalDayPrice - startDayPrice;
+    if (!sentimentString)
+      setRecommendation(
+        <CircularProgress
+          size="1.2em"
+          style={{ marginLeft: "1em", color: "#2643e9" }}
+        />
+      );
+
+    if (sentimentString === "1") {
+      if (difference < 0) setRecommendation("Hold");
+      if (difference >= 0) setRecommendation("Buy");
+    } else if (sentimentString === "-1") {
+      if (difference < 0) setRecommendation("Sell");
+      if (difference >= 0) setRecommendation("Hold");
+    } else if (sentimentString === "0") {
+      if (difference === 0) setRecommendation("Sell");
+      if (difference > 0) setRecommendation("Buy");
+      if (difference < 0) setRecommendation("Hold");
+    } else if (sentimentString === "N/A") {
+      setRecommendation("N/A");
+    }
+  }, [sentiment]);
 
   useEffect(() => {
     if (cancelToken.current) {
@@ -206,18 +267,20 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
     },
   };
 
+  const difference = (((finalDayPrice - startDayPrice)/startDayPrice) * 100).toFixed(2);
   const styleColor =
-    companyData.change < 0
+    difference < 0
       ? "#fb6340"
-      : companyData.change > 0
+      : difference > 0
       ? "#2dce89"
       : "inherit";
+
   return (
     <Fragment>
       {graphData ? (
         <Fragment>
           <Typography style={{ color: "#444444" }} className={classes.Heading2}>
-            Our 30-Day Prediction
+            {predictionName}
           </Typography>
           <Typography className={classes.Heading2}>
             {finalDayPrice ? finalDayPrice.toFixed(2) : "N/A"}
@@ -226,7 +289,7 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
             style={{ color: styleColor }}
             className={classes.Heading4}
           >
-            N/A
+            {difference || "N/A"}%
           </Typography>
           <div
             className={classes.Heading5}
@@ -248,7 +311,7 @@ const Analysis = ({ company, classes, companyData, historicalData }) => {
                 fontSize: "1.2em",
               }}
             >
-              N/A
+              {recommendation}
             </span>
           </Typography>
           <div

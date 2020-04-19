@@ -121,67 +121,38 @@ const AddHoldingsModal = ({ isOpen, onClose, onSubmit, portfolioId }) => {
     tradeDate: false,
   });
 
-  const [searchResults, setSearchResults] = useState([
-    {
-      symbol: "AAPL.BA",
-      name: "APPLE INC CEDEAR",
-      currency: "ARS",
-      price: null,
-      stock_exchange_long: "Buenos Aires Stock Exchange",
-    },
-    {
-      symbol: "AAPL.MI",
-      name: "Apple Inc.",
-      currency: "EUR",
-      price: null,
-      stock_exchange_long: "Milan Stock Exchange",
-    },
-    {
-      symbol: "AAPL.MX",
-      name: "Apple Inc.",
-      currency: "MXN",
-      price: null,
-      stock_exchange_long: "Mexican Stock Exchange",
-    },
-    {
-      symbol: "AAPL34.SA",
-      name: "APPLE085/UnSBDR QI",
-      currency: "BRL",
-      price: null,
-      stock_exchange_long: "Sao Paolo Stock Exchange",
-    },
-  ]);
+  const [searchResults, setSearchResults] = useState([]);
 
-    const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const searchCompanies = async (search) => {
-    const url = `https://api.worldtradingdata.com/api/v1/stock_search?search_term=${search}&limit=5&page=1&api_token=${config.worldTradingApiToken}`;
+    const url = `https://api.worldtradingdata.com/api/v1/stock_search?stock_exchange=NYSE&search_term=${search}&limit=5&page=1&api_token=${config.worldTradingApiToken}`;
     return await axios
       .get(url)
       .then(({ data }) => data)
       .catch((error) => {
         console.error(error);
         return {
-            data: []
+          data: [],
         };
       });
   };
 
-    useEffect(() => {
-      if (debouncedSearchTerm) {
-        // Set isSearching state
-        setIsSearching(true);
-        // Fire off our API call
-        searchCompanies(debouncedSearchTerm).then((results) => {
-          // Set back to false since request finished
-          setIsSearching(false);
-          // Set results state
-          setSearchResults(results.data);
-        });
-      } else {
-        setSearchResults([]);
-      }
-    }, [debouncedSearchTerm]);
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      // Set isSearching state
+      setIsSearching(true);
+      // Fire off our API call
+      searchCompanies(debouncedSearchTerm).then((results) => {
+        // Set back to false since request finished
+        setIsSearching(false);
+        // Set results state
+        setSearchResults(results.data);
+      });
+    } else {
+      setSearchResults([]);
+    }
+  }, [debouncedSearchTerm]);
 
   const handleChange = (event, value, reason) => {
     event.persist();

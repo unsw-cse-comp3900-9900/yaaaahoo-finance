@@ -165,9 +165,10 @@ const Home = ({ firebase }) => {
     setSelectedPortfolio(null);
   };
 
-  const handleOpenRemoveHoldingsModal = (holdingId) => {
+  const handleOpenRemoveHoldingsModal = (holdingId, portfolioId) => {
     setOpenRemoveHoldingsModal(true);
     setSelectedHolding(holdingId);
+    setSelectedPortfolio(portfolioId);
   };
 
   const handleCloseRemoveHoldingsModal = () => {
@@ -264,6 +265,39 @@ const Home = ({ firebase }) => {
     });
   };
 
+  const getHoldingsInfo = async (holdings) => {
+    let earnings = 0;
+    const info = [];
+    for (let holding of holdings) {
+      const url = `https://cloud.iexapis.com/v1/stock/${holding.symbol}/quote?token=${config.iexCloudApiToken}`;
+      await axios
+        .get(url)
+        .then(({ data }) => {
+          const currentPrice = data.latestPrice;
+          const currentPercentage = data.changePercent;
+          const gain = holding.numberOfUnits * data.change;
+          earnings += gain;
+          const holdingInfo = {
+            id: holding.id,
+            symbol: holding.symbol,
+            currentPrice,
+            currentPercentage,
+          };
+          info.push(holdingInfo);
+        })
+        .catch((error) => {
+          const holdingInfo = {
+            id: holding.id,
+            symbol: holding.symbol,
+            currentPrice: "N/A",
+            currentPercentage: "N/A",
+          };
+          info.push(holdingInfo);
+        });
+    }
+    return { holdingsList: info, earnings };
+  };
+
   return (
     <AuthUserContext.Consumer>
       {(authUser) => {
@@ -285,155 +319,162 @@ const Home = ({ firebase }) => {
                   <Fragment key={`portfolio-${index}`}>
                     <Portfolio
                       portfolio={portfolio}
+                      getHoldingsInfo={(holdings) => getHoldingsInfo(holdings)}
                       recommendation={recommendation}
-                      openDeleteModal={(portfolioId) => handleOpenDeleteModal(portfolioId)}
-                      openEditModal={(portfolioId) => handleOpenEditModal(portfolioId)}
-                      openAddHoldingsModal={(portfolioId) => handleOpenAddHoldingsModal(portfolioId)}
-                      openRemoveHoldingsModal={(holdingId) =>
-                        handleOpenRemoveHoldingsModal(holdingId)
+                      openDeleteModal={(portfolioId) =>
+                        handleOpenDeleteModal(portfolioId)
+                      }
+                      openEditModal={(portfolioId) =>
+                        handleOpenEditModal(portfolioId)
+                      }
+                      openAddHoldingsModal={(portfolioId) =>
+                        handleOpenAddHoldingsModal(portfolioId)
+                      }
+                      openRemoveHoldingsModal={(holdingId, portfolioId) =>
+                        handleOpenRemoveHoldingsModal(holdingId, portfolioId)
                       }
                     />
-                    {openEditModal && (
-                      <Modal
-                        aria-labelledby="transition-modal-title"
-                        aria-describedby="transition-modal-description"
-                        className={classes.modal}
-                        open={openEditModal}
-                        onClose={handleCloseEditModal}
-                        closeAfterTransition
-                        BackdropComponent={Backdrop}
-                        BackdropProps={{
-                          timeout: 500,
-                        }}
-                      >
-                        <Fade in={openEditModal}>
-                          <div className={classes.paper}>
-                            <Typography className={classes.heading}>
-                              Edit portfolio name
-                            </Typography>
-                            <TextField
-                              onChange={handleChange}
-                              onBlur={handleChange}
-                              id="editPortfolio"
-                              label="Portfolio name"
-                              name="editPortfolio"
-                              value={newPortfolioName}
-                              error={error}
-                              helperText={error ? "Name is required" : ""}
-                            />
-                            <div className={classes.buttonGroup}>
-                              <Button
-                                variant="outlined"
-                                onClick={handleCloseEditModal}
-                                className={classes.button}
-                                disabled={error}
-                              >
-                                Cancel
-                              </Button>
-                              <Button
-                                variant="contained"
-                                onClick={() => editPortfolioName(selectedPortfolio)}
-                                className={classes.submitButton}
-                                disabled={error}
-                              >
-                                Save
-                              </Button>
-                            </div>
-                          </div>
-                        </Fade>
-                      </Modal>
-                    )}
-                    {openDeleteModal && (
-                      <Modal
-                        aria-labelledby="transition-modal-title"
-                        aria-describedby="transition-modal-description"
-                        className={classes.modal}
-                        open={openDeleteModal}
-                        onClose={handleCloseDeleteModal}
-                        closeAfterTransition
-                        BackdropComponent={Backdrop}
-                        BackdropProps={{
-                          timeout: 500,
-                        }}
-                      >
-                        <Fade in={openDeleteModal}>
-                          <div className={classes.paper}>
-                            <Typography className={classes.heading}>
-                              Are you sure you want to delete this portfolio?
-                            </Typography>
-                            <div className={classes.buttonGroup}>
-                              <Button
-                                variant="outlined"
-                                onClick={handleCloseDeleteModal}
-                                className={classes.button}
-                                disabled={error}
-                              >
-                                Cancel
-                              </Button>
-                              <Button
-                                variant="contained"
-                                onClick={() => deletePortfolio(selectedPortfolio)}
-                                className={classes.submitButton}
-                                disabled={error}
-                              >
-                                Delete
-                              </Button>
-                            </div>
-                          </div>
-                        </Fade>
-                      </Modal>
-                    )}
-                    {openAddHoldingsModal && (
-                      <AddHoldingsModal
-                        isOpen={openAddHoldingsModal}
-                        onClose={handleCloseAddHoldingsModal}
-                        onSubmit={addHolding}
-                        portfolioId={selectedPortfolio}
-                      />
-                    )}
-                    {openRemoveHoldingsModal && (
-                      <Modal
-                        aria-labelledby="transition-modal-title"
-                        aria-describedby="transition-modal-description"
-                        className={classes.modal}
-                        open={openRemoveHoldingsModal}
-                        onClose={handleCloseRemoveHoldingsModal}
-                        closeAfterTransition
-                        BackdropComponent={Backdrop}
-                        BackdropProps={{
-                          timeout: 500,
-                        }}
-                      >
-                        <Fade in={openRemoveHoldingsModal}>
-                          <div className={classes.paper}>
-                            <Typography className={classes.heading}>
-                              Are you sure you want to delete this holding?
-                            </Typography>
-                            <div className={classes.buttonGroup}>
-                              <Button
-                                variant="outlined"
-                                onClick={handleCloseRemoveHoldingsModal}
-                                className={classes.button}
-                              >
-                                Cancel
-                              </Button>
-                              <Button
-                                variant="contained"
-                                onClick={() => removeHolding(selectedPortfolio)}
-                                className={classes.submitButton}
-                              >
-                                Delete
-                              </Button>
-                            </div>
-                          </div>
-                        </Fade>
-                      </Modal>
-                    )}
                   </Fragment>
                 ))}
                 {/* <TopNews title="Top News" titleColor="#000000de" /> */}
               </Fragment>
             ) : null}
+            {openEditModal && (
+              <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                className={classes.modal}
+                open={openEditModal}
+                onClose={handleCloseEditModal}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                  timeout: 500,
+                }}
+              >
+                <Fade in={openEditModal}>
+                  <div className={classes.paper}>
+                    <Typography className={classes.heading}>
+                      Edit portfolio name
+                    </Typography>
+                    <TextField
+                      onChange={handleChange}
+                      onBlur={handleChange}
+                      id="editPortfolio"
+                      label="Portfolio name"
+                      name="editPortfolio"
+                      value={newPortfolioName}
+                      error={error}
+                      helperText={error ? "Name is required" : ""}
+                    />
+                    <div className={classes.buttonGroup}>
+                      <Button
+                        variant="outlined"
+                        onClick={handleCloseEditModal}
+                        className={classes.button}
+                        disabled={error}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        variant="contained"
+                        onClick={() => editPortfolioName(selectedPortfolio)}
+                        className={classes.submitButton}
+                        disabled={error}
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  </div>
+                </Fade>
+              </Modal>
+            )}
+            {openDeleteModal && (
+              <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                className={classes.modal}
+                open={openDeleteModal}
+                onClose={handleCloseDeleteModal}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                  timeout: 500,
+                }}
+              >
+                <Fade in={openDeleteModal}>
+                  <div className={classes.paper}>
+                    <Typography className={classes.heading}>
+                      Are you sure you want to delete this portfolio?
+                    </Typography>
+                    <div className={classes.buttonGroup}>
+                      <Button
+                        variant="outlined"
+                        onClick={handleCloseDeleteModal}
+                        className={classes.button}
+                        disabled={error}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        variant="contained"
+                        onClick={() => deletePortfolio(selectedPortfolio)}
+                        className={classes.submitButton}
+                        disabled={error}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
+                </Fade>
+              </Modal>
+            )}
+            {openAddHoldingsModal && (
+              <AddHoldingsModal
+                isOpen={openAddHoldingsModal}
+                onClose={handleCloseAddHoldingsModal}
+                onSubmit={addHolding}
+                portfolioId={selectedPortfolio}
+              />
+            )}
+            {openRemoveHoldingsModal && (
+              <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                className={classes.modal}
+                open={openRemoveHoldingsModal}
+                onClose={handleCloseRemoveHoldingsModal}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                  timeout: 500,
+                }}
+              >
+                <Fade in={openRemoveHoldingsModal}>
+                  <div className={classes.paper}>
+                    <Typography className={classes.heading}>
+                      Are you sure you want to delete this holding?
+                    </Typography>
+                    <div className={classes.buttonGroup}>
+                      <Button
+                        variant="outlined"
+                        onClick={handleCloseRemoveHoldingsModal}
+                        className={classes.button}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        variant="contained"
+                        onClick={() => removeHolding(selectedPortfolio)}
+                        className={classes.submitButton}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
+                </Fade>
+              </Modal>
+            )}
             {openAddModal && (
               <Modal
                 aria-labelledby="transition-modal-title"
