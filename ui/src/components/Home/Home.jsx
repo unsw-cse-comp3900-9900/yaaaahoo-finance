@@ -120,6 +120,7 @@ const Home = ({ firebase }) => {
   const [selectedHolding, setSelectedHolding] = useState(null);
   const [selectedPortfolio, setSelectedPortfolio] = useState(null);
   const [error, setError] = useState(false);
+  const [relatedNews, setRelatedNews] = useState(null);
 
   const handleOpenAddModal = (portfolioId) => {
     setOpenAddModal(true);
@@ -205,6 +206,18 @@ const Home = ({ firebase }) => {
     if (userData.portfolios) setPortfolios(Object.values(userData.portfolios));
     else setPortfolios([]);
   }, [userData]);
+
+  useEffect(() => {
+    if(portfolios && portfolios.length > 0) {
+      for (let portfolio of portfolios) {
+        if (portfolio.holdings) {
+          const companyNames = Object.values(portfolio.holdings).map(holding => holding.companyName);
+          setRelatedNews(companyNames);
+          break;
+        }
+      }
+    }
+  }, [portfolios]);
 
   useEffect(() => {
     firebase.getUserData().then((res) => {
@@ -336,7 +349,6 @@ const Home = ({ firebase }) => {
                     />
                   </Fragment>
                 ))}
-                {/* <TopNews title="Top News" titleColor="#000000de" /> */}
               </Fragment>
             ) : null}
             {openEditModal && (
@@ -525,7 +537,7 @@ const Home = ({ firebase }) => {
                 </Fade>
               </Modal>
             )}
-            <TopNews title="Related News" titleColor="black" />
+            <TopNews title="Related News" titleColor="black" companies={relatedNews} />
           </div>
         );
       }}
