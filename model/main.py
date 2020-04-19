@@ -31,20 +31,51 @@ def get_technical_analysis(dataset):
   dataset['EMA 26'] = dataset['Close'].ewm(span=26).mean()
   dataset['MACD'] = dataset['EMA 12'] - dataset['EMA 26']
 
+@app.route('/historical/<company>', methods=['GET'])
+def get_historical(company):
+    print("Retrieving historical data....")
+    # Get backed up data
+    with open('backup_data.json') as backup_data_file:
+        backup_data = json.loads(backup_data_file.read())
+    if company in backup_data:
+        return jsonify(backup_data[company]['historical_data'])
+    else:
+        return jsonify([])
+
 @app.route('/prediction',methods=['POST'])
 def prediction():
     days = int(request.get_json()['days'])
     company = request.get_json()['company']
     model = tf.keras.models.load_model('model_{}.h5'.format(days))
-    x = request.get_json()['historicalData']
+    x = request.get_json()['predictionInput']
+    historicalData = request.get_json()['historicalData']
+
+    # Get backed up data
+    with open('backup_data.json') as backup_data_file:
+        backup_data = json.loads(backup_data_file.read())
+    
+    if (len(x) == 0):
+        print("No historical data provided, reading from backed up data")
+        # Check if we have company info backed up
+        if company in backup_data:
+           if backup_data[company]["prediction_input"]:
+               x = backup_data[company]["prediction_input"]
+               print("retrieve prediction input from backed up data")
+        else: return jsonify([])
+    else:
+        print("backed up data updated with latest historical data info")
+        if company in backup_data:
+            backup_data[company]["prediction_input"] = x
+            backup_data[company]["historical_data"] = historicalData
+        else:
+            backup_data[company] = {
+                "prediction_input": x,
+                "historical_data": historicalData
+            }
+        with open('backup_data.json', 'w') as f:
+            json.dump(backup_data, f)
     x = pd.DataFrame(x, columns = ['Close', 'Volume'])
     lags = 100 if days >= 10 else days * 10
-    
-    #### TO-DO check if company is cached if historicalData is empty
-    if (len(x) == 0):
-        print("No historical data provided")
-        return jsonify([])
-
     get_technical_analysis(x)
     x = x[-lags:]
     x = x.to_numpy().reshape((1, x.shape[0], x.shape[1]))
@@ -69,35 +100,32 @@ def prediction():
 # read backup tweets stored for that demo company.
 @app.route('/sentiment/<company>')
 def sentiment(company):
-    print("Getting tweets....")
+    # Get backed up data
+    with open('backup_data.json') as backup_data_file:
+        backup_data = json.loads(backup_data_file.read())
     try:
         creds = searchtweets.load_credentials(filename='test.yaml')
         rule = searchtweets.gen_rule_payload(company, results_per_call=30)
         json_results = searchtweets.collect_results(rule, max_results=30,result_stream_args=creds)
+        tweets = [tweet.all_text for tweet in json_results]
     except Exception as e:
-        return '{"sentiment": "N/A"}'
+        print("429 Error, getting back up data for tweets...")
+        if company in backup_data:
+            if "tweets" in backup_data[company]:
+                tweets = backup_data[company]["tweets"]
+        else:
+            return '{"sentiment": "N/A"}'
+        
+    print("backed up data updated with latest twitter info")
+    if company in backup_data:
+        backup_data[company]["tweets"] = tweets
+    else:
+        backup_data[company] = {
+            "tweets": tweets,
+        }
+    with open('backup_data.json', 'w') as f:
+        json.dump(backup_data, f)
 
-    ### Commented out code for backing up demo data
-    # with open('tttt.json', 'r') as j:
-    #     json_results = json.loads(j.read())     
-
-    # with open('tttt.json', 'w+') as f:
-    #     f.write('[')
-    #     for index in range(len(json_results)):
-    #         result = json_results[index]
-    #         f.write(json.dumps(result))
-    #         if index < len(json_results) - 1:
-    #             f.write(',\n')
-    #     f.write(']')
-    
-    # tweets = []
-
-    # for tweet in json_results:
-    #     tweet_text = None
-    #     tweet_text = tweet['text']
-    #     tweets.append(tweet_text)
-    
-    tweets = [tweet.all_text for tweet in json_results]
     sentiment = pipeline("sentiment-analysis")
     positive = 0
     aggregated_sentiment = 0

@@ -17,7 +17,7 @@ const Summary = ({
     if (!historicalData) return;
     const formatData = [];
     let count = 1;
-    for (let i = historicalData.length-1; i >= 0; i--) {
+    for (let i = 0; i < historicalData.length-1; i++) {
       if (count > days) break;
       count++;
       const data = {
@@ -53,14 +53,15 @@ const Summary = ({
   useEffect(() => {
     getHistoricalData(7);
     if (historicalData && historicalData.length > 0) {
-      const previousClose = historicalData[historicalData.length-1].close;
-      const previousOpen = historicalData[historicalData.length-1].open;
+      const previousClose = historicalData[0].close;
+      const previousOpen = historicalData[0].open;
       setPrevOpen(previousOpen);
       setPrevClose(previousClose);
       setDaysGain((companyData.latestPrice - previousClose).toFixed(2));
       setDaysPerc((((companyData.latestPrice - previousClose)/previousClose)*100).toFixed(2))
     }
   }, [historicalData]);
+
   const options = {
     scales: {
       xAxes: [
