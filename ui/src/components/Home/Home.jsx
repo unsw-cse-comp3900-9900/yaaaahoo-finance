@@ -6,7 +6,6 @@ import { AuthUserContext, withAuthorization } from "../Session";
 import TopNews from "../TopNews/TopNews";
 import Portfolio from "../Portfolio/Portfolio";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
-import SearchIcon from "@material-ui/icons/Search";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
