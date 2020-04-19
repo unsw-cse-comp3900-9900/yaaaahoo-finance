@@ -62,7 +62,6 @@ const Analysis = ({ company, classes, historicalData, predictionInput, companyDa
       )
       .then(({ data }) => {
         const prev_cut = (data.length * 2) / 3;
-        console.log(historicalData)
         const firstDay = new Date(historicalData[0].date);
         for (var i = 0; i < data.length; i++) {
           const currentDate = firstDay.setDate(firstDay.getDate() + 1);
