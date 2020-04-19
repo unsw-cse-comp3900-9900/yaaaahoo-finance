@@ -62,6 +62,7 @@ const Analysis = ({ company, classes, historicalData, predictionInput, companyDa
       )
       .then(({ data }) => {
         const prev_cut = (data.length * 2) / 3;
+        console.log(historicalData)
         const firstDay = new Date(historicalData[0].date);
         for (var i = 0; i < data.length; i++) {
           const currentDate = firstDay.setDate(firstDay.getDate() + 1);
@@ -241,14 +242,16 @@ const Analysis = ({ company, classes, historicalData, predictionInput, companyDa
     if (cancelToken.current) {
       cancelToken.current.cancel("Component unmounted");
     }
-    getPredictions(20);
-    getSentiment();
+    if (historicalData) {
+      getPredictions(20);
+      getSentiment();
+    }
     return () => {
       if (cancelToken.current) {
         cancelToken.current.cancel("Component unmounted");
       }
     };
-  }, []);
+  }, [historicalData]);
 
   const options = {
     scales: {
