@@ -100,35 +100,32 @@ def prediction():
 # read backup tweets stored for that demo company.
 @app.route('/sentiment/<company>')
 def sentiment(company):
-    print("Getting tweets....")
+    # Get backed up data
+    with open('backup_data.json') as backup_data_file:
+        backup_data = json.loads(backup_data_file.read())
     try:
         creds = searchtweets.load_credentials(filename='test.yaml')
         rule = searchtweets.gen_rule_payload(company, results_per_call=30)
         json_results = searchtweets.collect_results(rule, max_results=30,result_stream_args=creds)
+        tweets = [tweet.all_text for tweet in json_results]
     except Exception as e:
-        return '{"sentiment": "N/A"}'
+        print("429 Error, getting back up data for tweets...")
+        if company in backup_data:
+            if "tweets" in backup_data[company]:
+                tweets = backup_data[company]["tweets"]
+        else:
+            return '{"sentiment": "N/A"}'
+        
+    print("backed up data updated with latest twitter info")
+    if company in backup_data:
+        backup_data[company]["tweets"] = tweets
+    else:
+        backup_data[company] = {
+            "tweets": tweets,
+        }
+    with open('backup_data.json', 'w') as f:
+        json.dump(backup_data, f)
 
-    ### Commented out code for backing up demo data
-    # with open('tttt.json', 'r') as j:
-    #     json_results = json.loads(j.read())     
-
-    # with open('tttt.json', 'w+') as f:
-    #     f.write('[')
-    #     for index in range(len(json_results)):
-    #         result = json_results[index]
-    #         f.write(json.dumps(result))
-    #         if index < len(json_results) - 1:
-    #             f.write(',\n')
-    #     f.write(']')
-    
-    # tweets = []
-
-    # for tweet in json_results:
-    #     tweet_text = None
-    #     tweet_text = tweet['text']
-    #     tweets.append(tweet_text)
-    
-    tweets = [tweet.all_text for tweet in json_results]
     sentiment = pipeline("sentiment-analysis")
     positive = 0
     aggregated_sentiment = 0
