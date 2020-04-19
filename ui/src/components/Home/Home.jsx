@@ -208,15 +208,17 @@ const Home = ({ firebase }) => {
   }, [userData]);
 
   useEffect(() => {
+    let companies = null;
     if(portfolios && portfolios.length > 0) {
       for (let portfolio of portfolios) {
         if (portfolio.holdings) {
           const companyNames = Object.values(portfolio.holdings).map(holding => holding.companyName);
-          setRelatedNews(companyNames);
+          companies = companyNames;
           break;
         }
       }
     }
+    setRelatedNews(companies);
   }, [portfolios]);
 
   useEffect(() => {
