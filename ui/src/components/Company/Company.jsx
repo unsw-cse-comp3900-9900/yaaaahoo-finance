@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, CircularProgress } from "@material-ui/core";
 import { AuthUserContext, withAuthorization } from "../Session";
@@ -105,7 +105,8 @@ const Company = ({ history, firebase }) => {
   );
   const [portfolioId, setPortfolioId] = useState("");
   const [tweets, setTweets] = useState([]);
-
+  const cancelToken = useRef(null); 
+  
   useEffect(() => {
     if (!userData) return;
     if (userData.portfolios) setPortfolios(Object.values(userData.portfolios));
@@ -145,25 +146,29 @@ const Company = ({ history, firebase }) => {
 
   const getInfo = async (company) => {
     const url = `https://cloud.iexapis.com/v1/stock/${company}/quote?token=${config.iexCloudApiToken}`;
-    return await axios.get(url).then(({ data }) => {
-      setCompanyData(data);
-    });
+    return await axios
+      .get(url, { cancelToken: cancelToken.current.token })
+      .then(({ data }) => {
+        setCompanyData(data);
+      });
   };
 
   const getBackup = async (company) => {
-    firebase.getCompany(company).then((res) => {
-      setHistoricalData(res.historicalData);
-      setTweets(res.tweets);
-    })
-    .catch(() => {
-      setError(true);
-    })
+    firebase
+      .getCompany(company)
+      .then((res) => {
+        setHistoricalData(res.historicalData);
+        setTweets(res.tweets);
+      })
+      .catch(() => {
+        setError(true);
+      });
   };
 
   const getHistoricalData = async (company) => {
     const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${company}&outputsize=full&apikey=${config.alphaVantageApiToken}`;
     return await axios
-      .get(url)
+      .get(url, { cancelToken: cancelToken.current.token })
       .then(({ data }) => {
         const formattedData = Object.entries(data["Time Series (Daily)"]).map(
           (entry) => {
@@ -200,12 +205,18 @@ const Company = ({ history, firebase }) => {
   }, [historicalData]);
 
   useEffect(() => {
+    cancelToken.current = axios.CancelToken.source();
     firebase.getUserData().then((res) => {
       setUserData(res);
     });
     const company = history.location.pathname.replace("/company/", "");
     getInfo(company);
     getHistoricalData(company, "5y");
+    return () => {
+      if (cancelToken.current) {
+        cancelToken.current.cancel("Component unmounted");
+      }
+    };
   }, []);
 
   const company = history.location.pathname.replace("/company/", "");
@@ -288,9 +299,7 @@ const Company = ({ history, firebase }) => {
                   <CircularProgress style={{ color: "#cbd2f6" }} />
                 </div>
               ) : (
-                <div>
-                  Something went wrong, please try again later.
-                </div>
+                <div>Something went wrong, please try again later.</div>
               )}
             </div>
           </div>

@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useRef } from "react";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
 import { config } from "../../config";
@@ -132,14 +132,20 @@ const NavBar = ({ authUser, firebase, history }) => {
   const [searchResults, setSearchResults] = useState([]);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [menuOpen, setMenuOpen] = useState(false);
+  const cancelToken = useRef(null);
 
   const searchCompanies = async (search) => {
+    cancelToken.current = axios.CancelToken.source();
     const url = `https://api.worldtradingdata.com/api/v1/stock_search?stock_exchange=NYSE&search_term=${search}&limit=5&page=1&api_token=${config.worldTradingApiToken}`;
     return await axios
-      .get(url)
+      .get(url, { cancelToken: cancelToken.current.token })
       .then(({ data }) => data)
       .catch((error) => {
-        console.error(error);
+        if (axios.isCancel(error)) {
+          console.log("Request canceled", error.message);
+        } else {
+          console.log(error);
+        }
         return {
           data: [],
         };
@@ -148,6 +154,9 @@ const NavBar = ({ authUser, firebase, history }) => {
 
   useEffect(() => {
     if (debouncedSearchTerm) {
+      if (cancelToken.current) {
+        cancelToken.current.cancel("Component unmounted");
+      }
       // Set isSearching state
       setIsSearching(true);
       // Fire off our API call
@@ -160,6 +169,11 @@ const NavBar = ({ authUser, firebase, history }) => {
     } else {
       setSearchResults([]);
     }
+    return () => {
+      if (cancelToken.current) {
+        cancelToken.current.cancel("Component unmounted");
+      }
+    };
   }, [debouncedSearchTerm]);
 
   const handleMobileMenuClose = () => {

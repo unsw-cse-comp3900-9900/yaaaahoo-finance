@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, useRef, Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, TextField, Button } from "@material-ui/core";
 import { AuthUserContext, withAuthorization } from "../Session";
@@ -120,6 +120,7 @@ const Home = ({ firebase }) => {
   const [selectedPortfolio, setSelectedPortfolio] = useState(null);
   const [error, setError] = useState(false);
   const [relatedNews, setRelatedNews] = useState(null);
+  const cancelToken = useRef(null);
 
   const handleOpenAddModal = (portfolioId) => {
     setOpenAddModal(true);
@@ -223,9 +224,15 @@ const Home = ({ firebase }) => {
   }, [portfolios]);
 
   useEffect(() => {
+    cancelToken.current = axios.CancelToken.source();
     firebase.getUserData().then((res) => {
       setUserData(res);
     });
+    return () => {
+      if (cancelToken.current) {
+        cancelToken.current.cancel("Component unmounted");
+      }
+    };
   }, []);
 
   const addNewPortfolio = () => {
@@ -287,7 +294,7 @@ const Home = ({ firebase }) => {
     for (let holding of holdings) {
       const url = `https://cloud.iexapis.com/v1/stock/${holding.symbol}/quote?token=${config.iexCloudApiToken}`;
       await axios
-        .get(url)
+        .get(url, { cancelToken: cancelToken.current.token })
         .then(({ data }) => {
           const currentPrice = data.latestPrice;
           const currentPercentage = data.changePercent;

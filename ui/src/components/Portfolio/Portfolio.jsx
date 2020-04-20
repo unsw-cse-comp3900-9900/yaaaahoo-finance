@@ -267,6 +267,7 @@ const Portfolio = ({
   };
 
   useEffect(() => {
+    if(!portfolio) return;
     if (portfolio.holdings) {
       getHoldingsData();
     } else {
@@ -282,6 +283,7 @@ const Portfolio = ({
   }, [portfolio]);
 
   useEffect(() => {
+    if(!holdings) return;
     getContent();
   }, [holdings]);
 

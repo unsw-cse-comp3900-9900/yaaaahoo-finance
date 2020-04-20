@@ -216,10 +216,10 @@ const Analysis = ({
         if (axios.isCancel(error)) {
           console.log("Request canceled", error.message);
         } else {
+          setSentimentString("N/A");
+          setSentiment("N/A");
           console.log(error);
         }
-        setSentimentString("N/A");
-        setSentiment("N/A");
       });
   };
 
