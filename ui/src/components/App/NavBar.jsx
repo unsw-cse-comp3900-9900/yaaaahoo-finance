@@ -23,15 +23,16 @@ import { Link } from "react-router-dom";
 import Logo from "../../assets/logo192.png";
 import { withFirebase } from "../Firebase";
 import { compose } from "recompose";
-import useDebounce from "../../util/useDebounce";
+import useDebounce from "../../util/useDebounce.js";
 
 const useStyles = makeStyles((theme) => ({
   bar: {
     backgroundColor: "#fff",
     color: "#2643e9",
     boxShadow: "0px 1px 10px 0px rgba(0,0,0,0.12)",
-    justifyContent: "center",
     flexGrow: 1,
+    height: "64px",
+    justifyContent: "center",
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -39,13 +40,6 @@ const useStyles = makeStyles((theme) => ({
   logo: {
     height: "3em",
     marginRight: "0.4em",
-  },
-  bar: {
-    backgroundColor: "#fff",
-    color: "#2643e9",
-    boxShadow: "0px 1px 10px 0px rgba(0,0,0,0.12)",
-    height: "64px",
-    justifyContent: "center",
   },
   title: {
     fontSize: "1.2em",
@@ -128,7 +122,6 @@ const NavBar = ({ authUser, firebase, history }) => {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -157,14 +150,10 @@ const NavBar = ({ authUser, firebase, history }) => {
       if (cancelToken.current) {
         cancelToken.current.cancel("Component unmounted");
       }
-      // Set isSearching state
-      setIsSearching(true);
       // Fire off our API call
       searchCompanies(debouncedSearchTerm).then((results) => {
-        // Set back to false since request finished
-        setIsSearching(false);
-        // Set results state
-        setSearchResults(results.data);
+      // Set results state
+      setSearchResults(results.data);
       });
     } else {
       setSearchResults([]);

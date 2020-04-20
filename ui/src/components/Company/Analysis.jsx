@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { Fragment, useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { Line } from "react-chartjs-2";
@@ -55,11 +56,11 @@ const Analysis = ({
 
     if (days < 5) {
       setPredictionName("Our " + days + " Day Prediction");
-    } else if (days == 5) {
+    } else if (days === 5) {
       setPredictionName("Our 1 Week Prediction");
-    } else if (days == 10) {
+    } else if (days === 10) {
       setPredictionName("Our 2 Week Prediction");
-    } else if (days == 20) {
+    } else if (days === 20) {
       setPredictionName("Our 1 Month Prediction");
     }
 
@@ -79,7 +80,7 @@ const Analysis = ({
               x: currentDate,
               y: data[i],
             });
-          } else if (i == prev_cut) {
+          } else if (i === prev_cut) {
             prev.push({
               x: currentDate,
               y: data[i],
@@ -336,7 +337,7 @@ const Analysis = ({
           >
             Sentimental Analysis: {sentiment}
           </div>
-          <Typography className={classes.Heading5}>
+          <div className={classes.Heading5}>
             Our Recommendation:{" "}
             <span
               style={{
@@ -348,7 +349,7 @@ const Analysis = ({
             >
               {recommendation}
             </span>
-          </Typography>
+          </div>
           <div
             style={{
               display: "flex",

@@ -124,7 +124,7 @@ const TopNews = ({ title, subtitle, titleColor, companies }) => {
         cancelToken.current.cancel("Component unmounted");
       }
     };
-  }, [companies]);
+  }, [companies, newsData]);
 
   return (
     <div className={classes.Page}>

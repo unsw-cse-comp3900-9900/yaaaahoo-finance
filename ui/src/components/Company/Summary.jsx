@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { Fragment, useState, useEffect, useRef } from "react";
 import { Typography, Button, CircularProgress } from "@material-ui/core";
 import { Line } from "react-chartjs-2";

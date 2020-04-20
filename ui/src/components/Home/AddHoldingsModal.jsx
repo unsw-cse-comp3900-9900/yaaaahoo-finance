@@ -8,7 +8,7 @@ import Fade from "@material-ui/core/Fade";
 import axios from "axios";
 import { config } from "../../config";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import useDebounce from "../../util/useDebounce";
+import useDebounce from "../../util/useDebounce.js";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -105,7 +105,6 @@ const useStyles = makeStyles((theme) => ({
 const AddHoldingsModal = ({ isOpen, onClose, onSubmit, portfolioId }) => {
   const classes = useStyles();
   const [searchTerm, setSearchTerm] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
   const [form, setForm] = useState({
     symbol: "",
     companyName: "",
@@ -145,12 +144,9 @@ const AddHoldingsModal = ({ isOpen, onClose, onSubmit, portfolioId }) => {
       if (cancelToken.current) {
         cancelToken.current.cancel("Component unmounted");
       }
-      // Set isSearching state
-      setIsSearching(true);
+
       // Fire off our API call
       searchCompanies(debouncedSearchTerm).then((results) => {
-        // Set back to false since request finished
-        setIsSearching(false);
         // Set results state
         setSearchResults(results.data);
       });

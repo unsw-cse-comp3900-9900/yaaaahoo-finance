@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, Fragment, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, CircularProgress } from "@material-ui/core";
@@ -217,7 +218,7 @@ const Company = ({ history, firebase }) => {
         cancelToken.current.cancel("Component unmounted");
       }
     };
-  }, []);
+  }, [firebase, history.location.pathname]);
 
   const company = history.location.pathname.replace("/company/", "");
 
