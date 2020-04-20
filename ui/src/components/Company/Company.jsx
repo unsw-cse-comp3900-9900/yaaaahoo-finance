@@ -135,6 +135,7 @@ const Company = ({ history, firebase }) => {
               date: entry[0],
               close: entry[1]["4. close"],
               volume: entry[1]["5. volume"],
+              open: entry[1]["1. open"]
             };
           }
         );

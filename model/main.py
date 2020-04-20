@@ -35,8 +35,8 @@ def get_technical_analysis(dataset):
 def get_historical(company):
     print("Retrieving historical data....")
     # Get backed up data
-    with open('backup_data.json') as backup_data_file:
-        backup_data = json.loads(backup_data_file.read())
+    with open('backup_data.json', "r") as backup_data_file:
+        backup_data = json.load(backup_data_file)
     if company in backup_data:
         return jsonify(backup_data[company]['historical_data'])
     else:
@@ -51,8 +51,8 @@ def prediction():
     historicalData = request.get_json()['historicalData']
 
     # Get backed up data
-    with open('backup_data.json') as backup_data_file:
-        backup_data = json.loads(backup_data_file.read())
+    with open('backup_data.json', "r") as backup_data_file:
+        backup_data = json.load(backup_data_file)
     
     if (len(x) == 0):
         print("No historical data provided, reading from backed up data")
@@ -96,7 +96,7 @@ def prediction():
     final = np.concatenate((previous[-days*2:], ayaya[0]))
     return jsonify(final.tolist())
 
-# TO-DO: If searchtweets api limit call reached for demo company,
+
 # read backup tweets stored for that demo company.
 @app.route('/sentiment/<company>')
 def sentiment(company):
