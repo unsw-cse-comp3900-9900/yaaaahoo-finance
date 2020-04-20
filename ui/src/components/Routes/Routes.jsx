@@ -9,6 +9,7 @@ import { withFirebase } from "../Firebase";
 import LandingPage from "../LandingPage/LandingPage";
 import Company from "../Company/Company";
 import News from "../TopNews/NewsPage";
+import NoMatchPage from "./NoMatchPage";
 
 class Routes extends Component {
   render() {
@@ -41,6 +42,7 @@ class Routes extends Component {
           exact
           component={compose(withRouter, withFirebase)(News)}
         />
+        <Route component={NoMatchPage} />
       </Switch>
     );
   }

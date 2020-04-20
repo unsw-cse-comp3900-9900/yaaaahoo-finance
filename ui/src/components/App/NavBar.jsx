@@ -170,6 +170,16 @@ const NavBar = ({ authUser, firebase, history }) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const onLogout = () => {
+    handleMobileMenuClose();
+    firebase.doSignOut();
+  };
+
+  const goToNews = () => {
+    handleMobileMenuClose();
+    history.push("/news");
+  };
+
   const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
     <Menu
@@ -181,13 +191,13 @@ const NavBar = ({ authUser, firebase, history }) => {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem style={{ color: "#2643e9" }}>
+      <MenuItem onClick={goToNews} style={{ color: "#2643e9" }}>
         <IconButton color="inherit">
           <LibraryBooksIcon />
         </IconButton>
         <p>Top News</p>
       </MenuItem>
-      <MenuItem style={{ color: "#2643e9" }} onClick={handleMobileMenuOpen}>
+      <MenuItem onClick={onLogout} style={{ color: "#2643e9" }}>
         <IconButton
           aria-label="account of current user"
           aria-controls="primary-search-account-menu"
@@ -207,14 +217,6 @@ const NavBar = ({ authUser, firebase, history }) => {
 
   const handleChange = (event, value, reason) => {
     setSearchTerm(value);
-  };
-
-  const onLogout = (event) => {
-    firebase.doSignOut();
-  };
-
-  const goToNews = () => {
-    history.push("/news");
   };
 
   const keyPress = (event) => {
