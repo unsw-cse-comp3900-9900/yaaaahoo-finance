@@ -186,11 +186,11 @@ const Home = ({ firebase }) => {
     if (risk && age) {
       if (age === "Young") {
         if (risk === "High") setRecommendation("Wealth Maximiser");
-        if (risk === "Balanced") setRecommendation("Wealth Builder");
+        else if (risk === "Balanced") setRecommendation("Wealth Builder");
         else setRecommendation("Stable Wealth");
       } else if (age === "Middle-aged") {
         if (risk === "High") setRecommendation("Wealth Builder");
-        if (risk === "Balanced") setRecommendation("Stable Wealth");
+        else if (risk === "Balanced") setRecommendation("Stable Wealth");
         else setRecommendation("Wealth Secure");
       } else if (age === "Retiree") {
         if (risk === "High") setRecommendation("Wealth Secure");
