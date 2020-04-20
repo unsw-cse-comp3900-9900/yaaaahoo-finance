@@ -120,7 +120,6 @@ const Signup = ({ firebase, history }) => {
   const classes = useStyles();
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
-    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -129,7 +128,6 @@ const Signup = ({ firebase, history }) => {
   });
 
   const [error, setError] = useState({
-    username: false,
     email: false,
     password: false,
     confirmPassword: false,
@@ -141,11 +139,10 @@ const Signup = ({ firebase, history }) => {
   };
 
   const disableNext = () => {
-    const { username, email, password, confirmPassword } = form;
+    const { email, password, confirmPassword } = form;
     if (
       step === 1 &&
-      (username === "" ||
-        email === "" ||
+      (email === "" ||
         !validateEmail(email) ||
         password === "" ||
         password !== confirmPassword)
@@ -158,7 +155,6 @@ const Signup = ({ firebase, history }) => {
     if (step === 1 && disableNext()) {
       setError((e) => ({
         ...e,
-        username: form.username === "",
         email: form.email === "" || !validateEmail(form.email),
         password: form.password === "",
         confirmPassword: form.confirmPassword !== form.password,
@@ -202,7 +198,6 @@ const Signup = ({ firebase, history }) => {
     const { email, password } = form;
     firebase
       .doCreateUserWithEmailAndPassword(email, password, {
-        username: form.username,
         email: form.email,
         age: form.age,
         risk: form.risk,
