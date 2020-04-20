@@ -17,6 +17,7 @@ const Analysis = ({
   tweets,
 }) => {
   const [graphData, setGraphData] = useState(null);
+  const [days, setDays] = useState(20);
   const [startDayPrice, setStartDayPrice] = useState(0);
   const [finalDayPrice, setFinalDayPrice] = useState(0);
   const [sentimentString, setSentimentString] = useState(null);
@@ -39,7 +40,7 @@ const Analysis = ({
   const lineRef = useRef(null);
   const cancelToken = useRef(null);
 
-  const getPredictions = async (days) => {
+  const getPredictions = async () => {
     cancelToken.current = axios.CancelToken.source();
     var predictions = [];
     var prev = [];
@@ -223,6 +224,10 @@ const Analysis = ({
   };
 
   useEffect(() => {
+    getPredictions();
+  }, [days]);
+
+  useEffect(() => {
     if (!graphData) return;
     const { datasets } = graphData;
     const [firstElem, secondElem] = datasets;
@@ -351,12 +356,12 @@ const Analysis = ({
               flexWrap: "wrap",
             }}
           >
-            <Button onClick={() => getPredictions(1)}>1 day</Button>
-            <Button onClick={() => getPredictions(2)}>2 days</Button>
-            <Button onClick={() => getPredictions(3)}>3 days</Button>
-            <Button onClick={() => getPredictions(5)}>1 week</Button>
-            <Button onClick={() => getPredictions(10)}>2 weeks</Button>
-            <Button onClick={() => getPredictions(20)}>1 month</Button>
+            <Button color={days === 1 ? "primary" : "inherit"} onClick={() => setDays(1)}>1D</Button>
+            <Button color={days === 2 ? "primary" : "inherit"} onClick={() => setDays(2)}>2D</Button>
+            <Button color={days === 3 ? "primary" : "inherit"} onClick={() => setDays(3)}>3D</Button>
+            <Button color={days === 5 ? "primary" : "inherit"} onClick={() => setDays(5)}>1W</Button>
+            <Button color={days === 10 ? "primary" : "inherit"} onClick={() => setDays(10)}>2W</Button>
+            <Button color={days === 20 ? "primary" : "inherit"} onClick={() => setDays(20)}>1M</Button>
           </div>
           <div style={{ marginBottom: "3em" }}>
             <Line ref={lineRef} data={graphData} options={options} />

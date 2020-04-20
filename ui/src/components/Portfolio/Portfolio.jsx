@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1.8em",
   },
   sumHeading2: {
-    fontSize: "1.5em",
+    fontSize: "1em",
   },
   heading1: {
     fontSize: "1.3em",
@@ -346,7 +346,7 @@ const Portfolio = ({
       ? "#fb6340"
       : estimatedEarnings > 0
       ? "#2dce89"
-      : "inherit";
+      : "#a0a0a0";
 
   return (
     <Fragment>
