@@ -3,8 +3,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Divider } from "@material-ui/core";
 import Hero from "./PageSections/Hero";
 import AboutUs from "./PageSections/AboutUs";
-import TopNews from "../TopNews/TopNews";
-import TopStocks from "./PageSections/TopStocks";
 import Background from "../../assets/background.svg";
 import Footer from "./PageSections/Footer";
 
@@ -40,14 +38,6 @@ const LandingPage = () => {
       <Divider className={classes.divider} />
       <AboutUs />
       <Divider className={classes.divider} />
-      {/* <TopStocks />
-      <Divider className={classes.divider} />
-      <TopNews
-        title="Powered by NewsAPI"
-        subtitle="We provide relevant financial news to keep you informed with the stock market"
-        titleColor="#2643e9"
-      /> */}
-      {/* <Divider style={{ marginTop: "5em" }} className={classes.divider} /> */}
       <Footer />
     </div>
   );

@@ -5,21 +5,21 @@ import { Link } from "react-router-dom";
 import { CardContent, Typography, TextField, Button } from "@material-ui/core";
 import Background from "../../assets/background.svg";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   Card: {
     width: "300px",
     height: "70%",
-    padding: "2em"
+    padding: "2em",
   },
   CardTitle: {
     fontSize: "1.5em",
-    fontWeight: "500"
+    fontWeight: "500",
   },
   CardContent: {
     display: "flex",
     flexDirection: "column",
     height: "100%",
-    justifyContent: "space-evenly"
+    justifyContent: "space-evenly",
   },
   Page: {
     display: "flex",
@@ -38,65 +38,65 @@ const useStyles = makeStyles(theme => ({
     backgroundSize: "auto 100%",
     [theme.breakpoints.down("sm")]: {
       paddingLeft: "2em",
-      paddingRight: "2em"
-    }
+      paddingRight: "2em",
+    },
   },
   Button: {
     width: "100%",
     height: "3em",
     color: "#fff",
     borderColor: "#2643e9",
-    backgroundColor: "#2643e9"
+    backgroundColor: "#2643e9",
   },
   ForgotPassword: {
     textDecoration: "underline",
     color: "#2643e9",
     cursor: "pointer",
     fontSize: "0.8em",
-    textAlign: "right"
+    textAlign: "right",
   },
   SignUp: {
     fontSize: "1.2em",
     color: "#2643e9",
-    textAlign: "center"
-  }
+    textAlign: "center",
+  },
 }));
 
 const Login = ({ firebase, history }) => {
   const classes = useStyles();
   const [error, setError] = useState({
     email: false,
-    password: false
+    password: false,
   });
   const [form, setForm] = useState({
     email: "",
-    password: ""
+    password: "",
   });
-  const onSubmit = event => {
+  const onSubmit = (event) => {
     const { email, password } = form;
     firebase
       .doSignInWithEmailAndPassword(email, password)
-      .then(authUser => {
+      .then((authUser) => {
         history.push("/home");
       })
       .catch(() => {
-        setError(e => ({
+        setError((e) => ({
           ...e,
           email: true,
-          password: true
+          password: true,
         }));
       });
   };
 
-  const onChange = event => {
+  const onChange = (event) => {
     event.persist();
-    setForm(f => ({
+    setForm((f) => ({
       ...f,
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     }));
-    setError(e => ({
+    setError((e) => ({
       ...e,
-      [event.target.name]: event.target.value === ""
+      [event.target.name]: event.target.value === "",
     }));
   };
 

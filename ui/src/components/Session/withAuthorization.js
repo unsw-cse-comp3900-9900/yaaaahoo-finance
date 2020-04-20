@@ -4,18 +4,18 @@ import { compose } from "recompose";
 import AuthUserContext from "./context";
 import { withFirebase } from "../Firebase";
 
-const withAuthorization = condition => Component => {
+const withAuthorization = (condition) => (Component) => {
   const WithAuthorization = ({ ...props }) => {
     useEffect(() => {
-        props.firebase.auth.onAuthStateChanged(authUser => {
-          if (!condition(authUser)) {
-            props.history.push("/");
-          }
-        });
+      props.firebase.auth.onAuthStateChanged((authUser) => {
+        if (!condition(authUser)) {
+          props.history.push("/");
+        }
+      });
     }, []);
     return (
       <AuthUserContext.Consumer>
-        {authUser => (condition(authUser) ? <Component {...props} /> : null)}
+        {(authUser) => (condition(authUser) ? <Component {...props} /> : null)}
       </AuthUserContext.Consumer>
     );
   };

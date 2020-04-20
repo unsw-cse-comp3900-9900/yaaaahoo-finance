@@ -79,7 +79,7 @@ class Firebase {
     );
     const newHoldingsRef = userHoldingsRef.push();
     const holdingId = newHoldingsRef.key;
-    const result = {...form};
+    const result = { ...form };
     result.id = holdingId;
     return await (await newHoldingsRef).set(result);
   };

@@ -10,7 +10,6 @@ import Box from "@material-ui/core/Box";
 import Analysis from "./Analysis";
 import Holdings from "./Holdings";
 import Summary from "./Summary";
-import testData from "./sampleHistoricalData.json";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -119,43 +118,48 @@ const Company = ({ history, firebase }) => {
 
   const getBackup = async (company) => {
     return await axios
-    .get(`http://localhost:8080/historical/${company}`)
-    .then(({ data }) => {
-      setHistoricalData(data);
-    })
-  }
+      .get(`http://localhost:8080/historical/${company}`)
+      .then(({ data }) => {
+        setHistoricalData(data);
+      });
+  };
 
   const getHistoricalData = async (company) => {
     const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${company}&outputsize=full&apikey=${config.alphaVantageApiToken}`;
     return await axios
       .get(url)
       .then(({ data }) => {
-        const formattedData = Object.entries(data["Time Series (Daily)"]).map(entry => {
-          return {
-            date: entry[0],
-            close: entry[1]["4. close"],
-            volume: entry[1]["5. volume"]
+        const formattedData = Object.entries(data["Time Series (Daily)"]).map(
+          (entry) => {
+            return {
+              date: entry[0],
+              close: entry[1]["4. close"],
+              volume: entry[1]["5. volume"],
+            };
           }
-        })
+        );
         setHistoricalData(formattedData);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
-        getBackup(company)
-      })
-  }
+        getBackup(company);
+      });
+  };
 
   useEffect(() => {
     const closingPrices = [];
     if (!historicalData) return;
     let count = 1;
-    for (let i = 0; i < historicalData.length-1; i++) {
+    for (let i = 0; i < historicalData.length - 1; i++) {
       if (count > 300) break;
       count++;
-      closingPrices.push([parseInt(historicalData[i].close), parseInt(historicalData[i].volume)]);
+      closingPrices.push([
+        parseInt(historicalData[i].close),
+        parseInt(historicalData[i].volume),
+      ]);
     }
     setPredictionInput(closingPrices);
-  }, [historicalData])
+  }, [historicalData]);
 
   useEffect(() => {
     const company = history.location.pathname.replace("/company/", "");

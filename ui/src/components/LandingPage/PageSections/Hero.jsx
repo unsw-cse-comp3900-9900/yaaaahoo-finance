@@ -3,37 +3,37 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Button, Grid } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   page: {
     display: "flex",
     flexDirection: "column",
     flexWrap: "wrap",
     minHeight: "90%",
-    overflowY: "auto"
+    overflowY: "auto",
   },
   title: {
     fontSize: "3em",
     marginBottom: "0.2em",
-    fontWeight: "500"
+    fontWeight: "500",
   },
   subtitle: {
     fontSize: "1.3em",
     fontWeight: 300,
     maxWidth: "65%",
     [theme.breakpoints.down("xs")]: {
-      maxWidth: "none"
+      maxWidth: "none",
     },
     [theme.breakpoints.up("lg")]: {
-      maxWidth: "50%"
-    }
+      maxWidth: "50%",
+    },
   },
   button: {
     width: "15em",
     height: "3em",
     color: "#2643e9",
     borderColor: "#2643e9",
-    marginTop: "2em"
-  }
+    marginTop: "2em",
+  },
 }));
 
 const Hero = () => {

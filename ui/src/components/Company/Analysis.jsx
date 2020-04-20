@@ -7,7 +7,13 @@ import NeutralSentiment from "../../assets/neutral-sentiment.svg";
 import SadSentiment from "../../assets/sad-sentiment.svg";
 import HappySentiment from "../../assets/happy-sentiment.svg";
 
-const Analysis = ({ company, classes, historicalData, predictionInput, companyData }) => {
+const Analysis = ({
+  company,
+  classes,
+  historicalData,
+  predictionInput,
+  companyData,
+}) => {
   const [graphData, setGraphData] = useState(null);
   const [startDayPrice, setStartDayPrice] = useState(0);
   const [finalDayPrice, setFinalDayPrice] = useState(0);
@@ -35,7 +41,7 @@ const Analysis = ({ company, classes, historicalData, predictionInput, companyDa
     cancelToken.current = axios.CancelToken.source();
     var predictions = [];
     var prev = [];
-    
+
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -160,7 +166,7 @@ const Analysis = ({ company, classes, historicalData, predictionInput, companyDa
             </span>
           );
         }
-        if (data.sentiment === "1"){
+        if (data.sentiment === "1") {
           setSentimentString("1");
           setSentiment(
             <SVG
@@ -168,7 +174,7 @@ const Analysis = ({ company, classes, historicalData, predictionInput, companyDa
               src={HappySentiment}
             />
           );
-        } 
+        }
         if (data.sentiment === "-1") {
           setSentimentString("-1");
           setSentiment(
@@ -275,13 +281,12 @@ const Analysis = ({ company, classes, historicalData, predictionInput, companyDa
     },
   };
 
-  const difference = (((finalDayPrice - startDayPrice)/startDayPrice) * 100).toFixed(2);
+  const difference = (
+    ((finalDayPrice - startDayPrice) / startDayPrice) *
+    100
+  ).toFixed(2);
   const styleColor =
-    difference < 0
-      ? "#fb6340"
-      : difference > 0
-      ? "#2dce89"
-      : "inherit";
+    difference < 0 ? "#fb6340" : difference > 0 ? "#2dce89" : "inherit";
 
   return (
     <Fragment>
@@ -349,7 +354,7 @@ const Analysis = ({ company, classes, historicalData, predictionInput, companyDa
             justifyContent: "center",
           }}
         >
-          <CircularProgress style={{ color: "#cbd2f6", }} />
+          <CircularProgress style={{ color: "#cbd2f6" }} />
         </div>
       )}
     </Fragment>

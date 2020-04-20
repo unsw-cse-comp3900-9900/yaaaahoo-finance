@@ -208,10 +208,12 @@ const Home = ({ firebase }) => {
 
   useEffect(() => {
     let companies = null;
-    if(portfolios && portfolios.length > 0) {
+    if (portfolios && portfolios.length > 0) {
       for (let portfolio of portfolios) {
         if (portfolio.holdings) {
-          const companyNames = Object.values(portfolio.holdings).map(holding => holding.companyName);
+          const companyNames = Object.values(portfolio.holdings).map(
+            (holding) => holding.companyName
+          );
           companies = companyNames;
           break;
         }
@@ -538,7 +540,11 @@ const Home = ({ firebase }) => {
                 </Fade>
               </Modal>
             )}
-            <TopNews title="Related News" titleColor="black" companies={relatedNews} />
+            <TopNews
+              title="Related News"
+              titleColor="black"
+              companies={relatedNews}
+            />
           </div>
         );
       }}

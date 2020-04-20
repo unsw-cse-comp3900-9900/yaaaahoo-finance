@@ -23,7 +23,7 @@ import { Link } from "react-router-dom";
 import Logo from "../../assets/logo192.png";
 import { withFirebase } from "../Firebase";
 import { compose } from "recompose";
-import useDebounce from "./useDebounce";
+import useDebounce from "../../util/useDebounce";
 
 const useStyles = makeStyles((theme) => ({
   bar: {

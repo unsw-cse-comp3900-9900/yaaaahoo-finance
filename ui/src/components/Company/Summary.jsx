@@ -1,23 +1,19 @@
 import React, { Fragment, useState, useEffect, useRef } from "react";
 import { Typography, Button, CircularProgress } from "@material-ui/core";
 import { Line } from "react-chartjs-2";
-const Summary = ({
-  companyData,
-  historicalData,
-  classes,
-}) => {
+const Summary = ({ companyData, historicalData, classes }) => {
   const [graphData, setGraphData] = useState(null);
   const lineRef = useRef(null);
-  const [daysGain, setDaysGain] = useState('N/A');
-  const [daysPerc, setDaysPerc] = useState('N/A');
-  const [prevClose, setPrevClose] = useState('N/A');
-  const [prevOpen, setPrevOpen] = useState('N/A');
+  const [daysGain, setDaysGain] = useState("N/A");
+  const [daysPerc, setDaysPerc] = useState("N/A");
+  const [prevClose, setPrevClose] = useState("N/A");
+  const [prevOpen, setPrevOpen] = useState("N/A");
 
   const getHistoricalData = (days) => {
     if (!historicalData) return;
     const formatData = [];
     let count = 1;
-    for (let i = 0; i < historicalData.length-1; i++) {
+    for (let i = 0; i < historicalData.length - 1; i++) {
       if (count > days) break;
       count++;
       const data = {
@@ -58,7 +54,12 @@ const Summary = ({
       setPrevOpen(previousOpen);
       setPrevClose(previousClose);
       setDaysGain((companyData.latestPrice - previousClose).toFixed(2));
-      setDaysPerc((((companyData.latestPrice - previousClose)/previousClose)*100).toFixed(2))
+      setDaysPerc(
+        (
+          ((companyData.latestPrice - previousClose) / previousClose) *
+          100
+        ).toFixed(2)
+      );
     }
   }, [historicalData]);
 
@@ -86,7 +87,7 @@ const Summary = ({
   };
 
   const styleColor =
-  daysGain < 0 ? "#fb6340" : daysGain > 0 ? "#2dce89" : "inherit";
+    daysGain < 0 ? "#fb6340" : daysGain > 0 ? "#2dce89" : "inherit";
 
   return (
     <Fragment>
@@ -111,38 +112,14 @@ const Summary = ({
               flexWrap: "wrap",
             }}
           >
-            <Button
-              onClick={() => getHistoricalData(7)}
-            >
-              1W
-            </Button>
-            <Button
-              onClick={() => getHistoricalData(30)}
-            >
-              1M
-            </Button>
-            <Button
-              onClick={() => getHistoricalData(92)}
-            >
-              3M
-            </Button>
-            <Button
-              onClick={() => getHistoricalData(183)}
-            >
-              6M
-            </Button>
-            <Button
-              onClick={() => getHistoricalData(365)}
-            >
-              1Y
-            </Button>
-            <Button
-              onClick={() => getHistoricalData(1825)}
-            >
-              5Y
-            </Button>
+            <Button onClick={() => getHistoricalData(7)}>1W</Button>
+            <Button onClick={() => getHistoricalData(30)}>1M</Button>
+            <Button onClick={() => getHistoricalData(92)}>3M</Button>
+            <Button onClick={() => getHistoricalData(183)}>6M</Button>
+            <Button onClick={() => getHistoricalData(365)}>1Y</Button>
+            <Button onClick={() => getHistoricalData(1825)}>5Y</Button>
           </div>
-          <div style={{marginBottom: "3em"}}>
+          <div style={{ marginBottom: "3em" }}>
             <Line ref={lineRef} data={graphData} options={options} />
           </div>
         </Fragment>

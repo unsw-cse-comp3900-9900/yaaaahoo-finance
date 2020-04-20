@@ -6,21 +6,21 @@ import { CardContent, Typography, TextField, Button } from "@material-ui/core";
 import Background from "../../assets/background.svg";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   Card: {
     width: "300px",
     height: "400px",
-    padding: "2em"
+    padding: "2em",
   },
   CardTitle: {
     fontSize: "1.5em",
-    fontWeight: "500"
+    fontWeight: "500",
   },
   CardContent: {
     display: "flex",
     flexDirection: "column",
     height: "100%",
-    justifyContent: "space-evenly"
+    justifyContent: "space-evenly",
   },
   Page: {
     display: "flex",
@@ -39,20 +39,20 @@ const useStyles = makeStyles(theme => ({
     backgroundSize: "auto 100%",
     [theme.breakpoints.down("sm")]: {
       paddingLeft: "2em",
-      paddingRight: "2em"
-    }
+      paddingRight: "2em",
+    },
   },
   Button: {
     width: "100%",
     height: "3em",
     color: "#fff",
     borderColor: "#2643e9",
-    backgroundColor: "#2643e9"
+    backgroundColor: "#2643e9",
   },
   Back: {
     display: "flex",
-    color: "#2643e9"
-  }
+    color: "#2643e9",
+  },
 }));
 
 const ForgotPassword = ({ firebase, history }) => {
@@ -60,7 +60,7 @@ const ForgotPassword = ({ firebase, history }) => {
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [email, setEmail] = useState("");
-  const onSubmit = event => {
+  const onSubmit = (event) => {
     if (email === "") {
       setError(true);
     } else {
@@ -68,7 +68,7 @@ const ForgotPassword = ({ firebase, history }) => {
     }
   };
 
-  const onChange = event => {
+  const onChange = (event) => {
     event.persist();
     setEmail(event.target.value);
     setError(event.target.value === "");

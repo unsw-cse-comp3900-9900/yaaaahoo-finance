@@ -3,21 +3,21 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   Page: {
     display: "flex",
     flexDirection: "column",
     minHeight: "50%",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   Button: {
     width: "15em",
     height: "3em",
     color: "#fff",
     backgroundColor: "#2643e9",
-    marginTop: "2em"
-  }
+    marginTop: "2em",
+  },
 }));
 
 const Footer = () => {

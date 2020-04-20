@@ -97,7 +97,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddCurrentHoldingModal = ({ isOpen, onClose, onSubmit, portfolioId, symbol, companyName }) => {
+const AddCurrentHoldingModal = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  portfolioId,
+  symbol,
+  companyName,
+}) => {
   const classes = useStyles();
   const [form, setForm] = useState({
     symbol: symbol,
@@ -195,7 +202,9 @@ const AddCurrentHoldingModal = ({ isOpen, onClose, onSubmit, portfolioId, symbol
         <div className={classes.paper}>
           <Typography className={classes.heading}>Add to Portfolio</Typography>
           <div>
-            <Typography classname={classes.subtitle}>{symbol} - {companyName}</Typography>
+            <Typography classname={classes.subtitle}>
+              {symbol} - {companyName}
+            </Typography>
           </div>
           <TextField
             label="Unit quantity"

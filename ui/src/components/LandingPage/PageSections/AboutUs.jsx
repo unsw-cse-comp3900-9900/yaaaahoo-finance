@@ -6,7 +6,7 @@ import CardContent from "@material-ui/core/CardContent";
 import SchoolIcon from "@material-ui/icons/School";
 import PersonOutlineIcon from "@material-ui/icons/PersonOutline";
 import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   Page: {
     display: "flex",
     flexDirection: "column",
@@ -14,28 +14,28 @@ const useStyles = makeStyles(theme => ({
     width: "100%",
     minHeight: "90%",
     [theme.breakpoints.down("sm")]: {
-      minHeight: "inherit"
-    }
+      minHeight: "inherit",
+    },
   },
   Title: {
     fontSize: "2em",
     fontWeight: 500,
     color: "#2643e9",
-    marginBottom: "1em"
+    marginBottom: "1em",
   },
   Card: {
     width: "85%",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#cbd2f6",
-    color: "#2643e9"
+    color: "#2643e9",
   },
   CardTitle: {
     fontSize: "1.5em",
-    fontWeight: "400"
+    fontWeight: "400",
   },
   CardBody: {
-    fontSize: "1em"
+    fontSize: "1em",
   },
   CardContainer: {
     display: "flex",
@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
     flexGrow: 1,
     width: "100%",
-    justifyContent: "space-around"
+    justifyContent: "space-around",
   },
   CardItem: {
     display: "flex",
@@ -52,8 +52,8 @@ const useStyles = makeStyles(theme => ({
     width: "100%",
     justifyContent: "space-evenly",
     alignItems: "center",
-    marginBottom: "3em"
-  }
+    marginBottom: "3em",
+  },
 }));
 
 const AboutUs = () => {

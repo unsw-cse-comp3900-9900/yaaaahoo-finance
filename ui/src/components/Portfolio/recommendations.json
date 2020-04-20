@@ -5,10 +5,15 @@
       "datasets": [
         {
           "data": [43, 38, 16, 3],
-          "backgroundColor": [ "#f4eeff", "#dcd6f7", "#a6b1e1", "#424874"]
+          "backgroundColor": ["#f4eeff", "#dcd6f7", "#a6b1e1", "#424874"]
         }
       ],
-      "labels": ["43% Large Cap Equity", "38% Mid Cap Equity", "16% Small Cap Equity", "3% Debt e.g. Bonds, Real Estate, etc."]
+      "labels": [
+        "43% Large Cap Equity",
+        "38% Mid Cap Equity",
+        "16% Small Cap Equity",
+        "3% Debt e.g. Bonds, Real Estate, etc."
+      ]
     },
     "title": "Wealth Maximiser: Young and restless",
     "summary": "Wealth Maximiser portfolio is for aggressive investors who don’t mind taking risks.",
@@ -20,10 +25,15 @@
       "datasets": [
         {
           "data": [70, 20, 5, 5],
-          "backgroundColor": [ "#f4eeff", "#dcd6f7", "#a6b1e1", "#424874"]
+          "backgroundColor": ["#f4eeff", "#dcd6f7", "#a6b1e1", "#424874"]
         }
       ],
-      "labels": ["70% Large Cap Equity", "20% Mid Cap Equity", "5% Small Cap Equity", "5% Debt e.g. Bonds, Real Estate, etc."]
+      "labels": [
+        "70% Large Cap Equity",
+        "20% Mid Cap Equity",
+        "5% Small Cap Equity",
+        "5% Debt e.g. Bonds, Real Estate, etc."
+      ]
     },
     "title": "Wealth Builder: Cautiously optimistic",
     "summary": "Wealth Builder suits those who want to invest in stable large-cap stocks.",
@@ -35,10 +45,15 @@
       "datasets": [
         {
           "data": [40, 15, 6, 39],
-          "backgroundColor": [ "#f4eeff", "#dcd6f7", "#a6b1e1", "#424874"]
+          "backgroundColor": ["#f4eeff", "#dcd6f7", "#a6b1e1", "#424874"]
         }
       ],
-      "labels": ["40% Large Cap Equity", "15% Mid Cap Equity", "6% Small Cap Equity", "39% Debt e.g. Bonds, Real Estate, etc."]
+      "labels": [
+        "40% Large Cap Equity",
+        "15% Mid Cap Equity",
+        "6% Small Cap Equity",
+        "39% Debt e.g. Bonds, Real Estate, etc."
+      ]
     },
     "title": "Stable Wealth: Get the best of both worlds",
     "summary": "Stable Wealth is for investors who want a balanced mix of debt and equity.",
@@ -50,10 +65,15 @@
       "datasets": [
         {
           "data": [10, 12, 2, 76],
-          "backgroundColor": [ "#f4eeff", "#dcd6f7", "#a6b1e1", "#424874"]
+          "backgroundColor": ["#f4eeff", "#dcd6f7", "#a6b1e1", "#424874"]
         }
       ],
-      "labels": ["10% Large Cap Equity", "12% Mid Cap Equity", "2% Small Cap Equity", "76% Debt e.g. Bonds, Real Estate, etc."]
+      "labels": [
+        "10% Large Cap Equity",
+        "12% Mid Cap Equity",
+        "2% Small Cap Equity",
+        "76% Debt e.g. Bonds, Real Estate, etc."
+      ]
     },
     "title": "Wealth Secure: When safety is paramount",
     "summary": "Wealth Secure is designed for investors who don’t want to risk their money in stocks.",
@@ -65,10 +85,15 @@
       "datasets": [
         {
           "data": [3, 1, 1, 95],
-          "backgroundColor": [ "#f4eeff", "#dcd6f7", "#a6b1e1", "#424874"]
+          "backgroundColor": ["#f4eeff", "#dcd6f7", "#a6b1e1", "#424874"]
         }
       ],
-      "labels": ["43% Large Cap Equity", "38% Mid Cap Equity", "16% Small Cap Equity", "3% Debt e.g. Bonds, Real Estate, etc."]
+      "labels": [
+        "43% Large Cap Equity",
+        "38% Mid Cap Equity",
+        "16% Small Cap Equity",
+        "3% Debt e.g. Bonds, Real Estate, etc."
+      ]
     },
     "title": "Income Generator: Regular income in the golden years",
     "summary": "Income Generator is for retirees looking for a monthly income from their investments.",

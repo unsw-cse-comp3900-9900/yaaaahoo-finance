@@ -85,23 +85,25 @@ const TopNews = ({ title, subtitle, titleColor, companies }) => {
     cancelToken.current = axios.CancelToken.source();
     if (companies) {
       const promises = [];
-      companies.forEach(company => {
+      companies.forEach((company) => {
         const url = `http://newsapi.org/v2/everything?pageSize=2&q=${company}&sortBy=popularity&apiKey=${config.newsApiToken}`;
-        promises.push(axios.get(url, { cancelToken: cancelToken.current.token }));
-      })
+        promises.push(
+          axios.get(url, { cancelToken: cancelToken.current.token })
+        );
+      });
 
-    const relatedNews = [];
-    Promise.all(promises).then(results => {
-      for (let result of results) {
-        const { data } = result;
-        for (let article of data.articles) {
-          relatedNews.push(article);
+      const relatedNews = [];
+      Promise.all(promises).then((results) => {
+        for (let result of results) {
+          const { data } = result;
+          for (let article of data.articles) {
+            relatedNews.push(article);
+          }
         }
-      }
-      setNewsData(relatedNews)
-    });
-    } 
-    if (!companies || (newsData && newsData.length === 0)){
+        setNewsData(relatedNews);
+      });
+    }
+    if (!companies || (newsData && newsData.length === 0)) {
       const url = `http://newsapi.org/v2/top-headlines?category=business&country=us&apiKey=${config.newsApiToken}`;
       axios
         .get(url, { cancelToken: cancelToken.current.token })
