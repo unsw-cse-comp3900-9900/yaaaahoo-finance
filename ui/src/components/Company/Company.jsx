@@ -10,6 +10,7 @@ import Box from "@material-ui/core/Box";
 import Analysis from "./Analysis";
 import Holdings from "./Holdings";
 import Summary from "./Summary";
+import AddCurrentHoldingModal from "./AddCurrentHoldingModal";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -98,12 +99,34 @@ const Company = ({ history, firebase }) => {
   const [companyData, setCompanyData] = useState(null);
   const [historicalData, setHistoricalData] = useState(null);
   const [predictionInput, setPredictionInput] = useState([]);
+  const [openAddCurrentHoldingModal, setOpenAddCurrentHoldingModal] = useState(
+    false
+  );
+  const [portfolioId, setPortfolioId] = useState("");
 
   useEffect(() => {
     if (!userData) return;
     if (userData.portfolios) setPortfolios(Object.values(userData.portfolios));
     else setPortfolios([]);
   }, [userData]);
+
+  const handleOpenAddCurrentHoldingModal = (portfolioId) => {
+    setPortfolioId(portfolioId);
+    setOpenAddCurrentHoldingModal(true);
+  };
+
+  const handleCloseAddCurrentHoldingModal = () => {
+    setOpenAddCurrentHoldingModal(false);
+  };
+
+  const addHolding = (portfolioId, form) => {
+    firebase.addHolding(portfolioId, form).then(() => {
+      firebase.getUserData().then((res) => {
+        setUserData(res);
+      });
+      setOpenAddCurrentHoldingModal(false);
+    });
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -135,7 +158,7 @@ const Company = ({ history, firebase }) => {
               date: entry[0],
               close: entry[1]["4. close"],
               volume: entry[1]["5. volume"],
-              open: entry[1]["1. open"]
+              open: entry[1]["1. open"],
             };
           }
         );
@@ -214,7 +237,7 @@ const Company = ({ history, firebase }) => {
                     <Holdings
                       portfolios={portfolios}
                       companyData={companyData}
-                      firebase={firebase}
+                      openAddHoldingModal={handleOpenAddCurrentHoldingModal}
                     />
                   </TabPanel>
 
@@ -227,6 +250,16 @@ const Company = ({ history, firebase }) => {
                       predictionInput={predictionInput}
                     />
                   </TabPanel>
+                  {openAddCurrentHoldingModal && (
+                    <AddCurrentHoldingModal
+                      isOpen={openAddCurrentHoldingModal}
+                      onClose={handleCloseAddCurrentHoldingModal}
+                      onSubmit={addHolding}
+                      portfolioId={portfolioId}
+                      symbol={companyData.symbol}
+                      companyName={companyData.companyName}
+                    />
+                  )}
                 </Fragment>
               ) : (
                 <div

@@ -57,31 +57,7 @@ function createData(portfolios, companyData) {
   return rows;
 }
 
-const Holdings = ({ portfolios, companyData, firebase }) => {
-  const [openAddCurrentHoldingModal, setOpenAddCurrentHoldingModal] = useState(
-    false
-  );
-  const [userData, setUserData] = useState(null);
-  const [portfolioId, setPortfolioId] = useState("");
-
-  const handleOpenAddCurrentHoldingModal = (portfolioId) => {
-    setPortfolioId(portfolioId);
-    setOpenAddCurrentHoldingModal(true);
-  };
-
-  const handleCloseAddCurrentHoldingModal = () => {
-    setOpenAddCurrentHoldingModal(false);
-  };
-
-  const addHolding = (portfolioId, form) => {
-    firebase.addHolding(portfolioId, form).then(() => {
-      firebase.getUserData().then((res) => {
-        setUserData(res);
-      });
-      setOpenAddCurrentHoldingModal(false);
-    });
-  };
-
+const Holdings = ({ portfolios, companyData, openAddHoldingModal }) => {
   return (
     <TableContainer component={Paper}>
       <MaterialTable
@@ -101,7 +77,7 @@ const Holdings = ({ portfolios, companyData, firebase }) => {
             icon: () => <AddCircleIcon />,
             tooltip: "Add to portfolio",
             onClick: (event, rowData) => {
-              return handleOpenAddCurrentHoldingModal(rowData.portfolioId);
+              return openAddHoldingModal(rowData.portfolioId);
             },
             hidden: rowData.daysGain !== "",
           }),
@@ -118,16 +94,6 @@ const Holdings = ({ portfolios, companyData, firebase }) => {
           },
         }}
       />
-      {openAddCurrentHoldingModal && (
-        <AddCurrentHoldingModal
-          isOpen={openAddCurrentHoldingModal}
-          onClose={handleCloseAddCurrentHoldingModal}
-          onSubmit={addHolding}
-          portfolioId={portfolioId}
-          symbol={companyData.symbol}
-          companyName={companyData.companyName}
-        />
-      )}
     </TableContainer>
   );
 };
