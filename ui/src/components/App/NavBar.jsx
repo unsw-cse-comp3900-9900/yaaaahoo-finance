@@ -223,7 +223,9 @@ const NavBar = ({ authUser, firebase, history }) => {
     const results = searchResults.map((s) => `${s.symbol} - ${s.name}`);
     if (event.keyCode === 13) {
       if (!results.includes(event.target.value)) {
+        history.push("/nocompany");
         console.log("Search word not found");
+        return;
       }
       const symbolAndName = event.target.value.split(" - ");
       setSearchTerm("");
