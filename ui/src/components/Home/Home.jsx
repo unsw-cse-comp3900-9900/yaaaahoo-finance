@@ -6,7 +6,6 @@ import { AuthUserContext, withAuthorization } from "../Session";
 import TopNews from "../TopNews/TopNews";
 import Portfolio from "../Portfolio/Portfolio";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
-import SearchIcon from "@material-ui/icons/Search";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
@@ -187,11 +186,11 @@ const Home = ({ firebase }) => {
     if (risk && age) {
       if (age === "Young") {
         if (risk === "High") setRecommendation("Wealth Maximiser");
-        if (risk === "Balanced") setRecommendation("Wealth Builder");
+        else if (risk === "Balanced") setRecommendation("Wealth Builder");
         else setRecommendation("Stable Wealth");
       } else if (age === "Middle-aged") {
         if (risk === "High") setRecommendation("Wealth Builder");
-        if (risk === "Balanced") setRecommendation("Stable Wealth");
+        else if (risk === "Balanced") setRecommendation("Stable Wealth");
         else setRecommendation("Wealth Secure");
       } else if (age === "Retiree") {
         if (risk === "High") setRecommendation("Wealth Secure");

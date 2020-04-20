@@ -8,17 +8,6 @@ const Step1 = ({ validateEmail, handleChange, form, error }) => {
       <TextField
         onChange={handleChange}
         onBlur={handleChange}
-        id="username"
-        label="Username"
-        name="username"
-        value={form.username}
-        error={error.username}
-        helperText={error.username ? "Username is required" : ""}
-        style={{ marginBottom: "2em" }}
-      />
-      <TextField
-        onChange={handleChange}
-        onBlur={handleChange}
         name="email"
         value={form.email}
         id="email"

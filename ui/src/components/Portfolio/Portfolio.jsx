@@ -1,6 +1,4 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { config } from "../../config";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Button } from "@material-ui/core";
@@ -10,6 +8,11 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import DeleteIcon from "@material-ui/icons/Delete";
 import RemoveCircleIcon from "@material-ui/icons/RemoveCircle";
+import Modal from "@material-ui/core/Modal";
+import Backdrop from "@material-ui/core/Backdrop";
+import Fade from "@material-ui/core/Fade";
+import { Doughnut } from "react-chartjs-2";
+import recommendationsContent from "./recommendations.json";
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -81,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#f5f5f5",
     display: "flex",
     flexDirection: "column",
-    height: "200px",
+    height: "500px",
     [theme.breakpoints.down("sm")]: {
       height: "400px",
     },
@@ -176,6 +179,60 @@ const useStyles = makeStyles((theme) => ({
       opacity: "0.5",
     },
   },
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    "&:focus": {
+      outline: "none",
+    },
+    outline: "none",
+  },
+  paper: {
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
+    maxWidth: "60%",
+    minHeight: "60%",
+    minWidth: "50%",
+    alignItems: "center",
+    padding: theme.spacing(2, 4, 3),
+    "&:focus": {
+      outline: "none",
+    },
+    outline: "none",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-evenly",
+    [theme.breakpoints.down("sm")]: {
+      maxWidth: "90%",
+      minHeight: "90%",
+    },
+  },
+  submitButton: {
+    extend: "button",
+    color: "#fff",
+    backgroundColor: "#2643e9",
+  },
+  buttonGroup: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  heading: {
+    fontSize: "1.5em",
+    fontWeight: 500,
+  },
+  summary: {
+    fontStyle: "italic",
+    fontSize: "1.2em",
+  },
+  description: {
+    fontSize: "1em",
+    maxWidth: "80%",
+    [theme.breakpoints.down("sm")]: {
+      maxWidth: "100%",
+    },
+  },
 }));
 
 const Portfolio = ({
@@ -191,6 +248,14 @@ const Portfolio = ({
   const [holdings, setHoldings] = useState(null);
   const [holdingsData, setHoldingsData] = useState(null);
   const [estimatedEarnings, setEstimatedEarnings] = useState(0);
+  const [recommendContent, setRecommendContent] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
   const handleSubmit = (holdingId) => {
     openRemoveHoldingsModal(holdingId, portfolio.id);
   };
@@ -207,6 +272,12 @@ const Portfolio = ({
     } else {
       setHoldings(null);
       setEstimatedEarnings(0);
+      for (let content of recommendationsContent) {
+        if (content.type === recommendation) {
+          setRecommendContent(content);
+          break;
+        }
+      }
     }
   }, [portfolio]);
 
@@ -265,6 +336,11 @@ const Portfolio = ({
     setHoldingsData(holdingsContent);
   };
 
+  const options = {
+    maintainAspectRatio: false,
+    responsive: true,
+  };
+
   const styleColor =
     estimatedEarnings < 0
       ? "#fb6340"
@@ -305,16 +381,33 @@ const Portfolio = ({
         />{" "}
         Add Holdings
       </Typography>
-      {!portfolio.holdings && (
+      {!portfolio.holdings && recommendContent && (
         <div className={classes.CardItem}>
           <Card className={classes.Card}>
             <CardContent className={classes.CardContent}>
               <Typography gutterBottom className={classes.CardTitle}>
                 Based on your profile we recommend building a{" "}
-                <span className={classes.link}>{recommendation} Portfolio</span>
+                <span style={{ fontWeight: 500 }}>
+                  {recommendation} Portfolio
+                </span>
                 .
               </Typography>
-              <Button variant="contained" className={classes.button}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "50%",
+                  width: "100%",
+                }}
+              >
+                <Doughnut options={options} data={recommendContent.chart} />
+              </div>
+              <Button
+                variant="contained"
+                className={classes.button}
+                onClick={handleOpenModal}
+              >
                 Learn More
               </Button>
             </CardContent>
@@ -322,6 +415,41 @@ const Portfolio = ({
         </div>
       )}
       {holdingsData}
+      {openModal && recommendContent && (
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={classes.modal}
+          open={openModal}
+          onClose={handleCloseModal}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={openModal}>
+            <div className={classes.paper}>
+              <Typography className={classes.heading}>
+                {recommendContent.title}
+              </Typography>
+              <Typography className={classes.summary}>
+                {recommendContent.summary}
+              </Typography>
+              <Typography className={classes.description}>
+                {recommendContent.description}
+              </Typography>
+              <Button
+                variant="contained"
+                onClick={handleCloseModal}
+                className={classes.submitButton}
+              >
+                Close
+              </Button>
+            </div>
+          </Fade>
+        </Modal>
+      )}
     </Fragment>
   );
 };

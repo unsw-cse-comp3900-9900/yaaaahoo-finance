@@ -1,0 +1,77 @@
+[
+  {
+    "type": "Wealth Maximiser",
+    "chart": {
+      "datasets": [
+        {
+          "data": [43, 38, 16, 3],
+          "backgroundColor": [ "#f4eeff", "#dcd6f7", "#a6b1e1", "#424874"]
+        }
+      ],
+      "labels": ["43% Large Cap Equity", "38% Mid Cap Equity", "16% Small Cap Equity", "3% Debt e.g. Bonds, Real Estate, etc."]
+    },
+    "title": "Wealth Maximiser: Young and restless",
+    "summary": "Wealth Maximiser portfolio is for aggressive investors who don’t mind taking risks.",
+    "description": "This portfolio is designed for investors who want high returns even if it means high risks. Only investors who have the stomach for volatility should go for this portfolio and be prepared to remain invested for at least 5-7 years to earn good returns from this portfolio. "
+  },
+  {
+    "type": "Wealth Builder",
+    "chart": {
+      "datasets": [
+        {
+          "data": [70, 20, 5, 5],
+          "backgroundColor": [ "#f4eeff", "#dcd6f7", "#a6b1e1", "#424874"]
+        }
+      ],
+      "labels": ["70% Large Cap Equity", "20% Mid Cap Equity", "5% Small Cap Equity", "5% Debt e.g. Bonds, Real Estate, etc."]
+    },
+    "title": "Wealth Builder: Cautiously optimistic",
+    "summary": "Wealth Builder suits those who want to invest in stable large-cap stocks.",
+    "description": "This portfolio is designed for investors who want high returns but don’t want to be as risky as wealth maximisers. With an optimistic outlook on the market, the wealth builder maximises on large cap equity investments."
+  },
+  {
+    "type": "Stable Wealth",
+    "chart": {
+      "datasets": [
+        {
+          "data": [40, 15, 6, 39],
+          "backgroundColor": [ "#f4eeff", "#dcd6f7", "#a6b1e1", "#424874"]
+        }
+      ],
+      "labels": ["40% Large Cap Equity", "15% Mid Cap Equity", "6% Small Cap Equity", "39% Debt e.g. Bonds, Real Estate, etc."]
+    },
+    "title": "Stable Wealth: Get the best of both worlds",
+    "summary": "Stable Wealth is for investors who want a balanced mix of debt and equity.",
+    "description": "For people who are optimistic like wealth builders but not so willing to get big on the stock market. With a higher portion set aside for debt fund this portfolio lends much more stability. Basically, you get the best of both worlds."
+  },
+  {
+    "type": "Wealth Secure",
+    "chart": {
+      "datasets": [
+        {
+          "data": [10, 12, 2, 76],
+          "backgroundColor": [ "#f4eeff", "#dcd6f7", "#a6b1e1", "#424874"]
+        }
+      ],
+      "labels": ["10% Large Cap Equity", "12% Mid Cap Equity", "2% Small Cap Equity", "76% Debt e.g. Bonds, Real Estate, etc."]
+    },
+    "title": "Wealth Secure: When safety is paramount",
+    "summary": "Wealth Secure is designed for investors who don’t want to risk their money in stocks.",
+    "description": "Wealth Secure is designed for investors who don’t want to risk their money in stocks. Some investors just can’t stand the prospect of losing money. Though debt funds are not as volatile as equity schemes it is a misconception that they can’t lose money. Debt funds are sensitive to interest rate movements and will lose money if interest rates go up. That’s why we recommend investing more in short term debt funds as they are less volatile than long-term bonds and focus on earning from interest accruals than on capital gains."
+  },
+  {
+    "type": "Income Generator",
+    "chart": {
+      "datasets": [
+        {
+          "data": [3, 1, 1, 95],
+          "backgroundColor": [ "#f4eeff", "#dcd6f7", "#a6b1e1", "#424874"]
+        }
+      ],
+      "labels": ["43% Large Cap Equity", "38% Mid Cap Equity", "16% Small Cap Equity", "3% Debt e.g. Bonds, Real Estate, etc."]
+    },
+    "title": "Income Generator: Regular income in the golden years",
+    "summary": "Income Generator is for retirees looking for a monthly income from their investments.",
+    "description": "Unlike the other portfolios, the income generator starts with a lumpsum investment and withdraws monthly sum for the investor. It has two medium-term income funds, two short-term debt funds and one debt-oriented hybrid fund. This is a recommended arrangement to bank deposit returns as debt funds yield a slightly better return than fixed deposits. You also have a greater tax advantage since the principal amount is not taxable and the gains are treated as long-term capital gains and taxed at a lower rate. This portfolio is designed to provide retirees a monthly income."
+  }
+]
