@@ -103,6 +103,7 @@ const Company = ({ history, firebase }) => {
     false
   );
   const [portfolioId, setPortfolioId] = useState("");
+  const [tweets, setTweets] = useState([]);
 
   useEffect(() => {
     if (!userData) return;
@@ -117,6 +118,15 @@ const Company = ({ history, firebase }) => {
 
   const handleCloseAddCurrentHoldingModal = () => {
     setOpenAddCurrentHoldingModal(false);
+  };
+
+  const updateCompany = (tweets) => {
+    firebase.updateCompany(
+      companyData.companyName,
+      companyData.symbol,
+      historicalData,
+      tweets
+    );
   };
 
   const addHolding = (portfolioId, form) => {
@@ -140,11 +150,10 @@ const Company = ({ history, firebase }) => {
   };
 
   const getBackup = async (company) => {
-    return await axios
-      .get(`http://localhost:8080/historical/${company}`)
-      .then(({ data }) => {
-        setHistoricalData(data);
-      });
+    firebase.getCompany(company).then((res) => {
+      setHistoricalData(res.historicalData);
+      setTweets(res.tweets);
+    });
   };
 
   const getHistoricalData = async (company) => {
@@ -163,6 +172,7 @@ const Company = ({ history, firebase }) => {
           }
         );
         setHistoricalData(formattedData);
+        firebase.updateCompanyHistoricalData(company, formattedData);
       })
       .catch((error) => {
         console.log(error);
@@ -186,15 +196,12 @@ const Company = ({ history, firebase }) => {
   }, [historicalData]);
 
   useEffect(() => {
-    const company = history.location.pathname.replace("/company/", "");
-    getInfo(company);
-    getHistoricalData(company, "5y");
-  }, []);
-
-  useEffect(() => {
     firebase.getUserData().then((res) => {
       setUserData(res);
     });
+    const company = history.location.pathname.replace("/company/", "");
+    getInfo(company);
+    getHistoricalData(company, "5y");
   }, []);
 
   const company = history.location.pathname.replace("/company/", "");
@@ -245,9 +252,12 @@ const Company = ({ history, firebase }) => {
                     <Analysis
                       company={company}
                       classes={classes}
+                      updateCompany={updateCompany}
+                      firebase={firebase}
                       companyData={companyData}
                       historicalData={historicalData}
                       predictionInput={predictionInput}
+                      tweets={tweets}
                     />
                   </TabPanel>
                   {openAddCurrentHoldingModal && (

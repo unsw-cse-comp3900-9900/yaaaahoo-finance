@@ -31,49 +31,15 @@ def get_technical_analysis(dataset):
   dataset['EMA 26'] = dataset['Close'].ewm(span=26).mean()
   dataset['MACD'] = dataset['EMA 12'] - dataset['EMA 26']
 
-@app.route('/historical/<company>', methods=['GET'])
-def get_historical(company):
-    print("Retrieving historical data....")
-    # Get backed up data
-    with open('backup_data.json', "r") as backup_data_file:
-        backup_data = json.load(backup_data_file)
-    if company in backup_data:
-        return jsonify(backup_data[company]['historical_data'])
-    else:
-        return jsonify([])
-
 @app.route('/prediction',methods=['POST'])
 def prediction():
     days = int(request.get_json()['days'])
-    company = request.get_json()['company']
-    model = tf.keras.models.load_model('model_{}.h5'.format(days))
     x = request.get_json()['predictionInput']
-    historicalData = request.get_json()['historicalData']
-
-    # Get backed up data
-    with open('backup_data.json', "r") as backup_data_file:
-        backup_data = json.load(backup_data_file)
+    model = tf.keras.models.load_model('model_{}.h5'.format(days))
     
     if (len(x) == 0):
-        print("No historical data provided, reading from backed up data")
-        # Check if we have company info backed up
-        if company in backup_data:
-           if backup_data[company]["prediction_input"]:
-               x = backup_data[company]["prediction_input"]
-               print("retrieve prediction input from backed up data")
-        else: return jsonify([])
-    else:
-        print("backed up data updated with latest historical data info")
-        if company in backup_data:
-            backup_data[company]["prediction_input"] = x
-            backup_data[company]["historical_data"] = historicalData
-        else:
-            backup_data[company] = {
-                "prediction_input": x,
-                "historical_data": historicalData
-            }
-        with open('backup_data.json', 'w') as f:
-            json.dump(backup_data, f)
+        return jsonify([])
+    
     x = pd.DataFrame(x, columns = ['Close', 'Volume'])
     lags = 100 if days >= 10 else days * 10
     get_technical_analysis(x)
@@ -89,43 +55,30 @@ def prediction():
     try:
         preds = model.predict(scaled_x)
     except Exception as e:
-        print(e)
         return jsonify([])
     ayaya = scalers[0].inverse_transform(preds)
     previous = x[:,:,0].reshape(-1)
     final = np.concatenate((previous[-days*2:], ayaya[0]))
     return jsonify(final.tolist())
 
-
-# read backup tweets stored for that demo company.
-@app.route('/sentiment/<company>')
-def sentiment(company):
-    # Get backed up data
-    with open('backup_data.json') as backup_data_file:
-        backup_data = json.loads(backup_data_file.read())
+@app.route('/sentiment',methods=['POST'])
+def sentiment():
+    company = request.get_json()['company']
+    backup_tweets = request.get_json()['tweets']
     try:
         creds = searchtweets.load_credentials(filename='test.yaml')
         rule = searchtweets.gen_rule_payload(company, results_per_call=30)
         json_results = searchtweets.collect_results(rule, max_results=30,result_stream_args=creds)
         tweets = [tweet.all_text for tweet in json_results]
     except Exception as e:
-        print("429 Error, getting back up data for tweets...")
-        if company in backup_data:
-            if "tweets" in backup_data[company]:
-                tweets = backup_data[company]["tweets"]
+        if len(backup_tweets) > 0:
+            tweets = backup_tweets
         else:
-            return '{"sentiment": "N/A"}'
+            result = {
+                "sentiment": "N/A"
+            }
+            return jsonify(result)
         
-    print("backed up data updated with latest twitter info")
-    if company in backup_data:
-        backup_data[company]["tweets"] = tweets
-    else:
-        backup_data[company] = {
-            "tweets": tweets,
-        }
-    with open('backup_data.json', 'w') as f:
-        json.dump(backup_data, f)
-
     sentiment = pipeline("sentiment-analysis")
     positive = 0
     aggregated_sentiment = 0
@@ -137,8 +90,11 @@ def sentiment(company):
             positive -= 1
     if positive > 0: aggregated_sentiment = 1
     elif positive < 0: aggregated_sentiment = -1
-    result = str(aggregated_sentiment)
-    return '{"sentiment":"'+result+'"}'
+    result = {
+        "sentiment": str(aggregated_sentiment),
+        "tweets": tweets
+    }
+    return jsonify(result)
 
 if __name__ == '__main__':
     app.run()

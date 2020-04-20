@@ -13,6 +13,8 @@ const Analysis = ({
   historicalData,
   predictionInput,
   companyData,
+  updateCompany,
+  tweets,
 }) => {
   const [graphData, setGraphData] = useState(null);
   const [startDayPrice, setStartDayPrice] = useState(0);
@@ -63,7 +65,7 @@ const Analysis = ({
     return await axios
       .post(
         `http://localhost:8080/prediction`,
-        { predictionInput, historicalData, days, company },
+        { predictionInput, days },
         config
       )
       .then(({ data }) => {
@@ -147,11 +149,26 @@ const Analysis = ({
   };
 
   const getSentiment = async () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      cancelToken: cancelToken.current.token,
+    };
     return await axios
-      .get(`http://localhost:8080/sentiment/${companyData.companyName}`, {
-        cancelToken: cancelToken.current.token,
-      })
+      .post(
+        `http://localhost:8080/sentiment`,
+        {
+          tweets,
+          company: companyData.companyName,
+        },
+        config
+      )
       .then(({ data }) => {
+        if (data.tweets && data.tweets.length > 0) {
+          updateCompany(data.tweets);
+        }
         if (data.sentiment === "N/A") {
           setSentimentString("0");
           setSentiment(
