@@ -100,6 +100,7 @@ const Company = ({ history, firebase }) => {
   const [companyData, setCompanyData] = useState(null);
   const [historicalData, setHistoricalData] = useState(null);
   const [error, setError] = useState(false);
+  const [backupData, setBackupData] = useState(null);
   const [predictionInput, setPredictionInput] = useState([]);
   const [openAddCurrentHoldingModal, setOpenAddCurrentHoldingModal] = useState(
     false
@@ -158,10 +159,11 @@ const Company = ({ history, firebase }) => {
     firebase
       .getCompany(company)
       .then((res) => {
-        setHistoricalData(res.historicalData);
+        setBackupData(res.historicalData);
         setTweets(res.tweets);
       })
       .catch(() => {
+        setBackupData([]);
         setError(true);
       });
   };
@@ -186,7 +188,7 @@ const Company = ({ history, firebase }) => {
       })
       .catch((error) => {
         console.log(error);
-        getBackup(company);
+        setHistoricalData(backupData);
       });
   };
 
@@ -212,13 +214,18 @@ const Company = ({ history, firebase }) => {
     });
     const company = history.location.pathname.replace("/company/", "");
     getInfo(company);
-    getHistoricalData(company, "5y");
+    getBackup(company);
     return () => {
       if (cancelToken.current) {
         cancelToken.current.cancel("Component unmounted");
       }
     };
-  }, [firebase, history.location.pathname]);
+  }, []);
+
+  useEffect(() => {
+    if (!backupData) return;
+    getHistoricalData(company);
+  }, [backupData]);
 
   const company = history.location.pathname.replace("/company/", "");
 
