@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, useRef } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
 import { config } from "../../config";
@@ -125,7 +125,6 @@ const NavBar = ({ authUser, firebase, history }) => {
   const [searchResults, setSearchResults] = useState([]);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [menuOpen, setMenuOpen] = useState(false);
-  const cancelToken = useRef(null);
 
   const searchCompanies = async (search) => {
     const url = `https://api.worldtradingdata.com/api/v1/stock_search?stock_exchange=NYSE&search_term=${search}&limit=5&page=1&api_token=${config.worldTradingApiToken}`;
@@ -142,9 +141,6 @@ const NavBar = ({ authUser, firebase, history }) => {
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      if (cancelToken.current) {
-        cancelToken.current.cancel("Component unmounted");
-      }
       // Fire off our API call
       searchCompanies(debouncedSearchTerm).then((results) => {
       // Set results state
@@ -154,9 +150,6 @@ const NavBar = ({ authUser, firebase, history }) => {
       setSearchResults([]);
     }
     return () => {
-      if (cancelToken.current) {
-        cancelToken.current.cancel("Component unmounted");
-      }
     };
   }, [debouncedSearchTerm]);
 
