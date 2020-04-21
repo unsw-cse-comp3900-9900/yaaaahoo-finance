@@ -99,7 +99,6 @@ const Company = ({ history, firebase }) => {
   const [portfolios, setPortfolios] = useState([]);
   const [companyData, setCompanyData] = useState(null);
   const [historicalData, setHistoricalData] = useState(null);
-  const [error, setError] = useState(false);
   const [backupData, setBackupData] = useState(null);
   const [predictionInput, setPredictionInput] = useState([]);
   const [openAddCurrentHoldingModal, setOpenAddCurrentHoldingModal] = useState(
@@ -188,7 +187,7 @@ const Company = ({ history, firebase }) => {
       .catch((error) => {
         console.log(error);
         if (backupData.length === 0) {
-          setError(true);
+          history.push('/nocompany');
           return;
         }
         setHistoricalData(backupData);
@@ -238,7 +237,7 @@ const Company = ({ history, firebase }) => {
         return (
           <div className={classes.Page}>
             <div className={classes.Container}>
-              {historicalData && !error ? (
+              {historicalData ? (
                 <Fragment>
                   <Typography className={classes.Heading1}>
                     {companyData.symbol}
@@ -297,7 +296,7 @@ const Company = ({ history, firebase }) => {
                     />
                   )}
                 </Fragment>
-              ) : !error ? (
+              ) : (
                 <div
                   style={{
                     display: "flex",
@@ -309,8 +308,6 @@ const Company = ({ history, firebase }) => {
                 >
                   <CircularProgress style={{ color: "#cbd2f6" }} />
                 </div>
-              ) : (
-                <div>Something went wrong, please try again later.</div>
               )}
             </div>
           </div>
