@@ -55,7 +55,7 @@ const Summary = ({ companyData, historicalData, classes }) => {
   useEffect(() => {
     getHistoricalData();
     if (historicalData && historicalData.length > 0) {
-      const previousClose = historicalData[0].close;
+      const previousClose = historicalData[1].close;
       const previousOpen = historicalData[0].open;
       setPrevOpen(previousOpen);
       setPrevClose(previousClose);
