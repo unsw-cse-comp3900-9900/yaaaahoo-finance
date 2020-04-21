@@ -160,11 +160,10 @@ const Company = ({ history, firebase }) => {
       .getCompany(company)
       .then((res) => {
         setBackupData(res.historicalData);
-        setTweets(res.tweets);
+        setTweets(res.tweets || []);
       })
       .catch(() => {
         setBackupData([]);
-        setError(true);
       });
   };
 
@@ -188,6 +187,10 @@ const Company = ({ history, firebase }) => {
       })
       .catch((error) => {
         console.log(error);
+        if (backupData.length === 0) {
+          setError(true);
+          return;
+        }
         setHistoricalData(backupData);
       });
   };

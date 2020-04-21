@@ -128,17 +128,12 @@ const NavBar = ({ authUser, firebase, history }) => {
   const cancelToken = useRef(null);
 
   const searchCompanies = async (search) => {
-    cancelToken.current = axios.CancelToken.source();
     const url = `https://api.worldtradingdata.com/api/v1/stock_search?stock_exchange=NYSE&search_term=${search}&limit=5&page=1&api_token=${config.worldTradingApiToken}`;
     return await axios
-      .get(url, { cancelToken: cancelToken.current.token })
+      .get(url)
       .then(({ data }) => data)
       .catch((error) => {
-        if (axios.isCancel(error)) {
-          console.log("Request canceled", error.message);
-        } else {
           console.log(error);
-        }
         return {
           data: [],
         };
