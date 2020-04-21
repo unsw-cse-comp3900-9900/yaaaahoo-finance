@@ -10,7 +10,6 @@ import LandingPage from "../LandingPage/LandingPage";
 import Company from "../Company/Company";
 import News from "../TopNews/NewsPage";
 import NoMatchPage from "./NoMatchPage";
-import CompanyNotFound from "./CompanyNotFound";
 
 class Routes extends Component {
   render() {
@@ -46,7 +45,7 @@ class Routes extends Component {
         <Route
           path="/nocompany"
           exact
-          component={compose(withRouter, withFirebase)(CompanyNotFound)}
+          component={compose(withRouter, withFirebase)(NoMatchPage)}
         />
         <Route component={NoMatchPage} />
       </Switch>

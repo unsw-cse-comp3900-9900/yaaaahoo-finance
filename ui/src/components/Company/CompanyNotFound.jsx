@@ -26,9 +26,7 @@ const useStyles = makeStyles((theme) => ({
 const CompanyNotFound = () => {
   const classes = useStyles();
   return (
-    <div className={classes.page}>
       <div className={classes.title}>Company not found.</div>
-    </div>
   );
 };
 export default CompanyNotFound;

@@ -12,6 +12,7 @@ import Analysis from "./Analysis";
 import Holdings from "./Holdings";
 import Summary from "./Summary";
 import AddCurrentHoldingModal from "./AddCurrentHoldingModal";
+import CompanyNotFound from "./CompanyNotFound";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -310,7 +311,7 @@ const Company = ({ history, firebase }) => {
                   <CircularProgress style={{ color: "#cbd2f6" }} />
                 </div>
               ) : (
-                <div>Something went wrong, please try again later.</div>
+                <CompanyNotFound />
               )}
             </div>
           </div>
