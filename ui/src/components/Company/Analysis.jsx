@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { Fragment, useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { Line } from "react-chartjs-2";
@@ -13,8 +14,11 @@ const Analysis = ({
   historicalData,
   predictionInput,
   companyData,
+  updateCompany,
+  tweets,
 }) => {
   const [graphData, setGraphData] = useState(null);
+  const [days, setDays] = useState(20);
   const [startDayPrice, setStartDayPrice] = useState(0);
   const [finalDayPrice, setFinalDayPrice] = useState(0);
   const [sentimentString, setSentimentString] = useState(null);
@@ -37,7 +41,7 @@ const Analysis = ({
   const lineRef = useRef(null);
   const cancelToken = useRef(null);
 
-  const getPredictions = async (days) => {
+  const getPredictions = async () => {
     cancelToken.current = axios.CancelToken.source();
     var predictions = [];
     var prev = [];
@@ -52,18 +56,18 @@ const Analysis = ({
 
     if (days < 5) {
       setPredictionName("Our " + days + " Day Prediction");
-    } else if (days == 5) {
+    } else if (days === 5) {
       setPredictionName("Our 1 Week Prediction");
-    } else if (days == 10) {
+    } else if (days === 10) {
       setPredictionName("Our 2 Week Prediction");
-    } else if (days == 20) {
+    } else if (days === 20) {
       setPredictionName("Our 1 Month Prediction");
     }
 
     return await axios
       .post(
         `http://localhost:8080/prediction`,
-        { predictionInput, historicalData, days, company },
+        { predictionInput, days },
         config
       )
       .then(({ data }) => {
@@ -76,7 +80,7 @@ const Analysis = ({
               x: currentDate,
               y: data[i],
             });
-          } else if (i == prev_cut) {
+          } else if (i === prev_cut) {
             prev.push({
               x: currentDate,
               y: data[i],
@@ -147,11 +151,26 @@ const Analysis = ({
   };
 
   const getSentiment = async () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      cancelToken: cancelToken.current.token,
+    };
     return await axios
-      .get(`http://localhost:8080/sentiment/${companyData.companyName}`, {
-        cancelToken: cancelToken.current.token,
-      })
+      .post(
+        `http://localhost:8080/sentiment`,
+        {
+          tweets,
+          company: companyData.companyName,
+        },
+        config
+      )
       .then(({ data }) => {
+        if (data.tweets && data.tweets.length > 0) {
+          updateCompany(data.tweets);
+        }
         if (data.sentiment === "N/A") {
           setSentimentString("0");
           setSentiment(
@@ -198,12 +217,16 @@ const Analysis = ({
         if (axios.isCancel(error)) {
           console.log("Request canceled", error.message);
         } else {
+          setSentimentString("N/A");
+          setSentiment("N/A");
           console.log(error);
         }
-        setSentimentString("N/A");
-        setSentiment("N/A");
       });
   };
+
+  useEffect(() => {
+    getPredictions();
+  }, [days]);
 
   useEffect(() => {
     if (!graphData) return;
@@ -314,7 +337,7 @@ const Analysis = ({
           >
             Sentimental Analysis: {sentiment}
           </div>
-          <Typography className={classes.Heading5}>
+          <div className={classes.Heading5}>
             Our Recommendation:{" "}
             <span
               style={{
@@ -326,7 +349,7 @@ const Analysis = ({
             >
               {recommendation}
             </span>
-          </Typography>
+          </div>
           <div
             style={{
               display: "flex",
@@ -334,12 +357,12 @@ const Analysis = ({
               flexWrap: "wrap",
             }}
           >
-            <Button onClick={() => getPredictions(1)}>1 day</Button>
-            <Button onClick={() => getPredictions(2)}>2 days</Button>
-            <Button onClick={() => getPredictions(3)}>3 days</Button>
-            <Button onClick={() => getPredictions(5)}>1 week</Button>
-            <Button onClick={() => getPredictions(10)}>2 weeks</Button>
-            <Button onClick={() => getPredictions(20)}>1 month</Button>
+            <Button color={days === 1 ? "primary" : "inherit"} onClick={() => setDays(1)}>1D</Button>
+            <Button color={days === 2 ? "primary" : "inherit"} onClick={() => setDays(2)}>2D</Button>
+            <Button color={days === 3 ? "primary" : "inherit"} onClick={() => setDays(3)}>3D</Button>
+            <Button color={days === 5 ? "primary" : "inherit"} onClick={() => setDays(5)}>1W</Button>
+            <Button color={days === 10 ? "primary" : "inherit"} onClick={() => setDays(10)}>2W</Button>
+            <Button color={days === 20 ? "primary" : "inherit"} onClick={() => setDays(20)}>1M</Button>
           </div>
           <div style={{ marginBottom: "3em" }}>
             <Line ref={lineRef} data={graphData} options={options} />

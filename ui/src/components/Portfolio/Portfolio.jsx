@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
@@ -62,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   summary: {
-    color: "#a9a9a9",
+    color: "#a0a0a0",
     display: "flex",
     flexDirection: "column",
     marginTop: "1em",
@@ -222,7 +223,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1.5em",
     fontWeight: 500,
   },
-  summary: {
+  recommendedSummary: {
     fontStyle: "italic",
     fontSize: "1.2em",
   },
@@ -267,6 +268,7 @@ const Portfolio = ({
   };
 
   useEffect(() => {
+    if(!portfolio) return;
     if (portfolio.holdings) {
       getHoldingsData();
     } else {
@@ -279,9 +281,10 @@ const Portfolio = ({
         }
       }
     }
-  }, [portfolio]);
+  }, [portfolio, recommendation]);
 
   useEffect(() => {
+    if(!holdings) return;
     getContent();
   }, [holdings]);
 
@@ -346,7 +349,7 @@ const Portfolio = ({
       ? "#fb6340"
       : estimatedEarnings > 0
       ? "#2dce89"
-      : "inherit";
+      : "#a0a0a0";
 
   return (
     <Fragment>
@@ -433,7 +436,7 @@ const Portfolio = ({
               <Typography className={classes.heading}>
                 {recommendContent.title}
               </Typography>
-              <Typography className={classes.summary}>
+              <Typography className={classes.recommendedSummary}>
                 {recommendContent.summary}
               </Typography>
               <Typography className={classes.description}>

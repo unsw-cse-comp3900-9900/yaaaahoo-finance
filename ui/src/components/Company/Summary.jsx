@@ -1,15 +1,17 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { Fragment, useState, useEffect, useRef } from "react";
 import { Typography, Button, CircularProgress } from "@material-ui/core";
 import { Line } from "react-chartjs-2";
 const Summary = ({ companyData, historicalData, classes }) => {
   const [graphData, setGraphData] = useState(null);
   const lineRef = useRef(null);
+  const [days, setDays] = useState(30);
   const [daysGain, setDaysGain] = useState("N/A");
   const [daysPerc, setDaysPerc] = useState("N/A");
   const [prevClose, setPrevClose] = useState("N/A");
   const [prevOpen, setPrevOpen] = useState("N/A");
 
-  const getHistoricalData = (days) => {
+  const getHistoricalData = () => {
     if (!historicalData) return;
     const formatData = [];
     let count = 1;
@@ -47,9 +49,13 @@ const Summary = ({ companyData, historicalData, classes }) => {
   };
 
   useEffect(() => {
-    getHistoricalData(7);
+    getHistoricalData();
+  }, [days]);
+
+  useEffect(() => {
+    getHistoricalData();
     if (historicalData && historicalData.length > 0) {
-      const previousClose = historicalData[0].close;
+      const previousClose = historicalData[1].close;
       const previousOpen = historicalData[0].open;
       setPrevOpen(previousOpen);
       setPrevClose(previousClose);
@@ -112,12 +118,12 @@ const Summary = ({ companyData, historicalData, classes }) => {
               flexWrap: "wrap",
             }}
           >
-            <Button onClick={() => getHistoricalData(7)}>1W</Button>
-            <Button onClick={() => getHistoricalData(30)}>1M</Button>
-            <Button onClick={() => getHistoricalData(92)}>3M</Button>
-            <Button onClick={() => getHistoricalData(183)}>6M</Button>
-            <Button onClick={() => getHistoricalData(365)}>1Y</Button>
-            <Button onClick={() => getHistoricalData(1825)}>5Y</Button>
+            <Button color={days === 7 ? "primary" : "inherit"} onClick={() => setDays(7)}>1W</Button>
+            <Button color={days === 30 ? "primary" : "inherit"} onClick={() => setDays(30)}>1M</Button>
+            <Button color={days === 92 ? "primary" : "inherit"} onClick={() => setDays(92)}>3M</Button>
+            <Button color={days === 183 ? "primary" : "inherit"} onClick={() => setDays(183)}>6M</Button>
+            <Button color={days === 365 ? "primary" : "inherit"} onClick={() => setDays(365)}>1Y</Button>
+            <Button color={days === 1825 ? "primary" : "inherit"} onClick={() => setDays(1825)}>5Y</Button>
           </div>
           <div style={{ marginBottom: "3em" }}>
             <Line ref={lineRef} data={graphData} options={options} />

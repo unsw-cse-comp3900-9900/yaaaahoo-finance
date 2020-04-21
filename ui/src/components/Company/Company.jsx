@@ -1,4 +1,5 @@
-import React, { useState, useEffect, Fragment } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect, Fragment, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, CircularProgress } from "@material-ui/core";
 import { AuthUserContext, withAuthorization } from "../Session";
@@ -98,12 +99,16 @@ const Company = ({ history, firebase }) => {
   const [portfolios, setPortfolios] = useState([]);
   const [companyData, setCompanyData] = useState(null);
   const [historicalData, setHistoricalData] = useState(null);
+  const [error, setError] = useState(false);
+  const [backupData, setBackupData] = useState(null);
   const [predictionInput, setPredictionInput] = useState([]);
   const [openAddCurrentHoldingModal, setOpenAddCurrentHoldingModal] = useState(
     false
   );
   const [portfolioId, setPortfolioId] = useState("");
-
+  const [tweets, setTweets] = useState([]);
+  const cancelToken = useRef(null); 
+  
   useEffect(() => {
     if (!userData) return;
     if (userData.portfolios) setPortfolios(Object.values(userData.portfolios));
@@ -117,6 +122,15 @@ const Company = ({ history, firebase }) => {
 
   const handleCloseAddCurrentHoldingModal = () => {
     setOpenAddCurrentHoldingModal(false);
+  };
+
+  const updateCompany = (tweets) => {
+    firebase.updateCompany(
+      companyData.companyName,
+      companyData.symbol,
+      historicalData,
+      tweets
+    );
   };
 
   const addHolding = (portfolioId, form) => {
@@ -134,23 +148,29 @@ const Company = ({ history, firebase }) => {
 
   const getInfo = async (company) => {
     const url = `https://cloud.iexapis.com/v1/stock/${company}/quote?token=${config.iexCloudApiToken}`;
-    return await axios.get(url).then(({ data }) => {
-      setCompanyData(data);
-    });
+    return await axios
+      .get(url, { cancelToken: cancelToken.current.token })
+      .then(({ data }) => {
+        setCompanyData(data);
+      });
   };
 
   const getBackup = async (company) => {
-    return await axios
-      .get(`http://localhost:8080/historical/${company}`)
-      .then(({ data }) => {
-        setHistoricalData(data);
+    firebase
+      .getCompany(company)
+      .then((res) => {
+        setBackupData(res.historicalData);
+        setTweets(res.tweets || []);
+      })
+      .catch(() => {
+        setBackupData([]);
       });
   };
 
   const getHistoricalData = async (company) => {
     const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${company}&outputsize=full&apikey=${config.alphaVantageApiToken}`;
     return await axios
-      .get(url)
+      .get(url, { cancelToken: cancelToken.current.token })
       .then(({ data }) => {
         const formattedData = Object.entries(data["Time Series (Daily)"]).map(
           (entry) => {
@@ -163,10 +183,15 @@ const Company = ({ history, firebase }) => {
           }
         );
         setHistoricalData(formattedData);
+        firebase.updateCompanyHistoricalData(company, formattedData);
       })
       .catch((error) => {
         console.log(error);
-        getBackup(company);
+        if (backupData.length === 0) {
+          setError(true);
+          return;
+        }
+        setHistoricalData(backupData);
       });
   };
 
@@ -186,16 +211,24 @@ const Company = ({ history, firebase }) => {
   }, [historicalData]);
 
   useEffect(() => {
-    const company = history.location.pathname.replace("/company/", "");
-    getInfo(company);
-    getHistoricalData(company, "5y");
-  }, []);
-
-  useEffect(() => {
+    cancelToken.current = axios.CancelToken.source();
     firebase.getUserData().then((res) => {
       setUserData(res);
     });
+    const company = history.location.pathname.replace("/company/", "");
+    getInfo(company);
+    getBackup(company);
+    return () => {
+      if (cancelToken.current) {
+        cancelToken.current.cancel("Component unmounted");
+      }
+    };
   }, []);
+
+  useEffect(() => {
+    if (!backupData) return;
+    getHistoricalData(company);
+  }, [backupData]);
 
   const company = history.location.pathname.replace("/company/", "");
 
@@ -205,7 +238,7 @@ const Company = ({ history, firebase }) => {
         return (
           <div className={classes.Page}>
             <div className={classes.Container}>
-              {companyData ? (
+              {historicalData && !error ? (
                 <Fragment>
                   <Typography className={classes.Heading1}>
                     {companyData.symbol}
@@ -245,9 +278,12 @@ const Company = ({ history, firebase }) => {
                     <Analysis
                       company={company}
                       classes={classes}
+                      updateCompany={updateCompany}
+                      firebase={firebase}
                       companyData={companyData}
                       historicalData={historicalData}
                       predictionInput={predictionInput}
+                      tweets={tweets}
                     />
                   </TabPanel>
                   {openAddCurrentHoldingModal && (
@@ -261,7 +297,7 @@ const Company = ({ history, firebase }) => {
                     />
                   )}
                 </Fragment>
-              ) : (
+              ) : !error ? (
                 <div
                   style={{
                     display: "flex",
@@ -273,6 +309,8 @@ const Company = ({ history, firebase }) => {
                 >
                   <CircularProgress style={{ color: "#cbd2f6" }} />
                 </div>
+              ) : (
+                <div>Something went wrong, please try again later.</div>
               )}
             </div>
           </div>

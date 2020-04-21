@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { makeStyles, fade } from "@material-ui/core/styles";
 import { Typography, TextField, Button } from "@material-ui/core";
 import Modal from "@material-ui/core/Modal";
@@ -8,7 +8,7 @@ import Fade from "@material-ui/core/Fade";
 import axios from "axios";
 import { config } from "../../config";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import useDebounce from "../../util/useDebounce";
+import useDebounce from "../../util/useDebounce.js";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -105,7 +105,6 @@ const useStyles = makeStyles((theme) => ({
 const AddHoldingsModal = ({ isOpen, onClose, onSubmit, portfolioId }) => {
   const classes = useStyles();
   const [searchTerm, setSearchTerm] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
   const [form, setForm] = useState({
     symbol: "",
     companyName: "",
@@ -124,11 +123,13 @@ const AddHoldingsModal = ({ isOpen, onClose, onSubmit, portfolioId }) => {
   const [searchResults, setSearchResults] = useState([]);
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const cancelToken = useRef(null);
 
   const searchCompanies = async (search) => {
+    cancelToken.current = axios.CancelToken.source();
     const url = `https://api.worldtradingdata.com/api/v1/stock_search?stock_exchange=NYSE&search_term=${search}&limit=5&page=1&api_token=${config.worldTradingApiToken}`;
     return await axios
-      .get(url)
+      .get(url, { cancelToken: cancelToken.current.token })
       .then(({ data }) => data)
       .catch((error) => {
         console.error(error);
@@ -140,18 +141,23 @@ const AddHoldingsModal = ({ isOpen, onClose, onSubmit, portfolioId }) => {
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      // Set isSearching state
-      setIsSearching(true);
+      if (cancelToken.current) {
+        cancelToken.current.cancel("Component unmounted");
+      }
+
       // Fire off our API call
       searchCompanies(debouncedSearchTerm).then((results) => {
-        // Set back to false since request finished
-        setIsSearching(false);
         // Set results state
         setSearchResults(results.data);
       });
     } else {
       setSearchResults([]);
     }
+    return () => {
+      if (cancelToken.current) {
+        cancelToken.current.cancel("Component unmounted");
+      }
+    };
   }, [debouncedSearchTerm]);
 
   const handleChange = (event, value, reason) => {

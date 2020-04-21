@@ -12,7 +12,7 @@ const withAuthorization = (condition) => (Component) => {
           props.history.push("/");
         }
       });
-    }, []);
+    }, [props.firebase, props.history]);
     return (
       <AuthUserContext.Consumer>
         {(authUser) => (condition(authUser) ? <Component {...props} /> : null)}

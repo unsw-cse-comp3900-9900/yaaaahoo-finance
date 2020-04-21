@@ -50,6 +50,30 @@ class Firebase {
     });
   };
 
+  updateCompany = async (companyName, symbol, historicalData, tweets) => {
+    const companyRef = this.db.ref("/companies/" + symbol);
+    return await companyRef.update({
+      symbol,
+      companyName,
+      historicalData,
+      tweets,
+    });
+  };
+
+  updateCompanyHistoricalData = async (symbol, historicalData) => {
+    const companyRef = this.db.ref("/companies/" + symbol);
+    return await companyRef.update({
+      historicalData,
+    });
+  };
+
+  getCompany = async (symbol) => {
+    return await this.db
+      .ref("/companies/" + symbol)
+      .once("value")
+      .then((snapshot) => snapshot.val());
+  };
+
   deletePortfolio = async (portfolioId) => {
     const userId = await this.auth.currentUser.uid;
     return await this.db

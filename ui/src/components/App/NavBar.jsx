@@ -23,15 +23,16 @@ import { Link } from "react-router-dom";
 import Logo from "../../assets/logo192.png";
 import { withFirebase } from "../Firebase";
 import { compose } from "recompose";
-import useDebounce from "../../util/useDebounce";
+import useDebounce from "../../util/useDebounce.js";
 
 const useStyles = makeStyles((theme) => ({
   bar: {
     backgroundColor: "#fff",
     color: "#2643e9",
     boxShadow: "0px 1px 10px 0px rgba(0,0,0,0.12)",
-    justifyContent: "center",
     flexGrow: 1,
+    height: "64px",
+    justifyContent: "center",
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -39,13 +40,6 @@ const useStyles = makeStyles((theme) => ({
   logo: {
     height: "3em",
     marginRight: "0.4em",
-  },
-  bar: {
-    backgroundColor: "#fff",
-    color: "#2643e9",
-    boxShadow: "0px 1px 10px 0px rgba(0,0,0,0.12)",
-    height: "64px",
-    justifyContent: "center",
   },
   title: {
     fontSize: "1.2em",
@@ -128,7 +122,6 @@ const NavBar = ({ authUser, firebase, history }) => {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -139,7 +132,7 @@ const NavBar = ({ authUser, firebase, history }) => {
       .get(url)
       .then(({ data }) => data)
       .catch((error) => {
-        console.error(error);
+          console.log(error);
         return {
           data: [],
         };
@@ -148,18 +141,16 @@ const NavBar = ({ authUser, firebase, history }) => {
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      // Set isSearching state
-      setIsSearching(true);
       // Fire off our API call
       searchCompanies(debouncedSearchTerm).then((results) => {
-        // Set back to false since request finished
-        setIsSearching(false);
-        // Set results state
-        setSearchResults(results.data);
+      // Set results state
+      setSearchResults(results.data);
       });
     } else {
       setSearchResults([]);
     }
+    return () => {
+    };
   }, [debouncedSearchTerm]);
 
   const handleMobileMenuClose = () => {
@@ -168,6 +159,16 @@ const NavBar = ({ authUser, firebase, history }) => {
 
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
+  };
+
+  const onLogout = () => {
+    handleMobileMenuClose();
+    firebase.doSignOut();
+  };
+
+  const goToNews = () => {
+    handleMobileMenuClose();
+    history.push("/news");
   };
 
   const mobileMenuId = "primary-search-account-menu-mobile";
@@ -181,13 +182,13 @@ const NavBar = ({ authUser, firebase, history }) => {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem style={{ color: "#2643e9" }}>
+      <MenuItem onClick={goToNews} style={{ color: "#2643e9" }}>
         <IconButton color="inherit">
           <LibraryBooksIcon />
         </IconButton>
         <p>Top News</p>
       </MenuItem>
-      <MenuItem style={{ color: "#2643e9" }} onClick={handleMobileMenuOpen}>
+      <MenuItem onClick={onLogout} style={{ color: "#2643e9" }}>
         <IconButton
           aria-label="account of current user"
           aria-controls="primary-search-account-menu"
@@ -209,19 +210,13 @@ const NavBar = ({ authUser, firebase, history }) => {
     setSearchTerm(value);
   };
 
-  const onLogout = (event) => {
-    firebase.doSignOut();
-  };
-
-  const goToNews = () => {
-    history.push("/news");
-  };
-
   const keyPress = (event) => {
     const results = searchResults.map((s) => `${s.symbol} - ${s.name}`);
     if (event.keyCode === 13) {
       if (!results.includes(event.target.value)) {
+        history.push("/nocompany");
         console.log("Search word not found");
+        return;
       }
       const symbolAndName = event.target.value.split(" - ");
       setSearchTerm("");
