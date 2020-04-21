@@ -178,8 +178,9 @@ const Company = ({ history, firebase }) => {
       if (count > 300) break;
       count++;
       closingPrices.push([
-        parseInt(historicalData[i].close),
+        parseFloat(historicalData[i].close),
         parseInt(historicalData[i].volume),
+        historicalData[i].date,
       ]);
     }
     setPredictionInput(closingPrices);

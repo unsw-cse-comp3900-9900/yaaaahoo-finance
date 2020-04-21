@@ -9,6 +9,7 @@ import tensorflow as tf
 import numpy as np
 import sklearn
 import pandas as pd
+import datetime
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -47,7 +48,7 @@ def prediction():
     days = int(request.get_json()['days'])
     company = request.get_json()['company']
     model = tf.keras.models.load_model('model_{}.h5'.format(days))
-    x = request.get_json()['predictionInput']
+    x = list(reversed(request.get_json()['predictionInput']))
     historicalData = request.get_json()['historicalData']
 
     # Get backed up data
@@ -74,10 +75,13 @@ def prediction():
             }
         with open('backup_data.json', 'w') as f:
             json.dump(backup_data, f)
-    x = pd.DataFrame(x, columns = ['Close', 'Volume'])
+
+    x = pd.DataFrame(x, columns = ['Close', 'Volume', 'Date'])
     lags = 100 if days >= 10 else days * 10
     get_technical_analysis(x)
     x = x[-lags:]
+    dates = x['Date'].to_numpy()
+    x = x.drop('Date', axis=1)
     x = x.to_numpy().reshape((1, x.shape[0], x.shape[1]))
     scaled_x = np.zeros(x.shape)
     feature_sets = x.shape[2]
@@ -93,8 +97,18 @@ def prediction():
         return jsonify([])
     ayaya = scalers[0].inverse_transform(preds)
     previous = x[:,:,0].reshape(-1)
+    prev_dates = dates[-days*2:]
+    prev_date = datetime.date(int(dates[-1][:4]), int(dates[-1][5:7]), int(dates[-1][-2:]))
+    pred_dates = []
+    for i in range(1, days+1):
+        prev_date += datetime.timedelta(days=1)
+        if(prev_date.weekday() >= 5):
+            prev_date += datetime.timedelta(days=2)
+        pred_dates.extend([prev_date.strftime('%Y-%m-%d')])
+    final_dates = np.concatenate((prev_dates, pred_dates))
     final = np.concatenate((previous[-days*2:], ayaya[0]))
-    return jsonify(final.tolist())
+    print(final)
+    return {'prices': final.tolist(), 'dates': final_dates.tolist()}
 
 
 # read backup tweets stored for that demo company.

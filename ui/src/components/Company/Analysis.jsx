@@ -67,28 +67,29 @@ const Analysis = ({
         config
       )
       .then(({ data }) => {
-        const prev_cut = (data.length * 2) / 3;
-        const firstDay = new Date(historicalData[0].date);
-        for (var i = 0; i < data.length; i++) {
-          const currentDate = firstDay.setDate(firstDay.getDate() + 1);
+        const price_data = data['prices'];
+        const date_data = data['dates'];
+        const prev_cut = (price_data.length * 2) / 3;
+        for (var i = 0; i < price_data.length; i++) {
+          let price = price_data[i].toFixed(2);
           if (i < prev_cut) {
             prev.push({
-              x: currentDate,
-              y: data[i],
+              x: date_data[i],
+              y: price,
             });
           } else if (i == prev_cut) {
             prev.push({
-              x: currentDate,
-              y: data[i],
+              x: date_data[i],
+              y: price,
             });
             predictions.push({
-              x: currentDate,
-              y: data[i],
+              x: date_data[i],
+              y: price,
             });
           } else {
             predictions.push({
-              x: currentDate,
-              y: data[i],
+              x: date_data[i],
+              y: price,
             });
           }
         }
@@ -241,7 +242,32 @@ const Analysis = ({
     } else if (sentimentString === "N/A") {
       setRecommendation("N/A");
     }
-  }, [sentiment]);
+  }, [finalDayPrice, sentiment]);
+
+  // useEffect(() => {
+  //   const difference = finalDayPrice - startDayPrice;
+  //   if (!sentimentString)
+  //     setRecommendation(
+  //       <CircularProgress
+  //         size="1.2em"
+  //         style={{ marginLeft: "1em", color: "#2643e9" }}
+  //       />
+  //     );
+
+  //   if (sentimentString === "1") {
+  //     if (difference < 0) setRecommendation("Hold");
+  //     if (difference >= 0) setRecommendation("Buy");
+  //   } else if (sentimentString === "-1") {
+  //     if (difference < 0) setRecommendation("Sell");
+  //     if (difference >= 0) setRecommendation("Hold");
+  //   } else if (sentimentString === "0") {
+  //     if (difference === 0) setRecommendation("Sell");
+  //     if (difference > 0) setRecommendation("Buy");
+  //     if (difference < 0) setRecommendation("Hold");
+  //   } else if (sentimentString === "N/A") {
+  //     setRecommendation("N/A");
+  //   }
+  // }, [sentiment]);
 
   useEffect(() => {
     if (cancelToken.current) {
@@ -296,7 +322,7 @@ const Analysis = ({
             {predictionName}
           </Typography>
           <Typography className={classes.Heading2}>
-            {finalDayPrice ? finalDayPrice.toFixed(2) : "N/A"}
+            {finalDayPrice ? finalDayPrice : "N/A"}
           </Typography>
           <Typography
             style={{ color: styleColor }}
