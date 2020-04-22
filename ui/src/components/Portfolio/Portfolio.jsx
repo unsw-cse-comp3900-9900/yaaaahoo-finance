@@ -284,7 +284,6 @@ const Portfolio = ({
   }, [portfolio, recommendation]);
 
   useEffect(() => {
-    if(!holdings) return;
     getContent();
   }, [holdings]);
 
