@@ -55,8 +55,8 @@ const Summary = ({ companyData, historicalData, classes }) => {
   useEffect(() => {
     getHistoricalData();
     if (historicalData && historicalData.length > 0) {
-      const previousClose = historicalData[1].close;
-      const previousOpen = historicalData[0].open;
+      const previousClose = parseFloat(historicalData[1].close);
+      const previousOpen = parseFloat(historicalData[0].open);
       setPrevOpen(previousOpen);
       setPrevClose(previousClose);
       setDaysGain(companyData.change.toFixed(2));

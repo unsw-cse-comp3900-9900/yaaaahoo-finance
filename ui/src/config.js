@@ -3,7 +3,7 @@ export const config = {
   alphaVantageApiToken: "DQWJXC9BHJJG7N4R",
   worldTradingApiToken:
     "QdMKThqsC6tnqA7SD4aCGAtblOr1eY7jTPVTmTny0VKbBDGKbdaGpSmVqub5",
-  iexCloudApiToken: "pk_8119099a08884a29b474efa51a16eb50",
+  iexCloudApiToken: "pk_2b3f608dd9a64c28b7f8760396f5bc57 ",
   apiKey: "AIzaSyAQe81lKS4ZELWIBPDaFqI9RSosAzlgpaI",
   authDomain: "aaaa-finance.firebaseapp.com",
   databaseURL: "https://aaaa-finance.firebaseio.com",
