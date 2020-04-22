@@ -298,7 +298,7 @@ const Home = ({ firebase }) => {
         .get(url, { cancelToken: cancelToken.current.token })
         .then(({ data }) => {
           const currentPrice = data.latestPrice;
-          const currentPercentage = data.changePercent;
+          const currentPercentage = (data.changePercent * 100).toFixed(2);
           const gain = holding.numberOfUnits * data.change;
           earnings += gain;
           const holdingInfo = {

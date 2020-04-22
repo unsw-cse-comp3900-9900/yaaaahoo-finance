@@ -59,10 +59,10 @@ const Summary = ({ companyData, historicalData, classes }) => {
       const previousOpen = historicalData[0].open;
       setPrevOpen(previousOpen);
       setPrevClose(previousClose);
-      setDaysGain((companyData.latestPrice - previousClose).toFixed(2));
+      setDaysGain(companyData.change.toFixed(2));
       setDaysPerc(
         (
-          ((companyData.latestPrice - previousClose) / previousClose) *
+          (companyData.changePercent) *
           100
         ).toFixed(2)
       );
