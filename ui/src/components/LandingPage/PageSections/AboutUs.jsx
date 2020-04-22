@@ -92,9 +92,9 @@ const AboutUs = () => {
               </Typography>
               <Typography className={classes.CardBody}>
                 You're not a beginner investor. We know you want to invest in
-                more than just ETFs, so we give you the option to add any kind
-                of investment to your portfolio. Shares, bonds, cryptocurrencies
-                - your porfolio, your way.
+                more than just ETFs, so we give you the option to add *any kind
+                of investment to your portfolio. <br></br><br></br> *Currently 
+                restricted to NYSE market.
               </Typography>
             </CardContent>
           </Card>
