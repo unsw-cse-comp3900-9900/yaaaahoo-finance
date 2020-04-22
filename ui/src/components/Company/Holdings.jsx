@@ -15,19 +15,16 @@ function createData(portfolios, companyData) {
           const totalGain = (
             (companyData.latestPrice - holding.costPerUnit) *
             holding.numberOfUnits
-          ).toLocaleString(navigator.language, { minimumFractionDigits: 2 });
+          ).toFixed(2);
           const totalPerc = (
             ((companyData.latestPrice - holding.costPerUnit) /
               holding.costPerUnit) *
             100
-          ).toLocaleString(navigator.language, { minimumFractionDigits: 2 });
+          ).toFixed(2);
           const daysGain = (
             companyData.change * holding.numberOfUnits
-          ).toLocaleString(navigator.language, { minimumFractionDigits: 2 });
-          const daysPerc = companyData.changePercent.toLocaleString(
-            navigator.language,
-            { minimumFractionDigits: 2 }
-          );
+          ).toFixed(2);
+          const daysPerc = (companyData.changePercent * 100).toFixed(2);
           rows.push({
             portfolio: portfolio.name,
             portfolioId: portfolio.id,
