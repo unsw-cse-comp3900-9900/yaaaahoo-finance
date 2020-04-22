@@ -60,7 +60,7 @@ const Hero = () => {
           to={"/signup"}
           className={classes.button}
         >
-          Join Us
+          Join Today
         </Button>
       </Grid>
     </Grid>

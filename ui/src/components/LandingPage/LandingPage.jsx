@@ -5,6 +5,7 @@ import Hero from "./PageSections/Hero";
 import AboutUs from "./PageSections/AboutUs";
 import Background from "../../assets/background.svg";
 import Footer from "./PageSections/Footer";
+import PoweredBy from "./PageSections/PoweredBy";
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -37,6 +38,8 @@ const LandingPage = () => {
       <Hero />
       <Divider className={classes.divider} />
       <AboutUs />
+      <Divider className={classes.divider} />
+      <PoweredBy />
       <Divider className={classes.divider} />
       <Footer />
     </div>

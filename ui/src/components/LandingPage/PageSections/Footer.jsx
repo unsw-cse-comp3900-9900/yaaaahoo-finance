@@ -30,7 +30,7 @@ const Footer = () => {
         to={"/signup"}
         className={classes.Button}
       >
-        Join Us
+        Join Today!
       </Button>
     </div>
   );
