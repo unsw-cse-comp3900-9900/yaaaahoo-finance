@@ -101,6 +101,7 @@ const Company = ({ history, firebase }) => {
   const [historicalData, setHistoricalData] = useState(null);
   const [backupData, setBackupData] = useState(null);
   const [predictionInput, setPredictionInput] = useState([]);
+  const [error, setError] = useState(null);
   const [openAddCurrentHoldingModal, setOpenAddCurrentHoldingModal] = useState(
     false
   );
@@ -151,7 +152,11 @@ const Company = ({ history, firebase }) => {
       .get(url, { cancelToken: cancelToken.current.token })
       .then(({ data }) => {
         setCompanyData(data);
-      });
+      })
+      .catch(error => {
+        console.log(error);
+        setError("IEX API limit reached. Please try with a new token.");
+      })
   };
 
   const getBackup = async (company) => {
@@ -238,7 +243,7 @@ const Company = ({ history, firebase }) => {
         return (
           <div className={classes.Page}>
             <div className={classes.Container}>
-              {historicalData ? (
+              {historicalData && !error ? (
                 <Fragment>
                   <Typography className={classes.Heading1}>
                     {companyData.symbol}
@@ -297,7 +302,7 @@ const Company = ({ history, firebase }) => {
                     />
                   )}
                 </Fragment>
-              ) : (
+              ) : !error ? (
                 <div
                   style={{
                     display: "flex",
@@ -309,7 +314,7 @@ const Company = ({ history, firebase }) => {
                 >
                   <CircularProgress style={{ color: "#cbd2f6" }} />
                 </div>
-              )}
+              ) : (error)}
             </div>
           </div>
         );
