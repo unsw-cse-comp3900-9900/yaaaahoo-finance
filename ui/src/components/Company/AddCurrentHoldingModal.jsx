@@ -202,7 +202,7 @@ const AddCurrentHoldingModal = ({
         <div className={classes.paper}>
           <Typography className={classes.heading}>Add to Portfolio</Typography>
           <div>
-            <Typography classname={classes.subtitle}>
+            <Typography className={classes.subtitle}>
               {symbol} - {companyName}
             </Typography>
           </div>
