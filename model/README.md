@@ -9,10 +9,3 @@
 ### ```FLASK_APP=main.py flask run --host="localhost" --port=8080```
 
 Will run on http://localhost:8080/
-
-### API Endpoints
-
-#### Sentimental Analysis
-```/sentiment/<company>```
-
-``` E.g. http://localhost:8080/sentiment/Commonwealth%20Bank%20of%20Australia```
