@@ -210,9 +210,9 @@ const NavBar = ({ authUser, firebase, history }) => {
     if (reason === "reset") {
       const symbolAndName = value.split(" - ");
       history.push(`/company/${symbolAndName[0]}`);
-    } else {
-      setSearchTerm(value);
     }
+    setSearchTerm(value);
+    
   };
 
   const keyPress = (event) => {
