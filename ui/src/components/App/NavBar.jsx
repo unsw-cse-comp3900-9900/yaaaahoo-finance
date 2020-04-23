@@ -207,7 +207,12 @@ const NavBar = ({ authUser, firebase, history }) => {
   };
 
   const handleChange = (event, value, reason) => {
-    setSearchTerm(value);
+    if (reason === "reset") {
+      const symbolAndName = value.split(" - ");
+      history.push(`/company/${symbolAndName[0]}`);
+    } else {
+      setSearchTerm(value);
+    }
   };
 
   const keyPress = (event) => {
@@ -219,7 +224,6 @@ const NavBar = ({ authUser, firebase, history }) => {
         return;
       }
       const symbolAndName = event.target.value.split(" - ");
-      setSearchTerm("");
       setMenuOpen(false);
       history.push(`/company/${symbolAndName[0]}`);
     }

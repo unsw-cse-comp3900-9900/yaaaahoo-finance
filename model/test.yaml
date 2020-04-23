@@ -1,6 +1,6 @@
 ---
 search_tweets_api:
   account_type: premium
-  endpoint: https://api.twitter.com/1.1/tweets/search/30day/yaaahoo.json
-  consumer_key: tM9D1ZHFRm7Bu0n7Vl0IRzUMq
-  consumer_secret: iPBhaHezvnsPM3AekCMROpOnlk3vbGXHbP4ERNe4xTt54bSYiR
+  endpoint: https://api.twitter.com/1.1/tweets/search/30day/dev.json
+  consumer_key: wlUGxMPYFumkDgOaM1YIlXizW
+  consumer_secret: hTo7cOeYmR6YOKLuDFkk9FDWQtZRaOZVyKWiGQd0AB3VINeRPO
