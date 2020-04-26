@@ -8,6 +8,8 @@ A Stock Portfolio Management System
 - Oscar Fan: z5114679
 - Rachael Carson-Graham: z5079853
 
+### This application required Python 3.6, pip >= 19.0, (we recommend installing virtualenv for this), and node.js. 
+
 ## How to run:
   1. Ensure all tokens have been declared in config.js (ui directory) and test.yaml (model directory). More details on tokens further below.
   
