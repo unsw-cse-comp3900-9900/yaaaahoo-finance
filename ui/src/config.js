@@ -1,5 +1,5 @@
 export const config = {
-  newsApiToken: "31491f5ac1a648249ae25bf223465e1a",
+  newsApiToken: "fe80b624add743fabc5f8043669dddc7",
   alphaVantageApiToken: "DQWJXC9BHJJG7N4R",
   worldTradingApiToken:
     "QdMKThqsC6tnqA7SD4aCGAtblOr1eY7jTPVTmTny0VKbBDGKbdaGpSmVqub5",
