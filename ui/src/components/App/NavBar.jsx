@@ -163,6 +163,7 @@ const NavBar = ({ authUser, firebase, history }) => {
 
   const onLogout = () => {
     handleMobileMenuClose();
+    setSearchTerm("");
     firebase.doSignOut();
   };
 

@@ -151,18 +151,17 @@ const TopNews = ({ title, subtitle, titleColor, companies }) => {
       >
         {newsData &&
           newsData.map((article, index) => {
-            if (!article.urlToImage) {
-              return null;
-            }
             return (
               <Fragment key={`article-${index}`}>
                 <div className={classes.CardItem}>
                   <Card className={classes.Card}>
                     <CardContent className={classes.Content}>
-                      <img
-                        className={classes.CardImage}
-                        src={article.urlToImage}
-                      />
+                      {article.urlToImage && (
+                        <img
+                          className={classes.CardImage}
+                          src={article.urlToImage}
+                        />
+                      )}
                       <div className={classes.description}>
                         <Typography gutterBottom className={classes.CardTitle}>
                           <a
