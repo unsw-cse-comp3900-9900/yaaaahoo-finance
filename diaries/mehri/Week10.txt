@@ -1,0 +1,7 @@
+We completed our demo this week, and it seemed to
+go well. There were some small bugs we noticed (luckily 
+didn't pop up during our demo), that we fixed up.
+Finalised the README file and started helping out
+with the report with Rachel, Anupam did not do as much
+as we'd hoped for the report so spent a whole day
+doing the screenshots for the system interface section.

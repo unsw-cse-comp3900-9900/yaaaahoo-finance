@@ -1,0 +1,30 @@
+We're falling a bit behind schedule. In our sprint
+planning session this week it was emphasised we 
+really need to complete the tasks we have been
+assigned this week or we will be seriously behind 
+and may not meet our deadlines. Everyone in the group
+acknowledged the tasks they were assigned and said they
+were able to complete it by our weely deadline.
+
+After the meeting had to work on connecting the react application 
+with the flask application Anna set up. The ticket tasked for setting up 
+the flask application highlighted she also needed to integrate it with 
+the UI, which she had not done...but she said her ticket was done. Spent 
+quite some time trying to run the flask application because there was
+no instructions or requirements.txt, so I had to figure it out
+by trial and error. Turns out our application requires Python 3.6
+for Tensorflow. I also needed to deal with CORS policy. Once
+I got the flask application hooked up with the react application
+I wrote README files to make it easier for the next person to run
+both applications. 
+
+I set up a demo page for sentimental analysis in the react application 
+to present to Ali in the next group meeting call. I also refactored
+our sign up process to be more quick and simple based on
+an Econmic Times article I read on portfolio types. I captured this work
+on a confluence page. It relates to the portfolio type recommendation
+we want to do in our project.
+
+https://yaaaahoofinance.atlassian.net/wiki/spaces/YF/pages/13598725/Types+of+Investment+Portfolios
+
+

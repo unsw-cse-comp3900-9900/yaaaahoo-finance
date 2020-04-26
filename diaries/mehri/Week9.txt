@@ -1,0 +1,10 @@
+This week Rachel, Oscar and I were focused on wrapping 
+up the final tasks. Anna and Anupam did not complete their
+tickets and both pushed broken code to master which had to be 
+reverted. We locked master branch from being able to be committed
+to directly since both memebrs were not creating pull request even
+after telling them to make pull requests. 
+
+Worked on a caching mechanism to ensure that if we hit API limits
+during our demo we have backup data we can fall back on in Firebase.
+We combed through any final bugs left, and polished up the project.

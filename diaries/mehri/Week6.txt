@@ -1,0 +1,28 @@
+This week I wrapped up the hero page and what
+we do section of the landing page, the sign up 
+form, login page, and forgot password
+functionality. I also figured out how to add
+extra information for a user to the firebase
+instance. With Ali's feedback my focus now
+was to polish up those pages and refactor code.
+I focused on ensuring we have an easy to follow
+structure to our code that complies with React's
+philosophy of breaking down the UI into a
+component hierarchy.
+
+Our group realised that most of our project is 
+actually frontend and while most of the group 
+preferred to do backend work most of that work 
+was covered by Firebase and Oscar had wrapped 
+up the machine learning models. I needed more
+hands to help me with the frontend. To help
+everyone out I created a Confluence page which
+provided a step by step guide on how to create 
+a page and contribute frontend work to the 
+project. It also stepped through how to set up 
+a firebase instance. Our group also realised 
+we have quite a bit of limitation with the stock
+API we were going to use for the project, Rachel 
+has found alternatives to look into.
+
+https://yaaaahoofinance.atlassian.net/wiki/spaces/YF/pages/70287361/Front-end+Development+Guide

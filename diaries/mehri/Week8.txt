@@ -1,0 +1,9 @@
+Having issues with our group, two members not contributing.
+Had to pick up both Anna and Anupam's tasks since they had 
+not even started on their tasks on the Sunday it was due. 
+I managed to get a huge bulk of the work done over the long 
+weekend so we were ready to demo Ali most of our project before
+the official demo. 
+
+Adding/Removing holdings, related news, search functionality 
+and company summary page were pretty much done at this point.

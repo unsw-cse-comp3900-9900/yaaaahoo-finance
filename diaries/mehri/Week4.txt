@@ -1,0 +1,5 @@
+This week I started working on setting up a hero page
+for our application. This involved figuring out 
+figuring out how to use material-ui, creating the
+assets such as logo, background image, etc for our 
+application. Luckily had wireframes to work with.

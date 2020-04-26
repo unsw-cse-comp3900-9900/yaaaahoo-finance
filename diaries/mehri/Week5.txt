@@ -1,0 +1,22 @@
+This week I was assigned with figuring out how to
+connect the firebase with the UI I worked on last 
+week. Anna had uploaded a firebase project to the
+repository. When I tried merging that code with my
+UI I noticed it had some pieces missing such as 
+persistence of authentication when one refreshes the 
+page, a way to add extra information for a user for
+our proposed recommendation system, and we also had
+to ensure the home page for logged in users would be
+a protected page that can only be accessed if a user
+is logged in. A lot of the code was just empty
+React pages, which I ignored.
+
+I managed to find a blog that steps through how to
+use firebase in a react application and notcied a 
+lot of similarity with the code Anna had and the code
+in the blog:
+https://www.robinwieruch.de/complete-firebase-authentication-react-tutorial
+It was very helpful and I successfully maanged to 
+figure out a simple sign up and log in flow. I still
+needed to figure out how to provide extra information
+to a user on sign up.

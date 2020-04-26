@@ -1,0 +1,11 @@
+This week our group worked on the proposal that was 
+due at the end of the week. I was assigned with the
+task to investigate the Stock and News APIs and having
+the most experience with frontend development I was also
+tasked with looking at the frontend technologies we should 
+use for our project. 
+
+Once that was done I checked with Anna to see where she was
+at with the wireframes for the proposal. She said she was sick
+so I picked up the task and worked on the wireframes and 
+Systems Modules and Flow section of the proposal.
