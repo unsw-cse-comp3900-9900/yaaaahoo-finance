@@ -11,7 +11,7 @@ A Stock Portfolio Management System
 ## How to run:
   1. Ensure all tokens have been declared in config.js (ui directory) and test.yaml (model directory). More details on tokens further below.
   
-  2. Open up the model directory in a terminal. Ensure you are in a python3.6 environment to use Tensorflow. If you have issues with installing the transformers package you may need to explicitly set the version to 2.4.1. Below are the commands to run the Flask application on a Mac OS.
+  2. Open up the model directory in a terminal. Ensure you are in a **Python3.6 environment** to use Tensorflow. If you have issues with installing the transformers package you may need to explicitly set the version to **2.4.1**. Below are the commands to run the Flask application on a **Mac OS**.
   
   ``` 
   python3.6 -m venv venv
@@ -20,7 +20,7 @@ A Stock Portfolio Management System
   FLASK_APP=main.py flask run --host="localhost" --port=8080
   ```
 
-  3. Open up the ui directory in a terminal. Ensure you have node.js installed on your computer:  https://nodejs.org/en/download/. Below are the commands to run the React application on a Max OS.
+  3. Open up the ui directory in a terminal. Ensure you have node.js installed on your computer:  https://nodejs.org/en/download/. Below are the commands to run the React application on a **Mac OS**.
   
   ``` 
   npm i
@@ -54,11 +54,11 @@ export const config = {
     "measurementId": ""
 };
 ```
-https://newsapi.org/
-https://www.alphavantage.co/
-https://www.worldtradingdata.com/
-https://iexcloud.io/
-https://firebase.google.com/
+- https://newsapi.org/
+- https://www.alphavantage.co/
+- https://www.worldtradingdata.com/
+- https://iexcloud.io/
+- https://firebase.google.com/
 
 ### Flask Application
 Ensure in /model/test.yaml file these tokens are filled:
@@ -71,4 +71,14 @@ search_tweets_api:
   consumer_secret: 
 ```
 
-https://developer.twitter.com/en
+- https://developer.twitter.com/en
+
+
+## Screenshots
+<img src="/screenshots/Landing.png" width="50%" />
+<img src="/screenshots/AddHoldings.png" width="50%" />
+<img src="/screenshots/RelatedNews.png" width="50%" />
+<img src="/screenshots/Company.png" width="50%" />
+<img src="/screenshots/Analysis.png" width="50%" />
+
+
