@@ -1,0 +1,30 @@
+Week 2
+Group created. Worked on potential features we wanted to add to the web application. 
+
+Week 3
+Created an sequential model that uses a LSTM layer, and is able to accurately make next day predictions.
+
+Week 4 - 5
+Converted my model so that it is now able to predict multiple days instead of just 1. Predictions were far less accurate on longer predictions
+
+Week 6
+Converted my tensorflow model into a tensorflowjs model for better compatibility with our front end technologies
+Researching potential features we could use to improve the accuracy of our model
+Did some more work on the model training and testing. Creating new features with technical analysis
+Trying different loss functions. MSE/MAE
+
+Week 7
+Used Huggingface transformers to create a sentiment analysis model which analyses sentiments of recent Tweets.
+Converted our tensorflowjs model to a Python server which returns sentiments and predicted prices.
+
+Week 8
+Created recommendations which are based on the output of the prediction model and the sentiment analysis model
+
+Week 9
+Created the Analysis tab UI using Chart.js for the graphs, and connected it to the Python server
+
+Week 10
+Working on project presentation
+
+Week 11
+Working on project report
