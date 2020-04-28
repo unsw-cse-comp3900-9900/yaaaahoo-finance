@@ -44,3 +44,18 @@ Week 8
 
 Wrote the code for a basic flow of adding investments to a portfolio.  Used the Alpha Vantage API to enable the user to
 search for an investment based on either stock symbol or company name.
+
+Week 9
+
+Wrote the code for the "My Holdings" page of the Company section of the app.  This required extracting data from a user's
+portfolio/s, and data about the company's share price to calculate the total gain and day's gain for the user, for this
+stock.  I used the material-table component to easily create a table that also provides a button option which allows
+the user to add this company to their portfolio if it is not already in the portfolio.
+
+Week 10
+
+Testing of the project and preparation for the demo.  Reviewed all sections of the final report and completed the following
+ sections:
+- Updated incorrect remarks in Explanation of the Software Architecture
+- Screenshots and descriptions for landing page, sign-up process, login page, Company Summary and My Holdings pages
+- Third party APIs used
