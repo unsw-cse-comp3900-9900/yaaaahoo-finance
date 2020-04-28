@@ -21,7 +21,7 @@ Week 8
 Created recommendations which are based on the output of the prediction model and the sentiment analysis model - by myself.
 
 Week 9
-Created the Analysis tab UI using Chart.js for the graphs, and connected it to the Python server - working with Mehri. =
+Created the Analysis tab UI using Chart.js for the graphs, and connected it to the Python server - working with Mehri.
 
 Week 10
 Working on project presentation. Specifically, the Analysis tab, and showing the data persists post-logout.
