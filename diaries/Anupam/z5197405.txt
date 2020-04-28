@@ -1,0 +1,33 @@
+Week 1: Analysed the different projects for this course, and discussed it with our mentor, Ali, to get a better understanding. 
+
+Week 2: Finalised our group and the project we would be doing this semester. 
+Researched on how to perform the prediction of the stock prices.  
+
+Week 3: Discussed the various components and the overall structure of our system.
+Started working on the prediction part of our system. Artificial neural networks seem to do a good job in this regards.
+Also started working on the project proposal report, due this week.
+
+Week 4: Started building the prediction model using Tensorflow and the ANNR class from TFANN module.
+"https://github.com/nicholastoddsmith/pythonml#tfann" github page provided details to use the ANNR class.
+Facing issues with getting good prediction accuracy across different companies. 
+The model seems to good prediction for some companies which have similar historical share price trends but 
+does not predict accurately for companies having a different share price trend.  
+
+Week 5: Performed some optimisation  on my model to get an evened out performance.A blog by "nicholastsmith" for stock prediction provided useful insights.
+However another model, LSTM, developed by my fellow teammate seems to perform better.We showed the LSTM model to our mentor,
+and he seemed to be satisfied with the performance.So decided to go ahead with the LSTM model.
+
+Week 6: Started to work on creating the sentiment analysis model, however I was pre occupied in the early part of this week with other subjects. 
+Could only start to work on this mid week. 
+
+Week 7: Started to look into UI part of our system, to help out my team mates working on UI. 
+But the technologies used for developing the UI is completly new to me, so started to learn more about these technologies.        
+
+Week 8: Worked on the news section of the system, to update the related news section
+when the user has some holdings in his/her portfolio. Running into some issues with integrating it with the existing system.  
+
+Week 9: Most of the development work for the system is done, spend time reviewing the code and checking for any existing bugs. 
+
+Week 10: Prepared for the final demo and presentation.
+
+Week 11: Worked on building the final report for our project and reviewing it.     
